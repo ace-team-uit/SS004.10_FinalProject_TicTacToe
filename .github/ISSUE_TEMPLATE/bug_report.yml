@@ -1,0 +1,34 @@
+name: "🐞 Bug Report"
+description: Báo cáo lỗi trong hệ thống
+title: "[BUG] - "
+labels: [bug]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: Mô tả lỗi
+      placeholder: "Khi bấm nút submit thì..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Các bước tái hiện lỗi
+      placeholder: |
+        1. Mở trang X
+        2. Nhấn nút Y
+        3. Thấy lỗi Z xuất hiện
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Mức độ nghiêm trọng
+      options:
+        - Thấp
+        - Trung bình
+        - Cao
+    validations:
+      required: true
