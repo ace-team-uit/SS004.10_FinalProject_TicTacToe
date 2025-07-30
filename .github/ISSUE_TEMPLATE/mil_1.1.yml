@@ -1,0 +1,36 @@
+name: "📌 Task Kick-off mil 1.1"
+description: Task trong milestone 1.1 - Setup và phân công
+title: "[1.1][DOCS] | "
+labels: [planning]
+assignees: []
+body:
+  - type: input
+    id: mssv
+    attributes:
+      label: MSSV người thực hiện
+      placeholder: "25730067"
+    validations:
+      required: true
+  - type: input
+    id: title
+    attributes:
+      label: Tên task
+      placeholder: "Phân công vai trò và invite team"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Mô tả chi tiết
+      placeholder: |
+        1. Add all members vào GitHub Org
+        2. Tạo board Projects
+        3. Invite teacher GitHub account
+    validations:
+      required: true
+  - type: input
+    id: due_date
+    attributes:
+      label: Deadline
+      description: Nhập ngày (theo định dạng YYYY-MM-DD)
+      placeholder: 2025-08-15
