@@ -6,18 +6,24 @@
 - **Công nghệ sử dụng**: HTML, CSS, JavaScript (DOM, Animation)
 - **Công cụ hỗ trợ làm việc nhóm**:
   - Quản lý công việc: [Github Projects](https://github.com/orgs/ace-team-uit/projects/1)
-  - Giao tiếp nhóm: Discord
+  - Giao tiếp nhóm: Discord (nội bộ)
   - Viết báo cáo: [Overleaf (LaTeX)](https://www.overleaf.com/project/6888ec4c20ea092cf579c59a)
   - Lưu trữ mã nguồn: [GitHub](https://github.com/ace-team-uit/SS004.10_FinalProject_TicTacToe)
 
 ## Thành viên nhóm
-| Họ và tên              | MSSV      | GitHub cá nhân                                       |
-|------------------------|-----------|------------------------------------------------------|
-| Đặng Chí Thanh         | 25730067  | [uit-25730067-chithanh](https://github.com/uit-25730067-chithanh) |
-| Đào Vĩnh Bảo Phúc      | 25730053  | [uit-25730053-baophuc](https://github.com/uit-25730053-baophuc)   |
-| Phạm Lê Yến Nhi        | 25730049  | [uit-25730049-yennhi](https://github.com/uit-25730049-yennhi)     |
+| Họ và tên              | MSSV      | GitHub cá nhân                                                        |
+|------------------------|-----------|-----------------------------------------------------------------------|
+| Đặng Chí Thanh         | 25730067  | [uit-25730067-chithanh](https://github.com/uit-25730067-chithanh)     |
+| Đào Vĩnh Bảo Phúc      | 25730053  | [uit-25730053-baophuc](https://github.com/uit-25730053-baophuc)       |
+| Phạm Lê Yến Nhi        | 25730049  | [uit-25730049-yennhi](https://github.com/uit-25730049-yennhi)         |
 | Tăng Phước Thịnh       | 25730071  | [uit-25730071-phuocthinh](https://github.com/uit-25730071-phuocthinh) |
-| Hoàng Cao Sơn          | 25730061  | [uit-25730061-caoson](https://github.com/uit-25730061-caoson)     |
+| Hoàng Cao Sơn          | 25730061  | [uit-25730061-caoson](https://github.com/uit-25730061-caoson)         |
+
+## Giảng viên hướng dẫn
+- **Họ tên**: Nguyễn Văn Toàn  
+- **Mã cán bộ**: UIT.19529999  
+- **Email**: toannv@uit.edu.vn  
+- **GitHub**: [toannv-uit](https://github.com/toannv-uit)
 
 ## Tên dự án
 Trò chơi Cờ Caro – Tic Tac Toe (phiên bản Web)
@@ -58,9 +64,10 @@ Trò chơi được xây dựng hoàn toàn bằng HTML, CSS và JavaScript, v�
 - Mỗi lượt đi có hiệu ứng animation mượt mà.
 - Người chơi có thể chơi lại nhiều lần mà không cần tải lại trang.
 
+## Tài liệu nội bộ
+[Truy cập Wiki của nhóm tại đây](https://github.com/ace-team-uit/ace-wiki)
+
 ## Đóng góp và bản quyền
 Dự án được thực hiện bởi nhóm sinh viên lớp CN1.K2025.1.TTNT – Trường Đại học Công nghệ Thông tin – ĐHQG-HCM.  
 Mục đích sử dụng: học tập và trình bày kết quả môn học.  
 Vui lòng không sao chép với mục đích thương mại hoặc học vụ khác mà không được sự cho phép của nhóm.
----
-
