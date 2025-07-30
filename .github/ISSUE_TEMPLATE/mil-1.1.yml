@@ -28,8 +28,9 @@ body:
         3. Invite teacher GitHub account
     validations:
       required: true
-  - type: date
+  - type: input
     id: due_date
     attributes:
-      label: Due date
-      description: Ngày hoàn thành dự kiến
+      label: Deadline
+      description: Nhập ngày (theo định dạng YYYY-MM-DD)
+      placeholder: 2025-08-15
