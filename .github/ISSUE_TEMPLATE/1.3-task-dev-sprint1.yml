@@ -1,0 +1,18 @@
+name: "🛠️ Task Dev Sprint 1 – mil 1.3"
+description: Task thuộc milestone 1.3 – Coding Sprint 1
+labels: [development, 1.3]
+body:
+  - type: input
+    id: task_title
+    attributes:
+      label: Tên task
+      placeholder: "Trang Home, xử lý input..."
+
+  - type: textarea
+    id: task_details
+    attributes:
+      label: Mô tả công việc
+      placeholder: |
+        - Tạo UI trang Home bằng HTML/CSS
+        - Thêm xử lý JS cho ô click
+        - Test xử lý lỗi khi click nhiều lần

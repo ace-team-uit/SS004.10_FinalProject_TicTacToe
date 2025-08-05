@@ -1,20 +1,17 @@
 name: "🌟 Feature Request"
 description: Gợi ý hoặc yêu cầu chức năng mới
-title: "[FEAT] - "
 labels: [enhancement]
 body:
   - type: input
-    id: feature-title
+    id: feature_title
     attributes:
       label: Tính năng cần thêm
-      placeholder: "Cho phép undo khi đánh sai nước cờ"
+      placeholder: "Undo nước đi cuối cùng"
     validations:
       required: true
 
   - type: textarea
     id: context
     attributes:
-      label: Bối cảnh hoặc lý do
-      description: Giải thích vì sao cần tính năng này
-    validations:
-      required: true
+      label: Bối cảnh / Lý do (tuỳ chọn)
+      placeholder: "Thường hay bấm nhầm, cần undo để tránh sai"
