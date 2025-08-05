@@ -13,8 +13,8 @@
 2. Commit rõ ràng:
 
 ```
- 🪄 feat(scope): thêm giao diện Home Page
- 🛠️ fix(scope): sửa lỗi load ảnh popup
+ 🪄 feat(<scope>): thêm giao diện Home Page
+ 🛠️ fix(<scope>): sửa lỗi load ảnh popup
 ```
 
 3. Mở Pull Request (PR), chờ review và merge

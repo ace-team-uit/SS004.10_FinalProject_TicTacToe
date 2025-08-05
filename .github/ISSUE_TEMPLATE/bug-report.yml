@@ -1,26 +1,21 @@
 name: "🐞 Bug Report"
 description: Báo cáo lỗi trong hệ thống
-title: "[BUG] - "
 labels: [bug]
 body:
-  - type: input
+  - type: textarea
     id: summary
     attributes:
       label: Mô tả lỗi
-      placeholder: "Khi bấm nút submit thì..."
-    validations:
-      required: true
+      placeholder: "Khi bấm nút reset thì trò chơi không khởi động lại..."
 
   - type: textarea
     id: steps
     attributes:
-      label: Các bước tái hiện lỗi
+      label: Các bước tái hiện lỗi (không bắt buộc)
       placeholder: |
-        1. Mở trang X
-        2. Nhấn nút Y
-        3. Thấy lỗi Z xuất hiện
-    validations:
-      required: true
+        1. Mở trang Game
+        2. Click nút Reset
+        3. Không có gì xảy ra
 
   - type: dropdown
     id: severity
@@ -30,5 +25,3 @@ body:
         - Thấp
         - Trung bình
         - Cao
-    validations:
-      required: true

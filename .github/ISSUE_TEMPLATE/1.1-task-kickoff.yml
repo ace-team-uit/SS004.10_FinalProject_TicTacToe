@@ -1,14 +1,12 @@
 name: "📌 Task Kick-off mil 1.1"
-description: Task thuộc milestone 1.1 - Setup và phân công
-title: "[1.1][DOCS] | "
+description: Task thuộc milestone 1.1 – Setup và phân công
+labels: [documentation, priority: high]
 body:
   - type: input
     id: task_title
     attributes:
       label: Tên task
       placeholder: "Việc cần thực hiện"
-    validations:
-      required: true
 
   - type: textarea
     id: task_details
@@ -17,4 +15,4 @@ body:
       placeholder: |
         - Add all members vào GitHub Org
         - Tạo GitHub Project
-        - Invite giảng viên vào Org
+        - Mời giảng viên vào Org
