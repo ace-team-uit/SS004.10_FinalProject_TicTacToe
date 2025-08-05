@@ -1,0 +1,17 @@
+name: "🧩 Task Design & Docs mil 1.2"
+description: Task thuộc milestone 1.2 – Thiết kế và tài liệu game
+title: "[1.2][DOCS] | "
+body:
+  - type: textarea
+    id: task_details
+    attributes:
+      label: Nội dung công việc
+      placeholder: |
+        - Viết mô tả chức năng từng màn hình (Home, Select, Game)
+        - Phân tích chức năng chính: renderBoard, handleClick, checkWin
+        - Chia phần mô tả trên Overleaf (ai viết phần nào)
+        - Gắn tài nguyên: ảnh wireframe, phân công nhóm
+      value: |
+        - 
+    validations:
+      required: true
