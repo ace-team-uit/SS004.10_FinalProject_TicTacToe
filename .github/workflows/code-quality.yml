@@ -1,0 +1,39 @@
+name: Code Quality Check
+
+on:
+  push:
+    branches:
+      - main  # Chỉ chạy khi push trực tiếp vào main
+  pull_request:
+    branches:
+      - '**'  # Chạy khi mở hoặc cập nhật PR vào bất kỳ nhánh nào
+
+jobs:
+  check-code:
+    name: Check Variable Names & Spelling
+    runs-on: ubuntu-latest
+
+    steps:
+      # Bước 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Bước 2: Cài codespell để kiểm tra chính tả
+      - name: Install codespell
+        run: pip install codespell
+
+      # Bước 3: Kiểm tra chính tả trong HTML, CSS, JS
+      - name: Run codespell
+        run: codespell --ignore-words-list="te,th,ot" --skip="*.min.js,*.min.css,*.png,*.jpg,*.gif,*.woff,*.ttf" .
+
+      # Bước 4: Kiểm tra tên biến trong file JS
+      - name: Check variable naming convention
+        run: |
+          echo "Checking variable naming in JS files..."
+          invalid_vars=$(grep -rhoP '(?<=var |let |const )[A-Z][A-Za-z0-9_]*' src/**/*.js || true)
+          if [ ! -z "$invalid_vars" ]; then
+            echo "❌ Invalid variable names found (should be camelCase, not start with uppercase):"
+            echo "$invalid_vars"
+            exit 1
+          fi
+          echo "✅ Variable naming check passed!"
