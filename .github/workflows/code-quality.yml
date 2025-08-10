@@ -22,15 +22,15 @@ jobs:
       - name: Install codespell
         run: pip install codespell
 
-      # Bước 3: Kiểm tra chính tả trong HTML, CSS, JS
+      # Bước 3: Kiểm tra chính tả (bỏ qua các từ trong .codespell-ignore)
       - name: Run codespell
-        run: codespell --ignore-words-list="te,th,ot" --skip="*.min.js,*.min.css,*.png,*.jpg,*.gif,*.woff,*.ttf" .
+        run: codespell --ignore-words=.codespell-ignore --skip="*.min.js,*.min.css,*.png,*.jpg,*.gif,*.woff,*.ttf" .
 
       # Bước 4: Kiểm tra tên biến trong file JS
       - name: Check variable naming convention
         run: |
           echo "Checking variable naming in JS files..."
-          invalid_vars=$(grep -rhoP '(?<=var |let |const )[A-Z][A-Za-z0-9_]*' src/**/*.js || true)
+          invalid_vars=$(grep -rhoP '(?<=var |let |const )[A-Z][A-Za-z0-9_]*' **/*.js || true)
           if [ ! -z "$invalid_vars" ]; then
             echo "❌ Invalid variable names found (should be camelCase, not start with uppercase):"
             echo "$invalid_vars"
