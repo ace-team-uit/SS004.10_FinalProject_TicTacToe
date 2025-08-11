@@ -59,19 +59,64 @@ Game hỗ trợ:
 
 ## Cấu trúc thư mục
 
-- `/assets/`: Thư mục chứa hình ảnh, biểu tượng, âm thanh (nếu có).
-- `/pages/`: Chứa các tệp giao diện cho từng màn hình.
-  - `intro.html`: Trang giới thiệu, credit nhóm
-  - `home.html`: Trang chính với nút "Let's Play"
-  - `select.html`: Trang chọn chế độ chơi
-  - `settings.html`: Giao diện cài đặt
-  - `game.html`: Giao diện chính để chơi cờ
-- `/scripts/`: Các tệp JavaScript xử lý logic và animation.
-  - `game.js`: Logic xử lý lượt đi, xác định thắng/thua.
-  - `ui.js`: Quản lý giao diện, popup, hiệu ứng.
-- `/styles/`: Các tệp CSS thiết kế giao diện người dùng.
-  - `main.css`: Định dạng chung toàn bộ trò chơi.
-- `README.md`: Tài liệu mô tả dự án.
+├── assets/                     # Tài nguyên tĩnh
+│   ├── fonts/
+│   ├── images/
+│   └── sounds/
+│
+├── screens/                    # Mỗi màn hình (HTML + CSS + JS)
+│   ├── home/
+│   │   ├── home.html
+│   │   ├── home.css
+│   │   └── home.screen.js
+│   ├── game/
+│   │   ├── game.html
+│   │   ├── game.css
+│   │   └── game.screen.js
+│   └── result/                  # Dự kiến
+│       └── .gitkeep
+│
+├── shared/                     # Code và UI dùng chung
+│   ├── logic/                   # Logic tái sử dụng
+│   │   ├── board.js
+│   │   ├── timer.js
+│   │   └── ai.js
+│   ├── ui/                      # UI components
+│   │   └── header.component.js
+│   └── utils/                   # Hàm tiện ích
+│       └── format-time.js
+│
+├── styles/                      # CSS chung toàn game
+│   └── global.css
+│
+├── libs/                        # Thư viện bên thứ ba
+│   └── .gitkeep
+│
+├── docs/                        # Tài liệu kỹ thuật
+│   ├── architecture.md
+│   ├── changelog.md
+│   └── setup-guide.md
+│
+├── index.html                   # Entry point
+├── main.js                      # Điều hướng load màn hình
+├── .gitignore
+├── CONTRIBUTING.md
+├── LICENSE
+└── README.md
+
+## Điều Hướng Giữa Các Màn Hình
+```mermaid
+graph LR
+    A[index.html] --> B[main.js - Điểm vào ứng dụng]
+    B --> C[loadScreen]
+    C --> D[Tải HTML màn hình screens/...]
+    C --> E[Inject vào DOM]
+    C --> F[Tải CSS màn hình *.css]
+    C --> G[Tải JS màn hình *.screen.js]
+    G --> H[Code chung - shared/logic và shared/ui]
+    H --> I[Tài nguyên - assets]
+    F --> I
+```
 
 ## Các màn hình giao diện chính
 
