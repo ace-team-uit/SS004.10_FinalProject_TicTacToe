@@ -147,7 +147,7 @@ graph LR
 
 - Mọi style dùng chung đặt tại `styles/*`. File `global.css` import theo thứ tự: `reset.css` → `variables.css` → `themes.css` → `utilities.css` → `components.css`.
 - Tỉ lệ khung hình mặc định 6:19 được bọc bởi `div.phone-viewport` tự động tạo trong `main.js`. Các màn hình chỉ cần render HTML bên trong và sẽ được định vị trong khung này.
-- Breakpoints: mobile-first với `--bp-tablet: 768px`, `--bp-desktop: 1024px`. Có thể dùng media query thông thường.
+- Breakpoints: mobile-first với `--bp-mobile: 375px`, `--bp-tablet: 768px`, `--bp-desktop: 1024px`. Có thể dùng media query thông thường.
 - Theme: dùng `html[data-theme="dark"|"light"]`. Mặc định theo dark style của game.
 - Font hiển thị ưu tiên `RoleyPoley` (nếu khả dụng) qua `assets/fonts/ROLEY POLEY.TTF`. Có thể nhúng qua CSS `@font-face` tuỳ khi cần.
 
