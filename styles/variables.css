@@ -1,0 +1,102 @@
+/*
+  Global CSS Variables for ACE Tic Tac Toe
+  - Colors, spacing, radius, shadows, typography, z-index, breakpoints
+*/
+
+:root {
+  /* Typography */
+  --font-display: 'RoleyPoley', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-body: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* Font sizes (mobile-first) */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 28px;
+  --text-4xl: 32px;
+
+  /* Spacing scale */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.35);
+
+  /* Palette (spacey neon) */
+  --blue-50: #e7f1ff;
+  --blue-400: #58a6ff;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --indigo-500: #6366f1;
+  --purple-400: #a78bfa;
+  --purple-500: #8b5cf6;
+  --purple-700: #6d28d9;
+  --pink-500: #ec4899;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --yellow-400: #facc15;
+  --green-400: #34d399;
+  --white: #ffffff;
+  --black: #000000;
+
+  /* Elevation colors */
+  --panel-bg: rgba(15, 23, 42, 0.6); /* slate-900/60 */
+  --panel-border: rgba(255, 255, 255, 0.12);
+
+  /* Theming */
+  --bg-gradient-start: #0f172a; /* slate-900 */
+  --bg-gradient-end: #1e1b4b;   /* indigo-950 */
+  --text-primary: #f8fafc;      /* slate-50 */
+  --text-secondary: #cbd5e1;    /* slate-300 */
+  --brand-primary: var(--purple-500);
+  --brand-accent: var(--blue-500);
+  --brand-warning: var(--orange-500);
+  --brand-success: var(--green-400);
+
+  /* Buttons */
+  --btn-primary-bg: linear-gradient(180deg, #7c3aed 0%, #6d28d9 100%);
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: rgba(255, 255, 255, 0.12);
+  --btn-secondary-text: #ffffff;
+  --btn-ghost-text: #ffffff;
+
+  /* Z-index scale */
+  --z-base: 1;
+  --z-header: 100;
+  --z-overlay: 900;
+  --z-popup: 1000;
+
+  /* Breakpoints */
+  --bp-mobile: 480px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+}
+
+/* Dark theme overrides */
+html[data-theme="dark"] {
+  --bg-gradient-start: #0b1022;
+  --bg-gradient-end: #15123b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+}
+
+

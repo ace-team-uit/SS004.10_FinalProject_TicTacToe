@@ -87,7 +87,12 @@ Game hỗ trợ:
 │       └── format-time.js
 │
 ├── styles/                      # CSS chung toàn game
-│   └── global.css
+│   ├── global.css
+│   ├── variables.css
+│   ├── reset.css
+│   ├── utilities.css
+│   ├── components.css
+│   └── themes.css
 │
 ├── libs/                        # Thư viện bên thứ ba
 │   └── .gitkeep
@@ -133,6 +138,27 @@ graph LR
 - Logic tách biệt thành các hàm độc lập (renderGridBoard, renderRound, renderResult, resetGame)
 - Giao diện đơn giản, dễ mở rộng, dễ kiểm thử
 - Có hệ thống âm thanh và cài đặt tương tác qua Settings
+
+## Global UI Styles
+
+- Mọi style dùng chung đặt tại `styles/*`. File `global.css` import theo thứ tự: `reset.css` → `variables.css` → `themes.css` → `utilities.css` → `components.css`.
+- Tỉ lệ khung hình mặc định 6:19 được bọc bởi `div.phone-viewport` tự động tạo trong `main.js`. Các màn hình chỉ cần render HTML bên trong và sẽ được định vị trong khung này.
+- Breakpoints: mobile-first với `--bp-tablet: 768px`, `--bp-desktop: 1024px`. Có thể dùng media query thông thường.
+- Theme: dùng `html[data-theme="dark"|"light"]`. Mặc định theo dark style của game.
+- Font hiển thị ưu tiên `RoleyPoley` (nếu khả dụng) qua `assets/fonts/ROLEY POLEY.TTF`. Có thể nhúng qua CSS `@font-face` tuỳ khi cần.
+
+### Component cơ bản
+
+- Nút: dùng class `btn`, biến thể `btn-primary`, `btn-secondary`, `btn-ghost`.
+- Input: class `input`.
+- Popup: bọc `popup-overlay` + `popup`.
+
+### Utilities nhanh
+
+- Layout: `flex`, `flex-col`, `items-center`, `justify-center`, `gap-4`, `p-4`, ...
+- Text: `text-primary`, `text-secondary`, `text-2xl|3xl`.
+
+> Mục tiêu: các branch tính năng chỉ tập trung dựng UI của màn hình, không phải cấu hình lại nền tảng/UI.
 
 <!-- ## Tài liệu nội bộ
 
