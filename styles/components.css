@@ -3,7 +3,12 @@
 /* App root background and centering container for 6:19 aspect */
 .app-root {
   min-height: 100%;
-  background: radial-gradient(120% 120% at 50% 0%, var(--bg-gradient-end) 0%, var(--bg-gradient-start) 60%, #090b19 100%);
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    var(--bg-gradient-end) 0%,
+    var(--bg-gradient-start) 60%,
+    #090b19 100%
+  );
   color: var(--text-primary);
 }
 
@@ -12,6 +17,7 @@
   height: 100vh;
   aspect-ratio: 6 / 19;
   width: min(100vw, calc(100vh * 6 / 19));
+  min-width: 375px;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -20,7 +26,10 @@
 }
 
 /* Header placeholder */
-.app-header { position: relative; z-index: var(--z-header); }
+.app-header {
+  position: relative;
+  z-index: var(--z-header);
+}
 
 /* Buttons */
 .btn {
@@ -38,29 +47,35 @@
   will-change: transform;
 }
 
-.btn:active { transform: translateY(1px) scale(0.99); }
+.btn:active {
+  transform: translateY(1px) scale(0.99);
+}
 
 .btn-primary {
   color: var(--btn-primary-text);
   background: var(--btn-primary-bg);
-  box-shadow: 0 8px 0 rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.16);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.16);
 }
 
 .btn-secondary {
   color: var(--btn-secondary-text);
   background: var(--btn-secondary-bg);
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.btn-ghost { color: var(--btn-ghost-text); background: transparent; }
+.btn-ghost {
+  color: var(--btn-ghost-text);
+  background: transparent;
+}
 
 /* Inputs */
 .input {
   width: 100%;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
 }
 
@@ -90,9 +105,7 @@
   height: 28px;
   padding: 0 var(--space-3);
   border-radius: var(--radius-full);
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--text-primary);
   font-size: var(--text-sm);
 }
-
-
