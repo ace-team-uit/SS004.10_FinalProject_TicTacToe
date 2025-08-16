@@ -1,0 +1,4 @@
+.app-header {
+  position: relative;
+  z-index: var(--z-header);
+}

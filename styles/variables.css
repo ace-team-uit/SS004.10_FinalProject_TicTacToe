@@ -5,7 +5,8 @@
 
 :root {
   /* Typography */
-  --font-display: 'RoleyPoley', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-display: "RoleyPoley", system-ui, -apple-system, Segoe UI, Roboto,
+    Arial, sans-serif;
   --font-body: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
   /* Font sizes (mobile-first) */
@@ -64,9 +65,9 @@
 
   /* Theming */
   --bg-gradient-start: #0f172a; /* slate-900 */
-  --bg-gradient-end: #1e1b4b;   /* indigo-950 */
-  --text-primary: #f8fafc;      /* slate-50 */
-  --text-secondary: #cbd5e1;    /* slate-300 */
+  --bg-gradient-end: #1e1b4b; /* indigo-950 */
+  --text-primary: #f8fafc; /* slate-50 */
+  --text-secondary: #cbd5e1; /* slate-300 */
   --brand-primary: var(--purple-500);
   --brand-accent: var(--blue-500);
   --brand-warning: var(--orange-500);
@@ -98,5 +99,3 @@ html[data-theme="dark"] {
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
 }
-
-

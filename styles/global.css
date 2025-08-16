@@ -1,29 +1,54 @@
-@import url('./reset.css');
-@import url('./variables.css');
-@import url('./themes.css');
-@import url('./utilities.css');
-@import url('./components.css');
+@import url("./reset.css");
+@import url("./variables.css");
+@import url("./themes.css");
+@import url("./utilities.css");
+@import url("./components.css");
 
-:root { color-scheme: light dark; }
+:root {
+  color-scheme: light dark;
+}
 
 @font-face {
-  font-family: 'RoleyPoley';
-  src: url('../assets/fonts/ROLEY%20POLEY.TTF') format('truetype');
+  font-family: "RoleyPoley";
+  src: url("../assets/fonts/ROLEY%20POLEY.TTF") format("truetype");
   font-display: swap;
 }
 
-html, body, #app { height: 100%; }
+html,
+body,
+#app {
+  height: 100%;
+}
 body {
   font-family: var(--font-body);
   line-height: 1.5;
-  background: radial-gradient(120% 120% at 50% 0%, var(--bg-gradient-end) 0%, var(--bg-gradient-start) 60%, #090b19 100%);
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    var(--bg-gradient-end) 0%,
+    var(--bg-gradient-start) 60%,
+    #090b19 100%
+  );
   color: var(--text-primary);
 }
 
 /* Generic containers */
-.container { max-width: 960px; margin: 0 auto; padding: var(--space-4); }
-button { cursor: pointer; }
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+button {
+  cursor: pointer;
+}
 
 /* Responsive helpers */
-@media (min-width: 768px) { :root { font-size: 17px; } }
-@media (min-width: 1024px) { :root { font-size: 18px; } }
+@media (min-width: 768px) {
+  :root {
+    font-size: 17px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    font-size: 18px;
+  }
+}
