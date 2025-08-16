@@ -1,0 +1,17 @@
+/* Theme helpers: toggle with html[data-theme="dark"|"light"] */
+
+html[data-theme="light"] {
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #1e1b4b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+}
+
+html[data-theme="dark"] {
+  --bg-gradient-start: #0a0f1f;
+  --bg-gradient-end: #111032;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cdd5e1;
+}
+
+
