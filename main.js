@@ -1,13 +1,26 @@
 let lastCSS = null;
 let lastJS = null;
 
+function ensureAppShell() {
+  const app = document.getElementById("app");
+  if (!app) throw new Error("#app not found");
+  app.classList.add("app-root");
+
+  let viewport = app.querySelector(".phone-viewport");
+  if (!viewport) {
+    viewport = document.createElement("div");
+    viewport.className = "phone-viewport";
+    app.appendChild(viewport);
+  }
+  return viewport;
+}
+
 function loadScreen(screenPath) {
   fetch(screenPath)
     .then((res) => res.text())
     .then((html) => {
-      const app = document.getElementById("app");
-      if (!app) throw new Error("#app not found");
-      app.innerHTML = html;
+      const viewport = ensureAppShell();
+      viewport.innerHTML = html;
 
       const cssPath = screenPath.replace(/\.html$/, ".css");
       loadCSS(cssPath);
@@ -51,5 +64,21 @@ function loadScript(path) {
 // Expose globally
 window.loadScreen = loadScreen;
 
+// Theme helpers
+function applyTheme(theme) {
+  const next = theme || localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  applyTheme(current === "dark" ? "light" : "dark");
+}
+
+window.toggleTheme = toggleTheme;
+
 // Initial screen
+ensureAppShell();
+applyTheme();
 loadScreen("screens/home/home.html");
