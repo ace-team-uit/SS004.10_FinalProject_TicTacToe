@@ -1,9 +1,9 @@
 console.log("🏠 Home screen loaded");
 
 document.getElementById("play-btn")?.addEventListener("click", () => {
-  Navigation.navigateTo("select");
+  (window.Navigation || window["Navigation"]).navigateTo("select");
 });
 
 document.getElementById("to-intro")?.addEventListener("click", () => {
-  Navigation.navigateTo("intro");
+  (window.Navigation || window["Navigation"]).navigateTo("intro");
 });

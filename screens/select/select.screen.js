@@ -1,9 +1,9 @@
 console.log("🧭 Select screen loaded");
 
 document.getElementById("select-next")?.addEventListener("click", () => {
-  Navigation.navigateTo("settings");
+  (window.Navigation || window["Navigation"]).navigateTo("settings");
 });
 
 document.getElementById("select-prev")?.addEventListener("click", () => {
-  Navigation.navigateTo("home");
+  (window.Navigation || window["Navigation"]).navigateTo("home");
 });

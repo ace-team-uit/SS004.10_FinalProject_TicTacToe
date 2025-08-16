@@ -1,1 +1,8 @@
 .DS_Store
+
+node_modules/
+
+
+# npx eslint . --ext .js --fix
+
+# npx prettier --write .

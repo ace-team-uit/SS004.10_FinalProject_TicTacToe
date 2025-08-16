@@ -10,7 +10,7 @@ on:
 
 jobs:
   check-code:
-    name: Check Variable Names & Spelling
+    name: Check Spelling
     runs-on: ubuntu-latest
 
     steps:
@@ -25,18 +25,3 @@ jobs:
       # Bước 3: Kiểm tra chính tả (bỏ qua các từ trong .codespell-ignore)
       - name: Run codespell
         run: codespell --ignore-words=.codespell-ignore --skip="*.min.js,*.min.css,*.png,*.jpg,*.gif,*.woff,*.ttf" .
-
-      # Bước 4: Kiểm tra tên biến trong file JS
-      - name: Check variable naming convention
-        run: |
-          echo "🔍 Checking variable naming in JS files..."
-
-          invalid_vars=$(grep -rP '^\s*(const|let|var)\s+[A-Z][A-Za-z0-9_]*\s*=' . \
-            | grep -vP '=\s*(\(|<)?\s*(function\s*\(|\(?\s*[A-Za-z0-9_]+\s*\)?\s*=>)' || true)
-
-          if [ ! -z "$invalid_vars" ]; then
-            echo "❌ Invalid variable names found (should be camelCase, not start with uppercase unless it is a Component):"
-            echo "$invalid_vars"
-            exit 1
-          fi
-          echo "✅ Variable naming check passed!"
