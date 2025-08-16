@@ -59,57 +59,61 @@ Game hỗ trợ:
 
 ## Cấu trúc thư mục
 
-├── assets/                     # Tài nguyên tĩnh
-│   ├── fonts/
-│   ├── images/
-│   └── sounds/
+├── assets/ # Tài nguyên tĩnh
+│ ├── fonts/
+│ ├── images/
+│ └── sounds/
 │
-├── screens/                    # Mỗi màn hình (HTML + CSS + JS)
-│   ├── home/
-│   │   ├── home.html
-│   │   ├── home.css
-│   │   └── home.screen.js
-│   ├── game/
-│   │   ├── game.html
-│   │   ├── game.css
-│   │   └── game.screen.js
-│   └── result/                  # Dự kiến
-│       └── .gitkeep
+├── screens/ # Mỗi màn hình (HTML + CSS + JS)
+│ ├── intro/
+│ │ ├── intro.html
+│ │ ├── intro.css
+│ │ └── intro.screen.js
+│ ├── home/
+│ ├── select/
+│ ├── game-mode-01/
+│ ├── game-mode-02/
+│ ├── game/
+│ ├── settings/
+│ ├── marketplace/
+│ └── result/ # Dự kiến
+│ └── .gitkeep
 │
-├── shared/                     # Code và UI dùng chung
-│   ├── logic/                   # Logic tái sử dụng
-│   │   ├── board.js
-│   │   ├── timer.js
-│   │   └── ai.js
-│   ├── ui/                      # UI components
-│   │   └── header.component.js
-│   └── utils/                   # Hàm tiện ích
-│       └── format-time.js
+├── shared/ # Code và UI dùng chung
+│ ├── logic/ # Logic tái sử dụng
+│ │ ├── board.js
+│ │ ├── timer.js
+│ │ └── ai.js
+│ ├── ui/ # UI components
+│ │ └── header.component.js
+│ └── utils/ # Hàm tiện ích
+│ └── format-time.js
 │
-├── styles/                      # CSS chung toàn game
-│   ├── global.css
-│   ├── variables.css
-│   ├── reset.css
-│   ├── utilities.css
-│   ├── components.css
-│   └── themes.css
+├── styles/ # CSS chung toàn game
+│ ├── global.css
+│ ├── variables.css
+│ ├── reset.css
+│ ├── utilities.css
+│ ├── components.css
+│ └── themes.css
 │
-├── libs/                        # Thư viện bên thứ ba
-│   └── .gitkeep
+├── libs/ # Thư viện bên thứ ba
+│ └── .gitkeep
 │
-├── docs/                        # Tài liệu kỹ thuật
-│   ├── architecture.md
-│   ├── changelog.md
-│   └── setup-guide.md
+├── docs/ # Tài liệu kỹ thuật
+│ ├── architecture.md
+│ ├── changelog.md
+│ └── setup-guide.md
 │
-├── index.html                   # Entry point
-├── main.js                      # Điều hướng load màn hình
+├── index.html # Entry point
+├── main.js # Điều hướng load màn hình
 ├── .gitignore
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
 
 ## Điều Hướng Giữa Các Màn Hình
+
 ```mermaid
 graph LR
     A[index.html] --> B[main.js - Điểm vào ứng dụng]
