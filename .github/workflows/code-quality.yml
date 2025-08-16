@@ -3,10 +3,10 @@ name: Code Quality Check
 on:
   push:
     branches:
-      - main  # Chỉ chạy khi push trực tiếp vào main
+      - main # Chỉ chạy khi push trực tiếp vào main
   pull_request:
     branches:
-      - '**'  # Chạy khi mở hoặc cập nhật PR vào bất kỳ nhánh nào
+      - "**" # Chạy khi mở hoặc cập nhật PR vào bất kỳ nhánh nào
 
 jobs:
   check-code:
@@ -29,10 +29,13 @@ jobs:
       # Bước 4: Kiểm tra tên biến trong file JS
       - name: Check variable naming convention
         run: |
-          echo "Checking variable naming in JS files..."
-          invalid_vars=$(grep -rhoP '(?<=var |let |const )[A-Z][A-Za-z0-9_]*' **/*.js || true)
+          echo "🔍 Checking variable naming in JS files..."
+
+          invalid_vars=$(grep -rP '^\s*(const|let|var)\s+[A-Z][A-Za-z0-9_]*\s*=' . \
+            | grep -vP '=\s*(\(|<)?\s*(function\s*\(|\(?\s*[A-Za-z0-9_]+\s*\)?\s*=>)' || true)
+
           if [ ! -z "$invalid_vars" ]; then
-            echo "❌ Invalid variable names found (should be camelCase, not start with uppercase):"
+            echo "❌ Invalid variable names found (should be camelCase, not start with uppercase unless it is a Component):"
             echo "$invalid_vars"
             exit 1
           fi
