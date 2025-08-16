@@ -43,7 +43,9 @@
   letter-spacing: 0.3px;
   text-transform: uppercase;
   text-decoration: none;
-  transition: transform 120ms ease, filter 120ms ease;
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
   will-change: transform;
 }
 
@@ -54,7 +56,8 @@
 .btn-primary {
   color: var(--btn-primary-text);
   background: var(--btn-primary-bg);
-  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.25),
+  box-shadow:
+    0 8px 0 rgba(0, 0, 0, 0.25),
     inset 0 2px 0 rgba(255, 255, 255, 0.16);
 }
 

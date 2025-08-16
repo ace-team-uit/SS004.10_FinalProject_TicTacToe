@@ -1,13 +1,13 @@
 console.log("🏁 Result screen loaded");
 
 document.getElementById("result-home")?.addEventListener("click", () => {
-  Navigation.navigateTo("home");
+  (window.Navigation || window["Navigation"]).navigateTo("home");
 });
 
 document.getElementById("result-retry")?.addEventListener("click", () => {
-  Navigation.navigateTo("game");
+  (window.Navigation || window["Navigation"]).navigateTo("game");
 });
 
 document.getElementById("result-prev")?.addEventListener("click", () => {
-  Navigation.previous("result");
+  (window.Navigation || window["Navigation"]).prev?.("result");
 });

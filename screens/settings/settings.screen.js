@@ -5,9 +5,9 @@ document.getElementById("toggle-theme")?.addEventListener("click", () => {
 });
 
 document.getElementById("settings-next")?.addEventListener("click", () => {
-  Navigation.navigateTo("game");
+  (window.Navigation || window["Navigation"]).navigateTo("game");
 });
 
 document.getElementById("settings-prev")?.addEventListener("click", () => {
-  Navigation.navigateTo("select");
+  (window.Navigation || window["Navigation"]).navigateTo("select");
 });

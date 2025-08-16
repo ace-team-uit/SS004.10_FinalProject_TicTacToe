@@ -5,8 +5,7 @@
 
 :root {
   /* Typography */
-  --font-display: "RoleyPoley", system-ui, -apple-system, Segoe UI, Roboto,
-    Arial, sans-serif;
+  --font-display: "RoleyPoley", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   --font-body: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
   /* Font sizes (mobile-first) */

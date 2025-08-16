@@ -30,8 +30,7 @@
      */
     create({ title = "ACE Tic‑Tac‑Toe", rightSlot } = {}) {
       const el = document.createElement("div");
-      el.className =
-        "app-header container flex items-center justify-center p-4";
+      el.className = "app-header container flex items-center justify-center p-4";
       el.innerHTML = `<h1 style="font-family: var(--font-display);" class="text-2xl">${title}</h1>`;
       if (rightSlot) el.appendChild(rightSlot);
       return el;

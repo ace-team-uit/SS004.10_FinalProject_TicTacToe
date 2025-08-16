@@ -32,10 +32,7 @@
     if (typeof window.loadScreen === "function") {
       window.loadScreen(pathOf(target));
     } else {
-      setTimeout(
-        () => window.loadScreen && window.loadScreen(pathOf(target)),
-        0
-      );
+      setTimeout(() => window.loadScreen && window.loadScreen(pathOf(target)), 0);
     }
   }
 
