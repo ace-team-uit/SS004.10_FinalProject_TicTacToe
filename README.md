@@ -174,3 +174,5 @@ Nếu là giảng viên, bạn có thể liên hệ nhóm qua Slack để đư�
 Dự án được thực hiện bởi nhóm sinh viên lớp CN1.K2025.1.TTNT – Trường Đại học Công nghệ Thông tin – ĐHQG-HCM.  
 Mục đích sử dụng: học tập và trình bày kết quả môn học.  
 Vui lòng không sao chép với mục đích thương mại hoặc học vụ khác mà không được sự cho phép của nhóm.
+
+Thịnh Test
