@@ -1,7 +1,7 @@
 /** @type {import("eslint").Linter.FlatConfig} */
 module.exports = [
   {
-    ignores: ["dist/**", "**/*.min.js"],
+    ignores: ["dist/**", "**/*.min.js", "**/test*.html", "**/demo*.html"],
     files: ["**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
@@ -18,6 +18,8 @@ module.exports = [
         loadScreen: "readonly",
         fetch: "readonly",
         setTimeout: "readonly",
+        module: "readonly",
+        exports: "readonly",
       },
     },
     rules: {
