@@ -20,10 +20,12 @@ Module `BoardManager` quản lý trạng thái bàn cờ và logic game Tic Tac 
 Khởi tạo trạng thái game mới.
 
 **Parameters:**
+
 - `size` (number): Kích thước bàn (3, 4, hoặc 5)
 - `winLength` (number, optional): Số ô liên tiếp để thắng (mặc định = size)
 
 **Returns:**
+
 ```javascript
 {
   board: Array,           // Mảng 1 chiều đại diện bàn cờ
@@ -40,8 +42,9 @@ Khởi tạo trạng thái game mới.
 ```
 
 **Example:**
+
 ```javascript
-const state = BoardManager.initState(3);        // 3x3, thắng 3 ô
+const state = BoardManager.initState(3); // 3x3, thắng 3 ô
 const state4x4 = BoardManager.initState(4, 3); // 4x4, thắng 3 ô
 ```
 
@@ -50,17 +53,20 @@ const state4x4 = BoardManager.initState(4, 3); // 4x4, thắng 3 ô
 Thực hiện nước đi tại vị trí index.
 
 **Parameters:**
+
 - `state` (Object): Trạng thái game hiện tại
 - `index` (number): Index của ô được chọn (0-based)
 
 **Returns:** Trạng thái game mới (immutable)
 
 **Validation:**
+
 - Index phải trong phạm vi bàn cờ
 - Ô phải trống
 - Game phải đang ở trạng thái 'playing'
 
 **Example:**
+
 ```javascript
 const newState = BoardManager.makeMove(state, 4);
 // newState.board[4] = currentPlayer
@@ -72,23 +78,27 @@ const newState = BoardManager.makeMove(state, 4);
 Kiểm tra người thắng.
 
 **Parameters:**
+
 - `state` (Object): Trạng thái game
 
 **Returns:**
+
 ```javascript
 {
   winner: number,         // 1 hoặc 2
   winningLine: Array     // Các index của dòng thắng
 }
 ```
+
 hoặc `null` nếu chưa có người thắng.
 
 **Example:**
+
 ```javascript
 const result = BoardManager.checkWinner(state);
 if (result) {
   console.log(`Người chơi ${result.winner} thắng!`);
-  console.log('Dòng thắng:', result.winningLine);
+  console.log("Dòng thắng:", result.winningLine);
 }
 ```
 
@@ -99,9 +109,10 @@ Kiểm tra bàn cờ đã đầy chưa.
 **Returns:** `boolean`
 
 **Example:**
+
 ```javascript
 if (BoardManager.isBoardFull(state)) {
-  console.log('Hòa! Bàn cờ đã đầy');
+  console.log("Hòa! Bàn cờ đã đầy");
 }
 ```
 
@@ -110,11 +121,13 @@ if (BoardManager.isBoardFull(state)) {
 Đổi lượt chơi.
 
 **Parameters:**
+
 - `currentPlayer` (number): Người chơi hiện tại
 
 **Returns:** Người chơi tiếp theo (1 hoặc 2)
 
 **Example:**
+
 ```javascript
 const nextPlayer = BoardManager.switchPlayer(1); // Returns 2
 ```
@@ -124,12 +137,14 @@ const nextPlayer = BoardManager.switchPlayer(1); // Returns 2
 Xử lý khi kết thúc vòng.
 
 **Parameters:**
+
 - `state` (Object): Trạng thái game
 - `winner` (number): 0 = hòa, 1 hoặc 2 = người thắng
 
 **Returns:** Trạng thái game mới
 
 **Example:**
+
 ```javascript
 if (winner === 0) {
   // Hòa - giảm trái tim
@@ -147,6 +162,7 @@ if (winner === 0) {
 **Returns:** Trạng thái game mới với bàn cờ trống
 
 **Example:**
+
 ```javascript
 state = BoardManager.resetState(state);
 // Bàn cờ trống, currentPlayer = 1, gameStatus = 'playing'
@@ -155,17 +171,21 @@ state = BoardManager.resetState(state);
 ### Utility Functions
 
 #### `getCell(state, row, col)`
+
 Lấy giá trị ô tại tọa độ (row, col).
 
 #### `indexToCoords(index, size)`
+
 Chuyển đổi index thành tọa độ {row, col}.
 
 #### `coordsToIndex(row, col, size)`
+
 Chuyển đổi tọa độ thành index.
 
 ## Sử dụng trong Game
 
 ### Khởi tạo Game
+
 ```javascript
 // Khởi tạo game 3x3
 let gameState = BoardManager.initState(3);
@@ -175,11 +195,12 @@ let gameState4x4 = BoardManager.initState(4, 3);
 ```
 
 ### Game Loop
+
 ```javascript
 function gameLoop() {
   // Người chơi thực hiện nước đi
   gameState = BoardManager.makeMove(gameState, selectedIndex);
-  
+
   // Kiểm tra thắng thua
   const winner = BoardManager.checkWinner(gameState);
   if (winner) {
@@ -187,20 +208,21 @@ function gameLoop() {
     handleGameEnd(winner);
     return;
   }
-  
+
   // Kiểm tra hòa
   if (BoardManager.isBoardFull(gameState)) {
     // Xử lý hòa
     handleDraw();
     return;
   }
-  
+
   // Đổi lượt chơi
   gameState.currentPlayer = BoardManager.switchPlayer(gameState.currentPlayer);
 }
 ```
 
 ### Xử lý Kết thúc Vòng
+
 ```javascript
 function handleGameEnd(winner) {
   if (winner.winner === 1) {
@@ -208,7 +230,7 @@ function handleGameEnd(winner) {
   } else {
     gameState.scores.ai += 1;
   }
-  
+
   // Kiểm tra thắng chung cuộc
   if (gameState.scores.player >= 2 || gameState.scores.ai >= 2) {
     endGame();
@@ -222,6 +244,7 @@ function handleGameEnd(winner) {
 ## Mapping Index ↔ Tọa độ
 
 ### 3x3 Board
+
 ```
 Index:  0  1  2
         3  4  5
@@ -233,6 +256,7 @@ Tọa độ: (0,0) (0,1) (0,2)
 ```
 
 ### 4x4 Board
+
 ```
 Index:  0  1  2  3
         4  5  6  7
@@ -241,6 +265,7 @@ Index:  0  1  2  3
 ```
 
 ### 5x5 Board
+
 ```
 Index:  0  1  2  3  4
         5  6  7  8  9
