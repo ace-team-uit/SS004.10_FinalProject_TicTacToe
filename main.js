@@ -81,4 +81,8 @@ window.toggleTheme = toggleTheme;
 // Initial screen
 ensureAppShell();
 applyTheme();
-loadScreen("screens/home/home.html");
+
+// Check if intro has been shown
+const introShown = localStorage.getItem("intro_shown") === "true";
+const initialScreen = introShown ? "screens/home/home.html" : "screens/intro/intro.html";
+loadScreen(initialScreen);
