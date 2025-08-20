@@ -158,7 +158,6 @@ export class BoardComponent {
    */
   _updateCell(cell, value, animate = false) {
     const cellContent = cell.querySelector(".cell-content");
-    const oldValue = cell.getAttribute("data-value");
 
     // Cập nhật data attribute
     cell.setAttribute("data-value", value || "");

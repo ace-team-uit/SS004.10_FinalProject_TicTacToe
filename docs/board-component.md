@@ -294,12 +294,10 @@ const game = new GameManager();
 ### Lỗi thường gặp
 
 1. **"BoardComponent not available"**
-
    - Đảm bảo import đúng file
    - Kiểm tra đường dẫn file
 
 2. **Board không hiển thị**
-
    - Kiểm tra target element có tồn tại không
    - Kiểm tra CSS có được load không
 
