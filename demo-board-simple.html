@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Component Simple Demo</title>
+    <link rel="stylesheet" href="styles/global.css">
+    <style>
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            padding: 8px 16px;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .demo-button:hover {
+            background: #6d28d9;
+        }
+        
+        .demo-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        
+        .board-demo {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .event-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .event-log h3 {
+            margin-top: 0;
+            color: #fff;
+        }
+        
+        .event-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 2px solid #00ff00;
+            padding-left: 10px;
+        }
+        
+        .size-selector {
+            margin-bottom: 20px;
+        }
+        
+        .size-selector label {
+            margin-right: 10px;
+            color: #fff;
+        }
+        
+        .size-selector select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background: #2a2a2a;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🎯 Board Component Simple Demo</h1>
+        <p>Test responsive board component với các kích thước khác nhau</p>
+        
+        <div class="demo-section">
+            <h2>Board Controls</h2>
+            <div class="size-selector">
+                <label for="board-size">Board Size:</label>
+                <select id="board-size">
+                    <option value="3">3x3</option>
+                    <option value="4">4x4</option>
+                    <option value="5">5x5</option>
+                </select>
+            </div>
+            
+            <div class="demo-controls">
+                <button id="create-board" class="demo-button">Create Board</button>
+                <button id="clear-board" class="demo-button" disabled>Clear Board</button>
+                <button id="test-moves" class="demo-button" disabled>Test Moves</button>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Board Display</h2>
+            <div id="board-container" class="board-demo">
+                <p>Click "Create Board" to start</p>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Event Log</h2>
+            <div class="event-log">
+                <h3>Cell Click Events:</h3>
+                <div id="event-log-content">
+                    <div class="event-item">Waiting for events...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Test Instructions</h2>
+            <ul>
+                <li>Chọn kích thước bàn cờ và click "Create Board"</li>
+                <li>Click vào các ô trống để test sự kiện</li>
+                <li>Test responsive bằng cách resize browser</li>
+                <li>Test touch events trên mobile/tablet</li>
+                <li>Test keyboard navigation (Tab + Enter/Space)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        import { BoardComponent } from './shared/ui/board.js';
+        
+        class BoardDemo {
+            constructor() {
+                this.boardComponent = new BoardComponent();
+                this.currentBoard = null;
+                this.eventLog = document.getElementById('event-log-content');
+                this.boardContainer = document.getElementById('board-container');
+                
+                this.initEventListeners();
+            }
+            
+            initEventListeners() {
+                // Board controls
+                document.getElementById('create-board').addEventListener('click', () => {
+                    this.createBoard();
+                });
+                
+                document.getElementById('clear-board').addEventListener('click', () => {
+                    this.clearBoard();
+                });
+                
+                document.getElementById('test-moves').addEventListener('click', () => {
+                    this.testMoves();
+                });
+                
+                // Board events
+                this.boardComponent.on('cell:click', (data) => {
+                    this.logEvent(data);
+                });
+            }
+            
+            createBoard() {
+                const size = parseInt(document.getElementById('board-size').value);
+                
+                // Clear previous board
+                this.clearBoard();
+                
+                // Create new board
+                this.currentBoard = this.boardComponent.createBoard(size, this.boardContainer);
+                
+                this.logEvent({
+                    type: 'info',
+                    message: `Created ${size}x${size} board`
+                });
+                
+                // Update button states
+                document.getElementById('clear-board').disabled = false;
+                document.getElementById('test-moves').disabled = false;
+            }
+            
+            clearBoard() {
+                if (this.currentBoard) {
+                    this.boardComponent.destroy();
+                    this.currentBoard = null;
+                    this.boardContainer.innerHTML = '<p>Click "Create Board" to start</p>';
+                    
+                    this.logEvent({
+                        type: 'info',
+                        message: 'Board cleared'
+                    });
+                    
+                    // Update button states
+                    document.getElementById('clear-board').disabled = true;
+                    document.getElementById('test-moves').disabled = true;
+                }
+            }
+            
+            testMoves() {
+                if (!this.currentBoard) return;
+                
+                const size = parseInt(document.getElementById('board-size').value);
+                const testBoard = new Array(size * size).fill(null);
+                
+                // Add some test moves
+                testBoard[0] = 1; // X
+                testBoard[4] = 2; // O
+                testBoard[8] = 1; // X
+                
+                this.boardComponent.updateBoard(testBoard, {
+                    animate: true,
+                    lastMove: 8
+                });
+                
+                this.logEvent({
+                    type: 'info',
+                    message: 'Test moves applied (X: 0,8 | O: 4)'
+                });
+            }
+            
+            logEvent(data) {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+                
+                if (data.type === 'info') {
+                    eventItem.style.color = '#ffff00';
+                    eventItem.textContent = `ℹ️ ${data.message}`;
+                } else {
+                    eventItem.style.color = '#00ffff';
+                    eventItem.textContent = `📱 Cell ${data.index}: ${data.type} at ${new Date(data.timestamp).toLocaleTimeString()}`;
+                }
+                
+                this.eventLog.appendChild(eventItem);
+                
+                // Keep only last 20 events
+                while (this.eventLog.children.length > 21) {
+                    this.eventLog.removeChild(this.eventLog.firstChild);
+                }
+                
+                // Auto-scroll to bottom
+                this.eventLog.scrollTop = this.eventLog.scrollHeight;
+            }
+        }
+        
+        // Initialize demo when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new BoardDemo();
+        });
+    </script>
+</body>
+</html>
