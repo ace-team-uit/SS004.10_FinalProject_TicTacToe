@@ -1,279 +1,294 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Demo Board Manager - Tic Tac Toe</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .demo-section {
-            background: white;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .board {
-            display: grid;
-            gap: 2px;
-            margin: 20px 0;
-            background: #333;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        .board-3x3 { grid-template-columns: repeat(3, 1fr); }
-        .board-4x4 { grid-template-columns: repeat(4, 1fr); }
-        .board-5x5 { grid-template-columns: repeat(5, 1fr); }
-        .cell {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border: none;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cell:hover {
-            background: #f0f0f0;
-        }
-        .cell.x { color: #e74c3c; }
-        .cell.o { color: #3498db; }
-        .btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        .btn:hover {
-            background: #2980b9;
-        }
-        .status {
-            background: #ecf0f1;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        .winner {
-            background: #2ecc71;
-            color: white;
-        }
-        .draw {
-            background: #f39c12;
-            color: white;
-        }
-        pre {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .demo-section {
+        background: white;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .board {
+        display: grid;
+        gap: 2px;
+        margin: 20px 0;
+        background: #333;
+        padding: 10px;
+        border-radius: 8px;
+      }
+      .board-3x3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .board-4x4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .board-5x5 {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .cell {
+        width: 60px;
+        height: 60px;
+        background: white;
+        border: none;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cell:hover {
+        background: #f0f0f0;
+      }
+      .cell.x {
+        color: #e74c3c;
+      }
+      .cell.o {
+        color: #3498db;
+      }
+      .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      .btn:hover {
+        background: #2980b9;
+      }
+      .status {
+        background: #ecf0f1;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+      .winner {
+        background: #2ecc71;
+        color: white;
+      }
+      .draw {
+        background: #f39c12;
+        color: white;
+      }
+      pre {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>🎯 Demo Board Manager Module</h1>
-    
+
     <div class="demo-section">
-        <h2>Khởi tạo Game</h2>
-        <button class="btn" onclick="initGame(3)">3x3 Board</button>
-        <button class="btn" onclick="initGame(4)">4x4 Board</button>
-        <button class="btn" onclick="initGame(5)">5x5 Board</button>
-        <button class="btn" onclick="resetGame()">Reset Game</button>
-        
-        <div class="status" id="gameStatus">
-            <strong>Trạng thái:</strong> Chưa khởi tạo game
-        </div>
+      <h2>Khởi tạo Game</h2>
+      <button class="btn" onclick="initGame(3)">3x3 Board</button>
+      <button class="btn" onclick="initGame(4)">4x4 Board</button>
+      <button class="btn" onclick="initGame(5)">5x5 Board</button>
+      <button class="btn" onclick="resetGame()">Reset Game</button>
+
+      <div class="status" id="gameStatus"><strong>Trạng thái:</strong> Chưa khởi tạo game</div>
     </div>
 
     <div class="demo-section">
-        <h2>Bàn cờ</h2>
-        <div id="boardContainer">
-            <p>Chọn kích thước bàn để bắt đầu</p>
-        </div>
+      <h2>Bàn cờ</h2>
+      <div id="boardContainer">
+        <p>Chọn kích thước bàn để bắt đầu</p>
+      </div>
     </div>
 
     <div class="demo-section">
-        <h2>Thông tin Game</h2>
-        <div id="gameInfo">
-            <p>Chưa có thông tin game</p>
-        </div>
+      <h2>Thông tin Game</h2>
+      <div id="gameInfo">
+        <p>Chưa có thông tin game</p>
+      </div>
     </div>
 
     <div class="demo-section">
-        <h2>Console Log</h2>
-        <pre id="consoleLog">Chờ thao tác...</pre>
+      <h2>Console Log</h2>
+      <pre id="consoleLog">Chờ thao tác...</pre>
     </div>
 
     <script src="shared/logic/board.js"></script>
     <script>
-        let currentState = null;
-        let currentSize = 3;
+      let currentState = null;
+      let currentSize = 3;
 
-        // Mock console.log để hiển thị trong UI
-        const originalLog = console.log;
-        const logContainer = document.getElementById('consoleLog');
-        
-        console.log = function(...args) {
-            originalLog.apply(console, args);
-            logContainer.textContent = args.map(arg => 
-                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-            ).join(' ') + '\n' + logContainer.textContent;
-        };
+      // Mock console.log để hiển thị trong UI
+      const originalLog = console.log;
+      const logContainer = document.getElementById("consoleLog");
 
-        function initGame(size) {
-            try {
-                currentSize = size;
-                currentState = BoardManager.initState(size);
-                renderBoard();
-                updateGameInfo();
-                updateGameStatus();
-                console.log(`🎮 Khởi tạo game ${size}x${size}:`, currentState);
-            } catch (error) {
-                console.error('❌ Lỗi khởi tạo game:', error.message);
-            }
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+        logContainer.textContent =
+          args
+            .map((arg) => (typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)))
+            .join(" ") +
+          "\n" +
+          logContainer.textContent;
+      };
+
+      function initGame(size) {
+        try {
+          currentSize = size;
+          currentState = BoardManager.initState(size);
+          renderBoard();
+          updateGameInfo();
+          updateGameStatus();
+          console.log(`🎮 Khởi tạo game ${size}x${size}:`, currentState);
+        } catch (error) {
+          console.error("❌ Lỗi khởi tạo game:", error.message);
+        }
+      }
+
+      function renderBoard() {
+        const container = document.getElementById("boardContainer");
+        const size = currentState.size;
+
+        let html = `<div class="board board-${size}x${size}">`;
+
+        for (let i = 0; i < size * size; i++) {
+          const cellValue = currentState.board[i];
+          let cellClass = "cell";
+          let cellText = "";
+
+          if (cellValue === 1) {
+            cellClass += " x";
+            cellText = "X";
+          } else if (cellValue === 2) {
+            cellClass += " o";
+            cellText = "O";
+          }
+
+          html += `<button class="${cellClass}" onclick="makeMove(${i})">${cellText}</button>`;
         }
 
-        function renderBoard() {
-            const container = document.getElementById('boardContainer');
-            const size = currentState.size;
-            
-            let html = `<div class="board board-${size}x${size}">`;
-            
-            for (let i = 0; i < size * size; i++) {
-                const cellValue = currentState.board[i];
-                let cellClass = 'cell';
-                let cellText = '';
-                
-                if (cellValue === 1) {
-                    cellClass += ' x';
-                    cellText = 'X';
-                } else if (cellValue === 2) {
-                    cellClass += ' o';
-                    cellText = 'O';
-                }
-                
-                html += `<button class="${cellClass}" onclick="makeMove(${i})">${cellText}</button>`;
-            }
-            
-            html += '</div>';
-            container.innerHTML = html;
+        html += "</div>";
+        container.innerHTML = html;
+      }
+
+      function makeMove(index) {
+        if (!currentState || currentState.gameStatus !== "playing") {
+          console.log("⚠️ Game đã kết thúc hoặc chưa khởi tạo");
+          return;
         }
 
-        function makeMove(index) {
-            if (!currentState || currentState.gameStatus !== 'playing') {
-                console.log('⚠️ Game đã kết thúc hoặc chưa khởi tạo');
-                return;
-            }
+        try {
+          const newState = BoardManager.makeMove(currentState, index);
+          currentState = newState;
 
-            try {
-                const newState = BoardManager.makeMove(currentState, index);
-                currentState = newState;
-                
-                renderBoard();
-                updateGameInfo();
-                updateGameStatus();
-                
-                console.log(`🎯 Nước đi tại index ${index}:`, newState);
-                
-                // Kiểm tra kết quả
-                if (newState.gameStatus === 'won') {
-                    const winner = newState.currentPlayer === 1 ? 'AI' : 'Người chơi';
-                    console.log(`🏆 ${winner} thắng! Dòng thắng:`, newState.winningLine);
-                } else if (newState.gameStatus === 'draw') {
-                    console.log('🤝 Hòa! Bàn cờ đã đầy');
-                }
-                
-            } catch (error) {
-                console.error('❌ Lỗi thực hiện nước đi:', error.message);
-            }
+          renderBoard();
+          updateGameInfo();
+          updateGameStatus();
+
+          console.log(`🎯 Nước đi tại index ${index}:`, newState);
+
+          // Kiểm tra kết quả
+          if (newState.gameStatus === "won") {
+            const winner = newState.currentPlayer === 1 ? "AI" : "Người chơi";
+            console.log(`🏆 ${winner} thắng! Dòng thắng:`, newState.winningLine);
+          } else if (newState.gameStatus === "draw") {
+            console.log("🤝 Hòa! Bàn cờ đã đầy");
+          }
+        } catch (error) {
+          console.error("❌ Lỗi thực hiện nước đi:", error.message);
+        }
+      }
+
+      function resetGame() {
+        if (currentState) {
+          currentState = BoardManager.resetState(currentState);
+          renderBoard();
+          updateGameInfo();
+          updateGameStatus();
+          console.log("🔄 Reset game:", currentState);
+        }
+      }
+
+      function updateGameInfo() {
+        const container = document.getElementById("gameInfo");
+        if (!currentState) {
+          container.innerHTML = "<p>Chưa có thông tin game</p>";
+          return;
         }
 
-        function resetGame() {
-            if (currentState) {
-                currentState = BoardManager.resetState(currentState);
-                renderBoard();
-                updateGameInfo();
-                updateGameStatus();
-                console.log('🔄 Reset game:', currentState);
-            }
-        }
+        const coords =
+          currentState.lastMove !== null
+            ? BoardManager.indexToCoords(currentState.lastMove, currentState.size)
+            : null;
 
-        function updateGameInfo() {
-            const container = document.getElementById('gameInfo');
-            if (!currentState) {
-                container.innerHTML = '<p>Chưa có thông tin game</p>';
-                return;
-            }
-
-            const coords = currentState.lastMove !== null ? 
-                BoardManager.indexToCoords(currentState.lastMove, currentState.size) : null;
-
-            container.innerHTML = `
+        container.innerHTML = `
                 <p><strong>Kích thước:</strong> ${currentState.size}x${currentState.size}</p>
                 <p><strong>Điều kiện thắng:</strong> ${currentState.winLength} ô liên tiếp</p>
-                <p><strong>Người chơi hiện tại:</strong> ${currentState.currentPlayer === 1 ? 'X (Người chơi)' : 'O (AI)'}</p>
+                <p><strong>Người chơi hiện tại:</strong> ${currentState.currentPlayer === 1 ? "X (Người chơi)" : "O (AI)"}</p>
                 <p><strong>Vòng:</strong> ${currentState.round}</p>
                 <p><strong>Trái tim:</strong> ${currentState.hearts}</p>
                 <p><strong>Điểm số:</strong> Người chơi: ${currentState.scores.player} | AI: ${currentState.scores.ai}</p>
                 <p><strong>Trạng thái:</strong> ${currentState.gameStatus}</p>
-                <p><strong>Nước đi cuối:</strong> ${currentState.lastMove !== null ? 
-                    `Index ${currentState.lastMove} (Row: ${coords.row}, Col: ${coords.col})` : 'Chưa có'}</p>
-                ${currentState.winningLine ? `<p><strong>Dòng thắng:</strong> ${JSON.stringify(currentState.winningLine)}</p>` : ''}
+                <p><strong>Nước đi cuối:</strong> ${
+                  currentState.lastMove !== null
+                    ? `Index ${currentState.lastMove} (Row: ${coords.row}, Col: ${coords.col})`
+                    : "Chưa có"
+                }</p>
+                ${currentState.winningLine ? `<p><strong>Dòng thắng:</strong> ${JSON.stringify(currentState.winningLine)}</p>` : ""}
             `;
+      }
+
+      function updateGameStatus() {
+        const container = document.getElementById("gameStatus");
+        if (!currentState) {
+          container.innerHTML = "<strong>Trạng thái:</strong> Chưa khởi tạo game";
+          return;
         }
 
-        function updateGameStatus() {
-            const container = document.getElementById('gameStatus');
-            if (!currentState) {
-                container.innerHTML = '<strong>Trạng thái:</strong> Chưa khởi tạo game';
-                return;
-            }
+        let statusClass = "";
+        let statusText = "";
 
-            let statusClass = '';
-            let statusText = '';
-
-            switch (currentState.gameStatus) {
-                case 'playing':
-                    statusText = `Đang chơi - Lượt của ${currentState.currentPlayer === 1 ? 'X' : 'O'}`;
-                    break;
-                case 'won':
-                    statusClass = 'winner';
-                    const winner = currentState.currentPlayer === 1 ? 'AI' : 'Người chơi';
-                    statusText = `🏆 ${winner} thắng!`;
-                    break;
-                case 'draw':
-                    statusClass = 'draw';
-                    statusText = '🤝 Hòa! Bàn cờ đã đầy';
-                    break;
-                case 'round_end':
-                    statusText = 'Vòng kết thúc';
-                    break;
-                default:
-                    statusText = 'Trạng thái không xác định';
-            }
-
-            container.className = `status ${statusClass}`;
-            container.innerHTML = `<strong>Trạng thái:</strong> ${statusText}`;
+        switch (currentState.gameStatus) {
+          case "playing":
+            statusText = `Đang chơi - Lượt của ${currentState.currentPlayer === 1 ? "X" : "O"}`;
+            break;
+          case "won":
+            statusClass = "winner";
+            const winner = currentState.currentPlayer === 1 ? "AI" : "Người chơi";
+            statusText = `🏆 ${winner} thắng!`;
+            break;
+          case "draw":
+            statusClass = "draw";
+            statusText = "🤝 Hòa! Bàn cờ đã đầy";
+            break;
+          case "round_end":
+            statusText = "Vòng kết thúc";
+            break;
+          default:
+            statusText = "Trạng thái không xác định";
         }
 
-        // Khởi tạo game mặc định
-        window.onload = function() {
-            console.log('🚀 Demo Board Manager đã sẵn sàng!');
-            console.log('📚 Sử dụng các hàm: initGame(size), makeMove(index), resetGame()');
-            initGame(3);
-        };
+        container.className = `status ${statusClass}`;
+        container.innerHTML = `<strong>Trạng thái:</strong> ${statusText}`;
+      }
+
+      // Khởi tạo game mặc định
+      window.onload = function () {
+        console.log("🚀 Demo Board Manager đã sẵn sàng!");
+        console.log("📚 Sử dụng các hàm: initGame(size), makeMove(index), resetGame()");
+        initGame(3);
+      };
     </script>
-</body>
+  </body>
 </html>
