@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Board Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Board Manager Module</h1>
+    <div id="testResults"></div>
+
+    <script src="shared/logic/board.js"></script>
+    <script>
+        const results = [];
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            document.getElementById('testResults').appendChild(div);
+        }
+
+        function test(name, testFn) {
+            try {
+                const result = testFn();
+                if (result === true) {
+                    log(`✅ ${name} - PASSED`, 'pass');
+                    return true;
+                } else {
+                    log(`❌ ${name} - FAILED: ${result}`, 'fail');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ ${name} - ERROR: ${error.message}`, 'fail');
+                return false;
+            }
+        }
+
+        function runTests() {
+            log('🚀 Bắt đầu chạy tests...', 'info');
+            
+            let passed = 0;
+            let total = 0;
+
+            // Test 1: Khởi tạo state
+            total++;
+            if (test('Khởi tạo state 3x3', () => {
+                const state = BoardManager.initState(3);
+                return state.board.length === 9 && 
+                       state.size === 3 && 
+                       state.currentPlayer === 1;
+            })) passed++;
+
+            total++;
+            if (test('Khởi tạo state 4x4', () => {
+                const state = BoardManager.initState(4);
+                return state.board.length === 16 && 
+                       state.size === 4;
+            })) passed++;
+
+            total++;
+            if (test('Khởi tạo state 5x5', () => {
+                const state = BoardManager.initState(5);
+                return state.board.length === 25 && 
+                       state.size === 5;
+            })) passed++;
+
+            // Test 2: Validation size
+            total++;
+            if (test('Validation size không hợp lệ', () => {
+                try {
+                    BoardManager.initState(2);
+                    return 'Không throw error cho size = 2';
+                } catch (e) {
+                    return e.message === 'Size must be 3, 4, or 5';
+                }
+            })) passed++;
+
+            // Test 3: makeMove
+            total++;
+            if (test('makeMove hợp lệ', () => {
+                const state = BoardManager.initState(3);
+                const newState = BoardManager.makeMove(state, 4);
+                return newState.board[4] === 1 && 
+                       newState.currentPlayer === 2;
+            })) passed++;
+
+            total++;
+            if (test('makeMove index không hợp lệ', () => {
+                const state = BoardManager.initState(3);
+                try {
+                    BoardManager.makeMove(state, -1);
+                    return 'Không throw error cho index = -1';
+                } catch (e) {
+                    return e.message === 'Invalid index: out of bounds';
+                }
+            })) passed++;
+
+            // Test 4: checkWinner
+            total++;
+            if (test('checkWinner hàng ngang', () => {
+                const state = BoardManager.initState(3);
+                state.board[0] = 1;
+                state.board[1] = 1;
+                state.board[2] = 1;
+                const result = BoardManager.checkWinner(state);
+                return result && result.winner === 1 && 
+                       result.winningLine.length === 3;
+            })) passed++;
+
+            total++;
+            if (test('checkWinner hàng dọc', () => {
+                const state = BoardManager.initState(3);
+                state.board[0] = 2;
+                state.board[3] = 2;
+                state.board[6] = 2;
+                const result = BoardManager.checkWinner(state);
+                return result && result.winner === 2 && 
+                       result.winningLine.length === 3;
+            })) passed++;
+
+            total++;
+            if (test('checkWinner đường chéo', () => {
+                const state = BoardManager.initState(3);
+                state.board[0] = 1;
+                state.board[4] = 1;
+                state.board[8] = 1;
+                const result = BoardManager.checkWinner(state);
+                return result && result.winner === 1 && 
+                       result.winningLine.length === 3;
+            })) passed++;
+
+            // Test 5: isBoardFull
+            total++;
+            if (test('isBoardFull bàn trống', () => {
+                const state = BoardManager.initState(3);
+                return BoardManager.isBoardFull(state) === false;
+            })) passed++;
+
+            total++;
+            if (test('isBoardFull bàn đầy', () => {
+                const state = BoardManager.initState(3);
+                state.board.fill(1);
+                return BoardManager.isBoardFull(state) === true;
+            })) passed++;
+
+            // Test 6: switchPlayer
+            total++;
+            if (test('switchPlayer 1 -> 2', () => {
+                return BoardManager.switchPlayer(1) === 2;
+            })) passed++;
+
+            total++;
+            if (test('switchPlayer 2 -> 1', () => {
+                return BoardManager.switchPlayer(2) === 1;
+            })) passed++;
+
+            // Test 7: Utility functions
+            total++;
+            if (test('indexToCoords', () => {
+                const coords = BoardManager.indexToCoords(4, 3);
+                return coords.row === 1 && coords.col === 1;
+            })) passed++;
+
+            total++;
+            if (test('coordsToIndex', () => {
+                const index = BoardManager.coordsToIndex(1, 1, 3);
+                return index === 4;
+            })) passed++;
+
+            // Test 8: Game flow
+            total++;
+            if (test('Game flow hoàn chỉnh', () => {
+                let state = BoardManager.initState(3);
+                
+                // Player 1 moves
+                state = BoardManager.makeMove(state, 0);
+                if (state.board[0] !== 1) return 'Player 1 move failed';
+                
+                // AI moves
+                state = BoardManager.makeMove(state, 4);
+                if (state.board[4] !== 2) return 'AI move failed';
+                
+                // Player 1 wins
+                state = BoardManager.makeMove(state, 1);
+                state = BoardManager.makeMove(state, 8);
+                state = BoardManager.makeMove(state, 2);
+                
+                const winner = BoardManager.checkWinner(state);
+                return winner && winner.winner === 1;
+            })) passed++;
+
+            // Kết quả
+            log(`<h2>📊 Kết quả Test: ${passed}/${total} PASSED</h2>`, passed === total ? 'pass' : 'fail');
+            
+            if (passed === total) {
+                log('🎉 Tất cả tests đều PASSED! Module BoardManager hoạt động chính xác.', 'pass');
+            } else {
+                log(`⚠️ Có ${total - passed} tests FAILED. Cần kiểm tra lại module.`, 'fail');
+            }
+        }
+
+        // Chạy tests khi page load
+        window.onload = function() {
+            if (typeof BoardManager === 'undefined') {
+                log('❌ Module BoardManager chưa được load!', 'fail');
+                return;
+            }
+            
+            log('✅ Module BoardManager đã được load thành công', 'pass');
+            runTests();
+        };
+    </script>
+</body>
+</html>
