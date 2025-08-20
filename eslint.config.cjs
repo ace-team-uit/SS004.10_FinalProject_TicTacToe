@@ -25,6 +25,12 @@ module.exports = [
         AudioContext: "readonly",
         webkitAudioContext: "readonly",
 
+        // Board Component globals
+        BoardComponent: "readonly",
+        BoardManager: "readonly",
+        TTT_AI: "readonly",
+        Timer: "readonly",
+
         // Browser function globals
         alert: "readonly",
 
