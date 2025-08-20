@@ -7,7 +7,7 @@
  */
 
 class AudioManager {
-    constructor() {
+  constructor() {
     this.audioContext = null;
     this.sounds = new Map();
     this.bgm = new Map();
@@ -16,7 +16,7 @@ class AudioManager {
     this.volume = 1.0;
     this.bgmVolume = 0.7;
     this.autoplayAlertShown = false;
-    
+
     // Sound mapping
     this.soundMap = {
       click: "assets/sounds/common/click.mp3",
@@ -24,7 +24,7 @@ class AudioManager {
       lose: "assets/sounds/common/lose.mp3",
       draw: "assets/sounds/common/draw.mp3",
     };
-    
+
     // BGM mapping
     this.bgmMap = {
       "bgm-home": "assets/sounds/bgm/Elevator.mp3",
@@ -42,19 +42,22 @@ class AudioManager {
   async initAudio() {
     try {
       // Tạo audio context nếu browser hỗ trợ
-      if (typeof AudioContext !== "undefined" || typeof window['webkitAudioContext'] !== "undefined") {
-        this.audioContext = new (AudioContext || window['webkitAudioContext'])();
+      if (
+        typeof AudioContext !== "undefined" ||
+        typeof window["webkitAudioContext"] !== "undefined"
+      ) {
+        this.audioContext = new (AudioContext || window["webkitAudioContext"])();
       }
 
       // Preload tất cả sounds
       await this.preloadSounds();
 
-            // Preload tất cả BGM
+      // Preload tất cả BGM
       await this.preloadBGM();
-      
+
       // Kiểm tra autoplay policy và hiển thị alert nếu cần
       await this.checkAutoplayPolicy();
-      
+
       console.log("🎵 Audio system initialized successfully");
       return true;
     } catch (error) {
@@ -152,12 +155,12 @@ class AudioManager {
   async checkAutoplayPolicy() {
     try {
       // Test autoplay với một sound ngắn
-      const testSound = this.sounds.get('click');
+      const testSound = this.sounds.get("click");
       if (testSound) {
         // Tạm thời set volume = 0 để test mà không phát âm thanh
         const originalVolume = testSound.volume;
         testSound.volume = 0;
-        
+
         try {
           await testSound.play();
           testSound.pause();
@@ -204,26 +207,26 @@ Click OK để tiếp tục.
    */
   autoChangeBGM(screenPath) {
     try {
-      let bgmType = 'bgm-home'; // default
+      let bgmType = "bgm-home"; // default
 
-      if (screenPath.includes('/intro/')) {
-        bgmType = 'bgm-intro';
-      } else if (screenPath.includes('/home/')) {
-        bgmType = 'bgm-home';
-      } else if (screenPath.includes('/select/')) {
-        bgmType = 'bgm-select';
-      } else if (screenPath.includes('/game/')) {
-        bgmType = 'bgm-game';
-      } else if (screenPath.includes('/settings/')) {
-        bgmType = 'bgm-settings';
-      } else if (screenPath.includes('/result/')) {
-        bgmType = 'bgm-result';
+      if (screenPath.includes("/intro/")) {
+        bgmType = "bgm-intro";
+      } else if (screenPath.includes("/home/")) {
+        bgmType = "bgm-home";
+      } else if (screenPath.includes("/select/")) {
+        bgmType = "bgm-select";
+      } else if (screenPath.includes("/game/")) {
+        bgmType = "bgm-game";
+      } else if (screenPath.includes("/settings/")) {
+        bgmType = "bgm-settings";
+      } else if (screenPath.includes("/result/")) {
+        bgmType = "bgm-result";
       }
 
       // Chỉ thay đổi BGM nếu khác với BGM hiện tại
       const currentBgm = this.getStatus().currentBgm;
       const newBgmPath = this.bgmMap[bgmType];
-      
+
       if (currentBgm !== newBgmPath) {
         console.log(`🎵 Auto-changing BGM to: ${bgmType}`);
         this.playBgm(bgmType);
@@ -406,10 +409,10 @@ Click OK để tiếp tục.
 const audioManager = new AudioManager();
 
 // Export functions để main.js sử dụng
-window['audioManager'] = audioManager;
-window['initAudio'] = () => audioManager.initAudio();
-window['playSound'] = (soundName) => audioManager.playSound(soundName);
-window['playBgm'] = (type) => audioManager.playBgm(type);
+window["audioManager"] = audioManager;
+window["initAudio"] = () => audioManager.initAudio();
+window["playSound"] = (soundName) => audioManager.playSound(soundName);
+window["playBgm"] = (type) => audioManager.playBgm(type);
 
 // Export cho testing
 if (typeof module !== "undefined" && module.exports) {

@@ -234,19 +234,16 @@ Theo dõi console để debug:
 ## Best Practices
 
 1. **User Experience**
-
    - Không autoplay BGM quá to
    - Cung cấp controls để user tắt âm thanh
    - Sử dụng fade effects mượt mà
 
 2. **Performance**
-
    - Preload assets cần thiết
    - Sử dụng appropriate audio quality
    - Cleanup resources khi không cần
 
 3. **Accessibility**
-
    - Cung cấp visual feedback song song với audio
    - Không phụ thuộc hoàn toàn vào âm thanh
    - Hỗ trợ screen readers
