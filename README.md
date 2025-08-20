@@ -48,7 +48,9 @@ Game hỗ trợ:
 - Tùy chỉnh âm thanh, độ khó, theme trong phần Settings
 - Giao diện thân thiện, hỗ trợ cả tiếng Anh và tiếng Việt
 
-## Hướng dẫn sử dụng (đang cập nhật...)
+## Hướng dẫn sử dụng
+
+### Chạy game
 
 1. Mở tệp `index.html` bằng trình duyệt web hiện đại (Chrome, Firefox,...).
 2. Xem phần giới thiệu, chọn chế độ chơi trong màn hình Select.
@@ -56,6 +58,16 @@ Game hỗ trợ:
 4. Chọn kiểu lưới (3x3, 4x4, 5x5), bắt đầu trò chơi.
 5. Mỗi lượt có giới hạn thời gian. Người chơi thắng 2/3 trận sẽ thắng chung cuộc.
 6. Có thể chọn chơi lại hoặc quay về màn hình chính sau mỗi ván.
+
+### Test Audio System
+
+Để test hệ thống âm thanh, mở file `demo-audio.html`:
+
+- Test các sound effects (click, win, lose, draw)
+- Test BGM với fade effect
+- Điều chỉnh volume và mute
+- Chạy unit tests
+- Xem console logs và status
 
 ## Cấu trúc thư mục
 
