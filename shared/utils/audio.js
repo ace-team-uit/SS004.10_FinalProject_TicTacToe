@@ -1,13 +1,13 @@
 /**
  * Audio Manager Module
  * Quản lý âm thanh và BGM cho game Tic Tac Toe
- * 
+ *
  * @author ACE Team
  * @version 1.0.0
  */
 
 class AudioManager {
-  constructor() {
+    constructor() {
     this.audioContext = null;
     this.sounds = new Map();
     this.bgm = new Map();
@@ -17,19 +17,22 @@ class AudioManager {
     this.bgmVolume = 0.7;
     this.autoplayAlertShown = false;
     
-    // Sound mapping (paths sẽ được set sau)
+    // Sound mapping
     this.soundMap = {
-      click: 'assets/sounds/common/click.mp3',
-      win: 'assets/sounds/common/win.mp3',
-      lose: 'assets/sounds/common/lose.mp3',
-      draw: 'assets/sounds/common/draw.mp3'
+      click: "assets/sounds/common/click.mp3",
+      win: "assets/sounds/common/win.mp3",
+      lose: "assets/sounds/common/lose.mp3",
+      draw: "assets/sounds/common/draw.mp3",
     };
     
-    // BGM mapping (paths sẽ được set sau)
+    // BGM mapping
     this.bgmMap = {
-      'bgm-home': 'assets/sounds/bgm/Elevator.mp3',
-      'bgm-game': 'assets/sounds/bgm/Run-Amok.mp3',
-      'bgm-select': 'assets/sounds/bgm/Fluffing-a-Duck.mp3'
+      "bgm-home": "assets/sounds/bgm/Elevator.mp3",
+      "bgm-game": "assets/sounds/bgm/Run-Amok.mp3",
+      "bgm-select": "assets/sounds/bgm/Fluffing-a-Duck.mp3",
+      "bgm-intro": "assets/sounds/bgm/Elevator.mp3",
+      "bgm-settings": "assets/sounds/bgm/Elevator.mp3",
+      "bgm-result": "assets/sounds/bgm/Elevator.mp3",
     };
   }
 
@@ -39,14 +42,14 @@ class AudioManager {
   async initAudio() {
     try {
       // Tạo audio context nếu browser hỗ trợ
-      if (typeof AudioContext !== "undefined" || typeof webkitAudioContext !== "undefined") {
-        this.audioContext = new (AudioContext || webkitAudioContext)();
+      if (typeof AudioContext !== "undefined" || typeof window['webkitAudioContext'] !== "undefined") {
+        this.audioContext = new (AudioContext || window['webkitAudioContext'])();
       }
 
       // Preload tất cả sounds
       await this.preloadSounds();
-      
-      // Preload tất cả BGM
+
+            // Preload tất cả BGM
       await this.preloadBGM();
       
       // Kiểm tra autoplay policy và hiển thị alert nếu cần
@@ -57,6 +60,89 @@ class AudioManager {
     } catch (error) {
       console.warn("⚠️ Audio initialization failed:", error);
       return false;
+    }
+  }
+
+  /**
+   * Preload tất cả sound effects
+   */
+  async preloadSounds() {
+    const promises = Object.entries(this.soundMap).map(([name, path]) =>
+      this.loadSound(name, path)
+    );
+
+    try {
+      await Promise.all(promises);
+      console.log("🔊 All sound effects preloaded");
+    } catch (error) {
+      console.warn("⚠️ Some sound effects failed to load:", error);
+    }
+  }
+
+  /**
+   * Preload tất cả BGM
+   */
+  async preloadBGM() {
+    const promises = Object.entries(this.bgmMap).map(([name, path]) => this.loadBGM(name, path));
+
+    try {
+      await Promise.all(promises);
+      console.log("🎶 All BGM preloaded");
+    } catch (error) {
+      console.warn("⚠️ Some BGM failed to load:", error);
+    }
+  }
+
+  /**
+   * Load một sound effect
+   */
+  async loadSound(name, path) {
+    try {
+      const audio = new Audio();
+      audio.preload = "auto";
+
+      // Xử lý lỗi 404
+      audio.onerror = () => {
+        console.warn(`⚠️ Failed to load sound: ${path}`);
+        this.sounds.set(name, null);
+      };
+
+      audio.src = path;
+      await audio.load();
+
+      this.sounds.set(name, audio);
+      return audio;
+    } catch (error) {
+      console.warn(`⚠️ Error loading sound ${name}:`, error);
+      this.sounds.set(name, null);
+      return null;
+    }
+  }
+
+  /**
+   * Load một BGM
+   */
+  async loadBGM(name, path) {
+    try {
+      const audio = new Audio();
+      audio.preload = "auto";
+      audio.loop = true;
+
+      // Xử lý lỗi 404
+      audio.onerror = () => {
+        console.warn(`⚠️ Failed to load BGM: ${path}`);
+        this.bgm.set(name, null);
+      };
+
+      audio.src = path;
+      await audio.load();
+
+      this.bgm.set(name, audio);
+      return audio;
+    } catch (error) {
+      console.warn(`⚠️ Error loading BGM ${name}:`, error);
+      this.bgm.set(name, null);
+      return null;
     }
   }
 
@@ -114,87 +200,36 @@ Click OK để tiếp tục.
   }
 
   /**
-   * Preload tất cả sound effects
+   * Tự động thay đổi BGM dựa trên màn hình
    */
-  async preloadSounds() {
-    const promises = Object.entries(this.soundMap).map(([name, path]) => 
-      this.loadSound(name, path)
-    );
-    
+  autoChangeBGM(screenPath) {
     try {
-      await Promise.all(promises);
-      console.log("🔊 All sound effects preloaded");
-    } catch (error) {
-      console.warn("⚠️ Some sound effects failed to load:", error);
-    }
-  }
+      let bgmType = 'bgm-home'; // default
 
-  /**
-   * Preload tất cả BGM
-   */
-  async preloadBGM() {
-    const promises = Object.entries(this.bgmMap).map(([name, path]) => 
-      this.loadBGM(name, path)
-    );
-    
-    try {
-      await Promise.all(promises);
-      console.log("🎶 All BGM preloaded");
-    } catch (error) {
-      console.warn("⚠️ Some BGM failed to load:", error);
-    }
-  }
+      if (screenPath.includes('/intro/')) {
+        bgmType = 'bgm-intro';
+      } else if (screenPath.includes('/home/')) {
+        bgmType = 'bgm-home';
+      } else if (screenPath.includes('/select/')) {
+        bgmType = 'bgm-select';
+      } else if (screenPath.includes('/game/')) {
+        bgmType = 'bgm-game';
+      } else if (screenPath.includes('/settings/')) {
+        bgmType = 'bgm-settings';
+      } else if (screenPath.includes('/result/')) {
+        bgmType = 'bgm-result';
+      }
 
-  /**
-   * Load một sound effect
-   */
-  async loadSound(name, path) {
-    try {
-      const audio = new Audio();
-      audio.preload = "auto";
+      // Chỉ thay đổi BGM nếu khác với BGM hiện tại
+      const currentBgm = this.getStatus().currentBgm;
+      const newBgmPath = this.bgmMap[bgmType];
       
-      // Xử lý lỗi 404
-      audio.onerror = () => {
-        console.warn(`⚠️ Failed to load sound: ${path}`);
-        this.sounds.set(name, null);
-      };
-      
-      audio.src = path;
-      await audio.load();
-      
-      this.sounds.set(name, audio);
-      return audio;
+      if (currentBgm !== newBgmPath) {
+        console.log(`🎵 Auto-changing BGM to: ${bgmType}`);
+        this.playBgm(bgmType);
+      }
     } catch (error) {
-      console.warn(`⚠️ Error loading sound ${name}:`, error);
-      this.sounds.set(name, null);
-      return null;
-    }
-  }
-
-  /**
-   * Load một BGM
-   */
-  async loadBGM(name, path) {
-    try {
-      const audio = new Audio();
-      audio.preload = "auto";
-      audio.loop = true;
-      
-      // Xử lý lỗi 404
-      audio.onerror = () => {
-        console.warn(`⚠️ Failed to load BGM: ${path}`);
-        this.bgm.set(name, null);
-      };
-      
-      audio.src = path;
-      await audio.load();
-      
-      this.bgm.set(name, audio);
-      return audio;
-    } catch (error) {
-      console.warn(`⚠️ Error loading BGM ${name}:`, error);
-      this.bgm.set(name, null);
-      return null;
+      console.warn("⚠️ Error auto-changing BGM:", error);
     }
   }
 
@@ -203,7 +238,7 @@ Click OK để tiếp tục.
    */
   playSound(soundName) {
     if (this.isMuted) return;
-    
+
     const sound = this.sounds.get(soundName);
     if (!sound) {
       console.warn(`⚠️ Sound not found: ${soundName}`);
@@ -214,11 +249,11 @@ Click OK để tiếp tục.
       // Clone audio để có thể phát nhiều lần cùng lúc
       const soundClone = sound.cloneNode();
       soundClone.volume = this.volume;
-      
+
       soundClone.play().catch((error) => {
         console.warn(`⚠️ Failed to play sound ${soundName}:`, error);
       });
-      
+
       // Cleanup sau khi phát xong
       soundClone.onended = () => {
         soundClone.remove();
@@ -233,7 +268,7 @@ Click OK để tiếp tục.
    */
   async playBgm(type) {
     if (this.isMuted) return;
-    
+
     const bgm = this.bgm.get(type);
     if (!bgm) {
       console.warn(`⚠️ BGM not found: ${type}`);
@@ -253,7 +288,7 @@ Click OK để tiếp tục.
       bgm.volume = 0;
       bgm.play();
       await this.fadeInBGM(bgm);
-      
+
       console.log(`🎶 Playing BGM: ${type}`);
     } catch (error) {
       console.warn(`⚠️ Error playing BGM ${type}:`, error);
@@ -267,7 +302,7 @@ Click OK để tiếp tục.
     const steps = 20;
     const stepDuration = duration / steps;
     const volumeStep = this.bgmVolume / steps;
-    
+
     for (let i = 0; i < steps; i++) {
       audio.volume = volumeStep * (i + 1);
       await new Promise((resolve) => setTimeout(resolve, stepDuration));
@@ -283,7 +318,7 @@ Click OK để tiếp tục.
     const stepDuration = duration / steps;
     const currentVolume = audio.volume;
     const volumeStep = currentVolume / steps;
-    
+
     for (let i = 0; i < steps; i++) {
       audio.volume = currentVolume - volumeStep * i;
       await new Promise((resolve) => setTimeout(resolve, stepDuration));
@@ -307,11 +342,11 @@ Click OK để tiếp tục.
    */
   toggleMute() {
     this.isMuted = !this.isMuted;
-    
+
     if (this.isMuted) {
       this.stopBgm();
     }
-    
+
     console.log(`🔇 Audio ${this.isMuted ? "muted" : "unmuted"}`);
     return this.isMuted;
   }
@@ -329,11 +364,11 @@ Click OK để tiếp tục.
    */
   setBgmVolume(volume) {
     this.bgmVolume = Math.max(0, Math.min(1, volume));
-    
+
     if (this.currentBgm) {
       this.currentBgm.volume = this.bgmVolume;
     }
-    
+
     console.log(`🎶 BGM volume set to: ${this.bgmVolume}`);
   }
 
@@ -358,11 +393,11 @@ Click OK để tiếp tục.
     this.stopBgm();
     this.sounds.clear();
     this.bgm.clear();
-    
+
     if (this.audioContext) {
       this.audioContext.close();
     }
-    
+
     console.log("🗑️ Audio manager destroyed");
   }
 }
@@ -371,10 +406,10 @@ Click OK để tiếp tục.
 const audioManager = new AudioManager();
 
 // Export functions để main.js sử dụng
-window.audioManager = audioManager;
-window.initAudio = () => audioManager.initAudio();
-window.playSound = (soundName) => audioManager.playSound(soundName);
-window.playBgm = (type) => audioManager.playBgm(type);
+window['audioManager'] = audioManager;
+window['initAudio'] = () => audioManager.initAudio();
+window['playSound'] = (soundName) => audioManager.playSound(soundName);
+window['playBgm'] = (type) => audioManager.playBgm(type);
 
 // Export cho testing
 if (typeof module !== "undefined" && module.exports) {
