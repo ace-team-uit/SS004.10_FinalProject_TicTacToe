@@ -317,6 +317,6 @@ const BoardManager = {
 // Export module
 if (typeof module !== "undefined" && module.exports) {
   module.exports = BoardManager;
-} else {
+} else if (typeof window !== "undefined") {
   window.BoardManager = BoardManager;
 }
