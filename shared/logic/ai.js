@@ -187,6 +187,8 @@ const TTT_AI = {
       else emptyCount++;
     }
 
+    console.log("[evaluateLine] emptyCount", emptyCount);
+
     // Tính điểm dựa trên số lượng quân cờ
     if (opponentCount === 0) {
       // Chỉ có quân của player
