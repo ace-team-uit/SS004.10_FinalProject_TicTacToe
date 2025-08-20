@@ -1,8 +1,11 @@
-.DS_Store
-
 node_modules/
-
+.DS_Store
+.env
+.cursorrules
 
 # npx eslint . --ext .js --fix
 
 # npx prettier --write .
+
+# Large media files
+assets/sounds/bgm/*.mp3
