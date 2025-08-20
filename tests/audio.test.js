@@ -50,13 +50,8 @@ class MockAudioContext {
   }
 }
 
-// Setup mocks
-if (typeof window === "undefined") {
-  // Node.js environment
-  global.Audio = MockAudio;
-  global.AudioContext = MockAudioContext;
-  global.webkitAudioContext = MockAudioContext;
-} else {
+// Setup mocks for browser environment
+if (typeof window !== "undefined") {
   // Browser environment - override existing Audio
   window.Audio = MockAudio;
   window.AudioContext = MockAudioContext;
@@ -66,6 +61,16 @@ if (typeof window === "undefined") {
 // Test suite
 function runAudioTests() {
   console.log("🧪 Running Audio Manager Tests...");
+
+  // Get AudioManager from the appropriate source
+  let AudioManager;
+  if (typeof window !== "undefined" && window.audioManager) {
+    // Browser environment - get from audioManager instance
+    AudioManager = window.audioManager.constructor;
+  } else {
+    console.error("❌ AudioManager not available in this environment");
+    return { passed: 0, failed: 1 };
+  }
 
   let testsPassed = 0;
   let testsFailed = 0;
@@ -211,14 +216,6 @@ if (typeof window !== "undefined") {
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", runAudioTests);
   } else {
-    runAudioTests();
-  }
-} else {
-  // Node.js environment
-  module.exports = { runAudioTests };
-
-  // Auto-run nếu file được execute trực tiếp
-  if (require.main === module) {
     runAudioTests();
   }
 }

@@ -163,7 +163,7 @@ class AudioManager {
           testSound.pause();
           testSound.currentTime = 0;
           console.log("✅ Autoplay policy: Allowed");
-        } catch (autoplayError) {
+        } catch {
           console.warn("⚠️ Autoplay policy: Blocked");
           this.showAutoplayAlert();
         } finally {
