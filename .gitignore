@@ -6,3 +6,6 @@ node_modules/
 # npx eslint . --ext .js --fix
 
 # npx prettier --write .
+
+# Large media files
+assets/sounds/bgm/*.mp3
