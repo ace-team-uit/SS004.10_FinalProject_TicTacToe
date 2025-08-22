@@ -1,0 +1,28 @@
+/* Marketplace Screen Styles */
+.marketplace-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 120% at 50% 0%, #1e1b4b 0%, #0f172a 60%, #090b19 100%);
+}
+
+.marketplace-content {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.marketplace-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+}
+
+.marketplace-description {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
