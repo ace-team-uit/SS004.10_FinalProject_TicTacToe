@@ -10,14 +10,19 @@
     #090b19 100%
   );
   color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .phone-viewport {
-  /* Centered viewport with strict 6:19 ratio */
   height: 100vh;
-  aspect-ratio: 6 / 19;
-  width: min(100vw, calc(100vh * 6 / 19));
+  aspect-ratio: 6 / 13.5;
+  width: min(100vw, calc(100vh * 6 / 13.5));
   min-width: 375px;
+  max-width: 430px;
+  max-height: 932px;
+
   margin: 0 auto;
   position: relative;
   overflow: hidden;

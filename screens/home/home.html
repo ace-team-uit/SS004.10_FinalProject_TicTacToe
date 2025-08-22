@@ -1,8 +1,37 @@
-<div class="home-screen flex flex-col items-center justify-center gap-4 p-4 text-center">
-  <h1 class="text-3xl text-primary" style="font-family: var(--font-display)">ACE Tic‑Tac‑Toe</h1>
-  <p class="text-secondary">Demo home screen using global styles</p>
-  <div class="flex gap-4">
-    <button id="play-btn" class="btn btn-primary">Start</button>
-    <button id="to-intro" class="btn btn-secondary">Intro</button>
+<div class="home-screen">
+  <!-- Background image -->
+  <div class="home-background"></div>
+
+  <!-- Main content container -->
+  <div class="home-content">
+    <!-- Game title -->
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="ACE Logo" class="logo-img" />
+    </div>
+
+    <!-- Play button -->
+    <div class="play-button-container">
+      <button id="play-btn" class="play-button">
+        <img
+          src="assets/images/common/start-button.png"
+          alt="Start Button"
+          class="start-button-img"
+        />
+      </button>
+    </div>
+
+    <!-- ACE Team credit -->
+    <div class="team-credit">
+      <p>Một sản phẩm của ACE Team</p>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-content">
+      <video id="loading-video" class="loading-video" muted>
+        <source src="assets/video/loading-small.mp4" type="video/mp4" />
+      </video>
+    </div>
   </div>
 </div>

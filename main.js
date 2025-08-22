@@ -110,10 +110,11 @@ function autoChangeBGM(screenPath) {
   if (!window["audioManager"]) return;
 
   try {
-    let bgmType = "bgm-home"; // default
+    let bgmType = null; // No BGM for intro
 
     if (screenPath.includes("/intro/")) {
-      bgmType = "bgm-intro";
+      // Intro screen không có BGM
+      bgmType = null;
     } else if (screenPath.includes("/home/")) {
       bgmType = "bgm-home";
     } else if (screenPath.includes("/select/")) {
@@ -124,6 +125,15 @@ function autoChangeBGM(screenPath) {
       bgmType = "bgm-settings";
     } else if (screenPath.includes("/result/")) {
       bgmType = "bgm-result";
+    }
+
+    // Nếu không có BGM (intro screen), dừng BGM hiện tại
+    if (bgmType === null) {
+      if (window["audioManager"].getStatus().currentBgm) {
+        console.log("🎵 Stopping BGM for intro screen");
+        window["audioManager"].stopBgm();
+      }
+      return;
     }
 
     // Chỉ thay đổi BGM nếu khác với BGM hiện tại
