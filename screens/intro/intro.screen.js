@@ -21,6 +21,12 @@ function initIntroScreen() {
 
   console.log("✅ Found required elements");
 
+  // Stop any current BGM when intro screen loads
+  if (window["audioManager"]) {
+    window["audioManager"].stopBgm();
+    console.log("🔇 Stopped current BGM for intro screen");
+  }
+
   // Check if intro was already shown
   const introShown = localStorage.getItem(INTRO_SHOWN_KEY);
   if (introShown === "true") {
@@ -57,6 +63,11 @@ function initIntroScreen() {
   function navigateToHome() {
     console.log("🏠 Navigating to home");
     localStorage.setItem(INTRO_SHOWN_KEY, "true");
+
+    // Stop intro BGM before navigating
+    if (window["audioManager"]) {
+      window["audioManager"].stopBgm();
+    }
 
     const introScreen = document.querySelector(".intro-screen");
     if (introScreen) {
