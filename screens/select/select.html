@@ -1,11 +1,33 @@
-<div class="select-screen flex flex-col items-center justify-center gap-4 p-4 text-center">
-  <h2 class="text-2xl">Select Game</h2>
-  <button id="select-next" class="btn btn-primary">Game Modes</button>
-  <button id="select-prev" class="btn btn-secondary">Back</button>
-</div>
-<div class="select-screen flex flex-col items-center justify-center gap-4 p-4 text-center">
-  <h2 class="text-2xl">Select Game</h2>
-  <button id="to-settings" class="btn btn-secondary">Settings</button>
-  <button id="to-game" class="btn btn-primary">Start Game</button>
-  <button id="back-home" class="btn btn-ghost">Back</button>
+<div class="screen select-screen">
+  <div class="screen__background select-background"></div>
+
+  <div class="screen__content">
+    <div class="screen__logo">
+      <img src="assets/images/logo.png" alt="ACE Logo" class="logo-img" />
+    </div>
+
+    <div class="screen__action">
+      <button id="single-player-btn" class="btn">
+        <img
+          src="assets/images/select-game/single-player.png"
+          alt="Single Player"
+          class="img-shadow btn-img btn-img--wide"
+        />
+      </button>
+    </div>
+
+    <div />
+  </div>
+
+  <nav class="screen__nav">
+    <button id="marketplace-btn" class="btn btn--nav">
+      <img src="assets/images/common/marketplace-button.png" alt="Marketplace" class="nav-icon" />
+    </button>
+    <button id="home-btn" class="btn btn--nav">
+      <img src="assets/images/common/home-button.png" alt="Home" class="nav-icon nav-icon--home" />
+    </button>
+    <button id="settings-btn" class="btn btn--nav">
+      <img src="assets/images/common/setting-button.png" alt="Settings" class="nav-icon" />
+    </button>
+  </nav>
 </div>

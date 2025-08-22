@@ -1,187 +1,38 @@
-/* Home Screen Styles */
 .home-screen {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Background */
-.home-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("../../assets/images/common/background-02.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 1;
-}
-
-/* Main content */
-.home-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  height: 100%;
-  padding: var(--space-8) var(--space-4);
-  text-align: center;
-}
-
-/* Game title */
-.logo-container {
-  margin-top: var(--space-12);
-  animation: fadeInDown 1s ease-out;
-}
-
-.logo-img {
-  width: 300px;
-  height: auto;
-  max-width: 80vw;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
-}
-
-/* Play button container */
-.play-button-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeInUp 1s ease-out 0.3s both;
-}
-
-/* Play button */
-.play-button {
-  position: relative;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition:
-    transform 0.2s ease,
-    filter 0.2s ease;
-  animation: pulse 2s infinite;
-}
-
-.play-button:hover {
-  transform: scale(1.05);
-  filter: brightness(1.1);
-}
-
-.play-button:active {
-  transform: scale(0.95);
-}
-
-.start-button-img {
-  width: 164px;
-  height: auto;
-  max-width: 80vw;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-}
-
-/* Team credit */
-.team-credit {
-  margin-bottom: var(--space-12);
-  animation: fadeInUp 1s ease-out 0.6s both;
-}
-
-.team-credit p {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  color: #fff;
-  margin: 0;
-  opacity: 0.8;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Loading overlay */
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
-}
-
-.loading-overlay.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-.loading-overlay.hidden {
-  opacity: 0;
-  visibility: hidden;
-}
-
-.loading-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.loading-video {
-  width: 300px;
-  height: auto;
-  border-radius: var(--radius-md);
-}
-
-.loading-text {
-  font-family: var(--font-body);
-  font-size: var(--text-lg);
-  color: var(--text-primary);
-  margin: 0;
-  font-weight: 600;
-}
-
-/* Animations */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
+  .screen__background {
+    background-image: url("../../assets/images/common/background-02.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  .screen__content {
+    padding: 20% 16px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
+  .btn.btn--pulse {
+    width: 320px;
+    height: 320px;
+    transition: transform 0.2s ease;
   }
-  50% {
-    transform: scale(1.02);
+
+  .screen__footer {
+    position: absolute;
+    bottom: 54px;
+    left: 0;
+    right: 0;
+    animation: fadeInUp 1s ease-out 0.6s both;
+
+    .credit {
+      font-size: var(--text-xl);
+    }
+  }
+
+  .video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0 20px;
   }
 }
