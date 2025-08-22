@@ -72,16 +72,19 @@ function initHomeScreen() {
       }
 
       // Type check for HTMLVideoElement
-      if (!(loadingVideo instanceof HTMLVideoElement)) {
+      if (!loadingVideo || loadingVideo.tagName !== "VIDEO") {
         reject(new Error("Loading video element is not a video element"));
         return;
       }
 
+      // Cast to HTMLVideoElement
+      const videoElement = /** @type {HTMLVideoElement} */ (loadingVideo);
+
       // Reset video
-      loadingVideo.currentTime = 0;
+      videoElement.currentTime = 0;
 
       // Play video
-      const playPromise = loadingVideo.play();
+      const playPromise = videoElement.play();
 
       if (playPromise !== undefined) {
         playPromise
@@ -91,7 +94,7 @@ function initHomeScreen() {
               resolve();
             }, 3000);
 
-            loadingVideo.addEventListener(
+            videoElement.addEventListener(
               "ended",
               () => {
                 window.clearTimeout(timeout);
@@ -100,7 +103,7 @@ function initHomeScreen() {
               { once: true }
             );
 
-            loadingVideo.addEventListener("error", () => {
+            videoElement.addEventListener("error", () => {
               window.clearTimeout(timeout);
               reject(new Error("Video playback failed"));
             });
