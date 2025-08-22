@@ -16,9 +16,9 @@
 }
 
 .phone-viewport {
-  height: 100vh;
-  aspect-ratio: 6 / 13.5;
-  width: min(100vw, calc(100vh * 6 / 13.5));
+  height: 100dvh;
+  width: 100dvw;
+  aspect-ratio: 9 / 16;
   min-width: 375px;
   max-width: 430px;
   max-height: 932px;
