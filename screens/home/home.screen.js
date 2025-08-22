@@ -60,10 +60,20 @@ function initHomeScreen() {
   }
 
   // Play loading video
+  /**
+   * Plays the loading video and waits for completion or timeout
+   * @returns {Promise<void>} Resolves when video ends or times out
+   */
   function playLoadingVideo() {
     return new Promise((resolve, reject) => {
       if (!loadingVideo) {
         reject(new Error("Loading video not found"));
+        return;
+      }
+
+      // Type check for HTMLVideoElement
+      if (!(loadingVideo instanceof HTMLVideoElement)) {
+        reject(new Error("Loading video element is not a video element"));
         return;
       }
 
@@ -77,35 +87,38 @@ function initHomeScreen() {
         playPromise
           .then(() => {
             // Wait for video to finish or timeout after 3 seconds
-            const timeout = setTimeout(() => {
+            const timeout = window.setTimeout(() => {
               resolve();
             }, 3000);
 
             loadingVideo.addEventListener(
               "ended",
               () => {
-                clearTimeout(timeout);
+                window.clearTimeout(timeout);
                 resolve();
               },
               { once: true }
             );
 
             loadingVideo.addEventListener("error", () => {
-              clearTimeout(timeout);
+              window.clearTimeout(timeout);
               reject(new Error("Video playback failed"));
             });
           })
           .catch(reject);
       } else {
         // Fallback for older browsers
-        setTimeout(resolve, 2000);
+        window.setTimeout(() => resolve(), 2000);
       }
     });
   }
 
   // Navigate to select screen
   function navigateToSelect() {
+    // Check if Navigation object exists
+    // @ts-ignore - Navigation is a custom object added by the app
     if (window.Navigation || window["Navigation"]) {
+      // @ts-ignore - Navigation is a custom object added by the app
       (window.Navigation || window["Navigation"]).navigateTo("select");
     } else {
       console.warn("Navigation not available, redirecting manually");
