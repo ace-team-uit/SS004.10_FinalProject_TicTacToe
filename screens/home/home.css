@@ -12,9 +12,10 @@
   }
 
   .btn.btn--pulse {
-    width: 320px;
-    height: 320px;
     transition: transform 0.2s ease;
+    img {
+      width: 220px;
+    }
   }
 
   .screen__footer {
@@ -26,6 +27,8 @@
 
     .credit {
       font-size: var(--text-xl);
+      font-weight: 600;
+      color: #fff;
     }
   }
 
