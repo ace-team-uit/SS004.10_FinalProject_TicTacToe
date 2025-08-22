@@ -52,7 +52,9 @@
   border-radius: 8px;
   cursor: pointer;
 
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
   animation: pulse 1.5s infinite;
 }
 
