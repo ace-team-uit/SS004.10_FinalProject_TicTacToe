@@ -154,6 +154,13 @@ class AudioManager {
    */
   async checkAutoplayPolicy() {
     try {
+      // Kiểm tra xem đã hiển thị alert chưa
+      const alertShown = localStorage.getItem("audio_alert_shown");
+      if (alertShown === "true") {
+        console.log("✅ Audio alert already shown, skipping");
+        return;
+      }
+
       // Test autoplay với một sound ngắn
       const testSound = this.sounds.get("click");
       if (testSound) {
@@ -185,6 +192,9 @@ class AudioManager {
     // Chỉ hiển thị alert một lần
     if (this.autoplayAlertShown) return;
     this.autoplayAlertShown = true;
+
+    // Lưu vào localStorage để không hiển thị lại
+    localStorage.setItem("audio_alert_shown", "true");
 
     const alertMessage = `
 🎵 Để có trải nghiệm âm thanh tốt nhất, vui lòng:

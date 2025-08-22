@@ -10,14 +10,19 @@
     #090b19 100%
   );
   color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .phone-viewport {
-  /* Centered viewport with strict 6:19 ratio */
   height: 100vh;
-  aspect-ratio: 6 / 19;
-  width: min(100vw, calc(100vh * 6 / 19));
+  aspect-ratio: 6 / 13.5;
+  width: min(100vw, calc(100vh * 6 / 13.5));
   min-width: 375px;
+  max-width: 430px;
+  max-height: 932px;
+
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -43,9 +48,7 @@
   letter-spacing: 0.3px;
   text-transform: uppercase;
   text-decoration: none;
-  transition:
-    transform 120ms ease,
-    filter 120ms ease;
+  transition: transform 120ms ease, filter 120ms ease;
   will-change: transform;
 }
 
@@ -56,9 +59,7 @@
 .btn-primary {
   color: var(--btn-primary-text);
   background: var(--btn-primary-bg);
-  box-shadow:
-    0 8px 0 rgba(0, 0, 0, 0.25),
-    inset 0 2px 0 rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.16);
 }
 
 .btn-secondary {
