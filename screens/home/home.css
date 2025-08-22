@@ -66,7 +66,9 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
   animation: pulse 2s infinite;
 }
 
@@ -115,7 +117,9 @@
   z-index: 10;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
 .loading-overlay.show {
