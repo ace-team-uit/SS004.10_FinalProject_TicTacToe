@@ -15,6 +15,13 @@ if (typeof window !== "undefined") {
     document.head.appendChild(script);
   }
 
+  // Load RoundsManager if not already loaded
+  if (!window.RoundsManager) {
+    const script = document.createElement("script");
+    script.src = "./shared/logic/rounds.js";
+    document.head.appendChild(script);
+  }
+
   // Load other modules as global objects
   if (!window.TTT_AI) {
     const script = document.createElement("script");
