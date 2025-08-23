@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -295,8 +295,8 @@
         document.getElementById("timerStatus").textContent = status.isPaused
           ? "Paused"
           : status.isRunning
-          ? "Running"
-          : "Stopped";
+            ? "Running"
+            : "Stopped";
 
         // Update progress bar
         document.getElementById("progressFill").style.width = status.progress + "%";
