@@ -1,6 +1,116 @@
 console.log("🎮 Game screen loaded");
 
-// Game screen initialization function
+// ===== GAME DATA STRUCTURE =====
+// Cấu trúc dữ liệu đơn giản để các bạn khác dễ dàng nhúng logic vào
+// Kiểm tra xem GameData đã tồn tại chưa, nếu chưa thì tạo mới
+if (typeof window["GameData"] === "undefined") {
+  window["GameData"] = {
+    // Kích thước bàn cờ (3x3, 4x4, 5x5)
+    gridSize: 3,
+
+    // Mảng 2D lưu trạng thái bàn cờ
+    // null = ô trống, 1 = X (player1), 2 = O (player2)
+    /** @type {Array<Array<number|null>>} */
+    board: [],
+
+    // Người chơi hiện tại
+    currentPlayer: 1, // 1 = X, 2 = O
+
+    // Trạng thái game
+    gameStatus: "playing", // "playing", "won", "draw"
+
+    // Người thắng
+    winner: null,
+
+    // Khởi tạo bàn cờ mới
+    initBoard(size = 3) {
+      this.gridSize = size;
+      /** @type {Array<Array<number|null>>} */
+      this.board = [];
+
+      // Tạo mảng 2D rỗng
+      for (let i = 0; i < size; i++) {
+        this.board[i] = [];
+        for (let j = 0; j < size; j++) {
+          this.board[i][j] = null;
+        }
+      }
+
+      this.currentPlayer = 1;
+      this.gameStatus = "playing";
+      this.winner = null;
+
+      console.log(`✅ Khởi tạo bàn cờ ${size}x${size}`);
+    },
+
+    // Lấy giá trị ô tại vị trí (row, col)
+    getCell(row, col) {
+      if (this.isValidPosition(row, col)) {
+        return this.board[row][col];
+      }
+      return null;
+    },
+
+    // Đặt giá trị ô tại vị trí (row, col)
+    setCell(row, col, value) {
+      if (this.isValidPosition(row, col) && this.board[row][col] === null) {
+        this.board[row][col] = value;
+        return true;
+      }
+      return false;
+    },
+
+    // Kiểm tra vị trí hợp lệ
+    isValidPosition(row, col) {
+      return row >= 0 && row < this.gridSize && col >= 0 && col < this.gridSize;
+    },
+
+    // Kiểm tra ô trống
+    isCellEmpty(row, col) {
+      return this.getCell(row, col) === null;
+    },
+
+    // Chuyển đổi index thành tọa độ (row, col)
+    indexToCoordinates(index) {
+      const row = Math.floor(index / this.gridSize);
+      const col = index % this.gridSize;
+      return { row, col };
+    },
+
+    // Chuyển đổi tọa độ (row, col) thành index
+    coordinatesToIndex(row, col) {
+      return row * this.gridSize + col;
+    },
+
+    // Lấy bàn cờ dạng mảng phẳng (để dễ xử lý)
+    getFlatBoard() {
+      const flatBoard = [];
+      for (let i = 0; i < this.gridSize; i++) {
+        for (let j = 0; j < this.gridSize; j++) {
+          flatBoard.push({
+            index: this.coordinatesToIndex(i, j),
+            row: i,
+            col: j,
+            value: this.board[i][j],
+          });
+        }
+      }
+      return flatBoard;
+    },
+
+    // Reset bàn cờ
+    reset() {
+      this.initBoard(this.gridSize);
+    },
+  };
+  console.log("✅ Tạo GameData mới");
+} else {
+  console.log("🔄 Sử dụng GameData đã tồn tại");
+}
+
+// KHÔNG tạo reference local để tránh lỗi duplicate declaration
+
+// ===== GAME SCREEN INITIALIZATION =====
 function initGameScreen() {
   // DOM elements
   const gameBoard = document.getElementById("game-board");
@@ -10,40 +120,32 @@ function initGameScreen() {
 
   console.log("✅ Found required elements");
 
-  // Ensure Game screen has appropriate BGM
+  // Khởi tạo BGM nếu có
   if (window["playBgm"]) {
     console.log("🎵 Starting game BGM");
     window["playBgm"]("bgm-game");
   }
 
-  // Initialize game board based on selected grid size
+  // Khởi tạo dữ liệu game
+  initializeGameData();
+
+  // Khởi tạo bàn cờ UI
   initializeGameBoard();
 
-  // Function to resize cell text font size based on cell size
-  function resizeCellTextFontSize() {
-    const cells = document.querySelectorAll(".board-cell");
-    cells.forEach((cell) => {
-      const cellText = cell.querySelector(".cell-text");
-      if (cellText) {
-        const cellSize = cell.offsetWidth;
-        const fontSize = Math.floor(cellSize * 0.6); // 60% of cell size
-        cellText.style.fontSize = `${fontSize}px`;
-      }
-    });
-  }
+  // Căn chỉnh font size cho các ô
+  resizeCellTextFontSize();
 
-  // Observe board size changes
-  /* global ResizeObserver */
-  if (typeof ResizeObserver !== "undefined") {
+  // Quan sát thay đổi kích thước bàn cờ
+  if (typeof ResizeObserver !== "undefined" && gameBoard) {
     const resizeObserver = new ResizeObserver(() => {
       resizeCellTextFontSize();
     });
-    if (gameBoard) {
-      resizeObserver.observe(gameBoard);
-    }
+    resizeObserver.observe(gameBoard);
   }
 
-  // Music button click handler
+  // ===== EVENT HANDLERS =====
+
+  // Music button
   if (musicBtn) {
     musicBtn.addEventListener("click", () => {
       console.log("🎵 Music button clicked");
@@ -51,7 +153,7 @@ function initGameScreen() {
     });
   }
 
-  // Reset button click handler
+  // Back button
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       console.log("🔄 Back button clicked");
@@ -59,43 +161,96 @@ function initGameScreen() {
     });
   }
 
-  // Settings button click handler
+  // Settings button
   if (settingsBtn) {
     settingsBtn.addEventListener("click", () => {
       console.log("⚙️ Settings button clicked");
-
-      // Play click sound if available
       if (window["playSound"]) {
         window["playSound"]("click");
       }
-
-      // Navigate to Settings page
       navigateToSettings();
     });
   }
 
-  // Initialize game board
+  // ===== GAME INITIALIZATION =====
+
+  function initializeGameData() {
+    // Lấy kích thước bàn cờ từ localStorage hoặc game state
+    let gridSize = 3; // Mặc định 3x3
+
+    if (window["gameState"] && window["gameState"].gridSize) {
+      gridSize = parseInt(window["gameState"].gridSize.split("x")[0]);
+    } else {
+      const storedSize = localStorage.getItem("gameGridSize");
+      if (storedSize) {
+        gridSize = parseInt(storedSize.split("x")[0]);
+      }
+    }
+
+    console.log(`🎯 Khởi tạo game với kích thước: ${gridSize}x${gridSize}`);
+
+    // Kiểm tra xem có cần khởi tạo lại bàn cờ không
+    if (window["GameData"].gridSize !== gridSize) {
+      console.log(
+        `🔄 Kích thước bàn cờ thay đổi từ ${window["GameData"].gridSize}x${window["GameData"].gridSize} sang ${gridSize}x${gridSize}`
+      );
+      window["GameData"].initBoard(gridSize);
+    } else if (window["GameData"].board.length === 0) {
+      // Nếu bàn cờ chưa được khởi tạo
+      window["GameData"].initBoard(gridSize);
+    } else {
+      console.log(`✅ Bàn cờ ${gridSize}x${gridSize} đã được khởi tạo`);
+    }
+
+    console.log("✅ Game data initialized successfully");
+  }
+
   function initializeGameBoard() {
     if (!gameBoard) return;
 
-    // Get grid size from game state or localStorage
-    let gridSize = "3x3"; // Default
-    if (window["gameState"] && window["gameState"].gridSize) {
-      gridSize = window["gameState"].gridSize;
-    } else {
-      gridSize = localStorage.getItem("gameGridSize") || "3x3";
-    }
+    const gridSize = window["GameData"].gridSize;
+    const gridSizeClass = `${gridSize}x${gridSize}`;
 
-    console.log(`🎯 Initializing game board with size: ${gridSize}`);
+    console.log(`🎯 Khởi tạo UI bàn cờ với kích thước: ${gridSizeClass}`);
 
-    // Update board class
-    gameBoard.className = `game-board board-${gridSize}`;
+    // Cập nhật class của bàn cờ
+    gameBoard.className = `game-board board-${gridSizeClass}`;
 
-    // Generate board cells
+    // Tạo các ô trong bàn cờ
     generateBoardCells(gridSize);
 
-    // Add click handlers to cells
+    // Thêm event handlers cho các ô
     addCellClickHandlers();
+
+    // Cập nhật hiển thị bàn cờ
+    updateBoardDisplay();
+  }
+
+  // Tạo các ô trong bàn cờ
+  function generateBoardCells(gridSize) {
+    if (!gameBoard) return;
+
+    gameBoard.innerHTML = "";
+    const totalCells = gridSize * gridSize;
+
+    for (let i = 0; i < totalCells; i++) {
+      const cell = document.createElement("div");
+      cell.className = "board-cell";
+      cell.setAttribute("data-index", i.toString());
+      cell.setAttribute("data-value", "");
+
+      const cellText = document.createElement("div");
+      cellText.className = "cell-text";
+
+      cell.appendChild(cellText);
+
+      // Gắn ResizeObserver để căn chỉnh font size
+      observeCellTextResize(cell);
+
+      gameBoard.appendChild(cell);
+    }
+
+    console.log(`✅ Tạo ${totalCells} ô cho bàn cờ ${gridSize}x${gridSize}`);
   }
 
   // Resize cell text font size
@@ -114,129 +269,165 @@ function initGameScreen() {
     resizeObserver.observe(cell);
   }
 
-  // Generate board cells based on grid size
-  function generateBoardCells(gridSize) {
-    if (!gameBoard) return;
-
-    gameBoard.innerHTML = "";
-
-    const size = parseInt(gridSize.split("x")[0]);
-    const totalCells = size * size;
-
-    for (let i = 0; i < totalCells; i++) {
-      const cell = document.createElement("div");
-      cell.className = "board-cell";
-      cell.setAttribute("data-index", i);
-      cell.setAttribute("data-value", "");
-
-      const cellText = document.createElement("div");
-      cellText.className = "cell-text";
-
-      // Thêm mark mẫu (chỉ để test, có thể xóa sau)
-      if (i === 1 || i === 3) {
-        cell.setAttribute("data-value", "X");
-        cellText.textContent = "X";
-        disableCell(cell);
-      } else if (i === 4) {
-        cell.setAttribute("data-value", "O");
-        cellText.textContent = "O";
-        disableCell(cell);
+  // Căn chỉnh font size cho tất cả các ô
+  function resizeCellTextFontSize() {
+    const cells = document.querySelectorAll(".board-cell");
+    cells.forEach((cell) => {
+      const cellText = cell.querySelector(".cell-text");
+      if (cellText) {
+        const cellSize = /** @type {HTMLElement} */ (cell).offsetWidth;
+        const fontSize = Math.floor(cellSize * 0.6); // 60% của kích thước ô
+        /** @type {HTMLElement} */ (cellText).style.fontSize = `${fontSize}px`;
       }
-
-      cell.appendChild(cellText);
-      observeCellTextResize(cell); // Gắn ResizeObserver 1 lần duy nhất
-      gameBoard.appendChild(cell);
-    }
-
-    console.log(`✅ Generated ${totalCells} cells for ${gridSize} board`);
+    });
   }
 
-  // Add click handlers to board cells
+  // Thêm event handlers cho các ô
   function addCellClickHandlers() {
+    if (!gameBoard) return;
+
     const cells = gameBoard.querySelectorAll(".board-cell");
 
     cells.forEach((cell) => {
       cell.addEventListener("click", () => {
-        const index = cell.getAttribute("data-index");
+        const indexAttr = cell.getAttribute("data-index");
+        if (!indexAttr) return;
+
+        const index = parseInt(indexAttr);
         const value = cell.getAttribute("data-value");
 
         if (value) {
-          console.log(`🚫 Cell ${index} already has value: ${value}`);
+          console.log(`🚫 Ô ${index} đã có giá trị: ${value}`);
           return;
         }
 
-        console.log(`🎯 Cell ${index} clicked`);
+        console.log(`🎯 Ô ${index} được click`);
         handleCellClick(cell, index);
       });
     });
   }
 
-  // Handle cell click
+  // Xử lý khi click vào ô
   function handleCellClick(cell, index) {
+    // Phát âm thanh click nếu có
     if (window["playSound"]) {
       window["playSound"]("click");
     }
 
-    const currentPlayer = getCurrentPlayer();
-    const mark = currentPlayer === "player1" ? "O" : "X";
+    // Chuyển đổi index thành tọa độ (row, col)
+    const { row, col } = window["GameData"].indexToCoordinates(index);
 
-    cell.setAttribute("data-value", mark);
+    // Đặt giá trị vào dữ liệu game
+    const success = window["GameData"].setCell(row, col, window["GameData"].currentPlayer);
 
-    let cellText = cell.querySelector(".cell-text");
-    if (!cellText) {
-      cellText = document.createElement("div");
-      cellText.className = "cell-text";
-      cell.appendChild(cellText);
-      observeCellTextResize(cell); // Gắn observer nếu cell-text mới
+    if (success) {
+      // Cập nhật hiển thị ô
+      const playerMark = window["GameData"].currentPlayer === 1 ? "X" : "O";
+      cell.setAttribute("data-value", playerMark);
+
+      let cellText = cell.querySelector(".cell-text");
+      if (!cellText) {
+        cellText = document.createElement("div");
+        cellText.className = "cell-text";
+        cell.appendChild(cellText);
+      }
+
+      cellText.textContent = playerMark;
+
+      // Vô hiệu hóa ô sau khi đánh dấu
+      disableCell(cell);
+
+      console.log(`✅ Ô ${index} được đánh dấu với ${playerMark}`);
+
+      // TODO: Các bạn khác sẽ thêm logic kiểm tra thắng/thua ở đây
+      // TODO: Các bạn khác sẽ thêm logic AI ở đây
+
+      // Chuyển lượt chơi
+      window["GameData"].currentPlayer = window["GameData"].currentPlayer === 1 ? 2 : 1;
+      console.log(`🔄 Chuyển lượt cho người chơi: ${window["GameData"].currentPlayer}`);
+
+      // Cập nhật hiển thị bàn cờ
+      updateBoardDisplay();
+    } else {
+      console.log(`❌ Không thể đánh dấu ô ${index}`);
     }
-
-    cellText.textContent = mark;
-
-    // Disable the cell after marking
-    disableCell(cell);
-
-    console.log(`✅ Cell ${index} marked with ${mark}`);
-    updateGameState();
   }
 
-  // Get current player (mock function for UI testing)
-  function getCurrentPlayer() {
-    // This would normally come from game logic
-    return Math.random() > 0.5 ? "player1" : "player2";
+  // Cập nhật hiển thị bàn cờ
+  function updateBoardDisplay() {
+    if (!gameBoard) return;
+
+    const cells = gameBoard.querySelectorAll(".board-cell");
+    const flatBoard = window["GameData"].getFlatBoard();
+
+    cells.forEach((cell, index) => {
+      const cellData = flatBoard[index];
+      if (cellData) {
+        const currentValue = cell.getAttribute("data-value");
+        const newValue = cellData.value;
+
+        if (currentValue !== String(newValue || "")) {
+          cell.setAttribute("data-value", String(newValue || ""));
+
+          let cellText = cell.querySelector(".cell-text");
+          if (!cellText) {
+            cellText = document.createElement("div");
+            cellText.className = "cell-text";
+            cell.appendChild(cellText);
+          }
+
+          cellText.textContent = newValue === 1 ? "X" : newValue === 2 ? "O" : "";
+
+          // Cập nhật trạng thái ô
+          if (newValue !== null) {
+            disableCell(cell);
+          } else {
+            enableCell(cell);
+          }
+        }
+      }
+    });
   }
 
-  // Update game state (mock function for UI testing)
-  function updateGameState() {
-    // TODO: This would normally update game state
-    console.log("🔄 Game state updated");
+  // ===== UTILITY FUNCTIONS =====
+
+  // Vô hiệu hóa ô (không cho click nữa)
+  function disableCell(cell) {
+    if (!cell) return;
+    cell.style.cursor = "not-allowed";
+    cell.style.pointerEvents = "none";
+    cell.style.opacity = "0.8";
+    cell.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+    console.log("🔒 Ô đã bị vô hiệu hóa");
+  }
+
+  // Kích hoạt ô (cho phép click)
+  function enableCell(cell) {
+    if (!cell) return;
+    cell.style.cursor = "pointer";
+    cell.style.pointerEvents = "auto";
+    cell.style.opacity = "1";
+    cell.style.backgroundColor = "";
+    console.log("🔓 Ô đã được kích hoạt");
   }
 
   // Toggle music
   function toggleMusic() {
     console.log("🎵 Toggling music");
-
-    // Get current music state from localStorage
     const musicEnabled = localStorage.getItem("musicEnabled") !== "false";
     const newState = !musicEnabled;
-
-    // Update localStorage
     localStorage.setItem("musicEnabled", newState.toString());
-
-    // Update UI
     updateMusicButton(newState);
 
-    // Play click sound if available
     if (window["playSound"]) {
       window["playSound"]("click");
     }
-
     console.log(`🎵 Music ${newState ? "enabled" : "disabled"}`);
   }
 
-  // Update music button appearance
+  // Cập nhật trạng thái nút music
   function updateMusicButton(enabled) {
     if (!musicBtn) return;
-
     if (enabled) {
       musicBtn.style.opacity = "1";
       musicBtn.style.filter = "none";
@@ -246,76 +437,37 @@ function initGameScreen() {
     }
   }
 
-  // Disable cell (remove cursor pointer and make it non-interactive)
-  function disableCell(cell) {
-    if (!cell) return;
-
-    cell.style.cursor = "not-allowed";
-    cell.style.pointerEvents = "none";
-    cell.style.opacity = "0.8";
-
-    // Add visual feedback that cell is disabled
-    cell.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
-
-    console.log("🔒 Cell disabled");
-  }
-
+  // Navigation functions
   function navigateToGameMode2() {
-    if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("mode2");
+    if (window["Navigation"]) {
+      window["Navigation"].navigateTo("mode2");
     } else {
       console.warn("Navigation not available, redirecting manually");
       window.location.href = "#mode2";
     }
   }
 
-  // Reset game
-  // function resetGame() {
-  //   console.log("🔄 Resetting game");
-
-  //   // Play click sound if available
-  //   if (window["playSound"]) {
-  //     window["playSound"]("click");
-  //   }
-
-  //   // Reinitialize board
-  //   initializeGameBoard();
-
-  //   // Reset score (mock)
-  //   const scoreDisplay = document.querySelector(".score-display");
-  //   if (scoreDisplay) {
-  //     scoreDisplay.textContent = "0:0";
-  //   }
-
-  //   console.log("✅ Game reset complete");
-  // }
-
-  // Navigation functions
   function navigateToSettings() {
-    if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("settings");
+    if (window["Navigation"]) {
+      window["Navigation"].navigateTo("settings");
     } else {
       console.warn("Navigation not available, redirecting manually");
       window.location.href = "#settings";
     }
   }
 
-  // Initialize music button state
+  // Khởi tạo trạng thái music
   function initializeMusicState() {
     const musicEnabled = localStorage.getItem("musicEnabled") !== "false";
     updateMusicButton(musicEnabled);
   }
 
-  // Initialize music state on load
+  // Khởi tạo
   initializeMusicState();
-
-  // Resize cell text font size
-  resizeCellTextFontSize();
-
   console.log("🎮 Game screen initialized");
 }
 
-// Initialize when DOM is ready
+// Khởi tạo khi DOM ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initGameScreen);
 } else {

@@ -23,7 +23,7 @@
     bottom: 54px;
     left: 0;
     right: 0;
-    animation: fadeInUp 1s ease-out 0.6s both;
+    animation: fadeInUp 0.5s ease-out 0.6s both;
 
     .credit {
       font-size: var(--text-xl);
