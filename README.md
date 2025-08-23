@@ -69,6 +69,24 @@ Game hỗ trợ:
 - Chạy unit tests
 - Xem console logs và status
 
+### Test Game Mode 1 & 2
+
+Để test Game Mode 1 page, mở file `screens/mode1/mode1.html` trực tiếp:
+
+- Test UI layout và image buttons
+- Test các hình ảnh chọn độ khó (Easy, Medium, Hard)
+- Test nút back và navigation
+- Test hover effects với scale transform
+- Xem console logs và interactions
+
+Để test Game Mode 2 page, mở file `screens/mode2/mode2.html` trực tiếp:
+
+- Test UI layout và grid size buttons
+- Test các hình ảnh chọn kích thước lưới (3x3, 4x4, 5x5)
+- Test nút back và navigation
+- Test hover effects với scale transform
+- Xem console logs và interactions
+
 ## Cấu trúc thư mục
 
 ├── assets/ # Tài nguyên tĩnh
@@ -83,8 +101,14 @@ Game hỗ trợ:
 │ │ └── intro.screen.js
 │ ├── home/
 │ ├── select/
-│ ├── game-mode-01/
-│ ├── game-mode-02/
+│ ├── mode1/
+│ │ ├── mode1.html
+│ │ ├── mode1.css
+│ │ └── mode1.screen.js
+│ ├── mode2/
+│ │ ├── mode2.html
+│ │ ├── mode2.css
+│ │ └── mode2.screen.js
 │ ├── game/
 │ ├── settings/
 │ ├── marketplace/
@@ -139,18 +163,28 @@ graph LR
     F --> I
 ```
 
+### Flow Navigation Game
+
+```
+Intro → Home → Select Game → Game Mode 1 (Difficulty) → Game Mode 2 (Grid Size) → Game
+```
+
 ## Các màn hình giao diện chính
 
 1. **Intro Page**: Hiện tên nhóm, logo, hiệu ứng giới thiệu sản phẩm
 2. **Home Page**: Trang chính với nút “Let's Play”
 3. **Select Game Page**: Chọn chế độ chơi, chọn biểu tượng nhân vật
-4. **Settings Page**: Cập nhật độ khó, theme, ngôn ngữ, bật/tắt âm thanh, về chúng tôi
-5. **Game Page**: Giao diện chơi chính, hiển thị lưới, thời gian, popup khi kết thúc
-6. **Popup & Loading**: Thông báo kết quả, chuyển màn hình, Draw/Win/Lose
+4. **Game Mode 1 Page**: Chọn độ khó (Easy, Medium, Hard) với hình ảnh buttons
+5. **Game Mode 2 Page**: Chọn kích thước lưới (3x3, 4x4, 5x5)
+6. **Settings Page**: Cập nhật độ khó, theme, ngôn ngữ, bật/tắt âm thanh, về chúng tôi
+7. **Game Page**: Giao diện chơi chính, hiển thị lưới, thời gian, popup khi kết thúc
+8. **Popup & Loading**: Thông báo kết quả, chuyển màn hình, Draw/Win/Lose
 
 ## Ghi chú triển khai
 
 - Game sẽ chỉ hỗ trợ chế độ Người vs Máy
+- Flow chơi: Chọn chế độ → Chọn độ khó → Chọn kích thước lưới → Bắt đầu game
+- Navigation hoàn chỉnh: Select → Mode 1 → Mode 2 → Game
 - Logic tách biệt thành các hàm độc lập (renderGridBoard, renderRound, renderResult, resetGame)
 - Giao diện đơn giản, dễ mở rộng, dễ kiểm thử
 - Có hệ thống âm thanh và cài đặt tương tác qua Settings

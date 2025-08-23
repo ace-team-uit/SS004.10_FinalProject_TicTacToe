@@ -26,8 +26,8 @@ function initSelectGameScreen() {
         window["playSound"]("click");
       }
 
-      // Navigate to Game Mode 1 (game screen)
-      navigateToGame();
+      // Navigate to Game Mode 1 (difficulty selection)
+      navigateToGameMode1();
     });
   }
 
@@ -77,12 +77,12 @@ function initSelectGameScreen() {
   }
 
   // Navigation functions
-  function navigateToGame() {
+  function navigateToGameMode1() {
     if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("game");
+      (window.Navigation || window["Navigation"]).navigateTo("mode1");
     } else {
       console.warn("Navigation not available, redirecting manually");
-      window.location.href = "#game";
+      window.location.href = "#mode1";
     }
   }
 
