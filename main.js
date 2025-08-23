@@ -119,6 +119,10 @@ function autoChangeBGM(screenPath) {
       bgmType = "bgm-home";
     } else if (screenPath.includes("/select/")) {
       bgmType = "bgm-select";
+    } else if (screenPath.includes("/mode1/")) {
+      bgmType = "bgm-select";
+    } else if (screenPath.includes("/mode2/")) {
+      bgmType = "bgm-select";
     } else if (screenPath.includes("/game/")) {
       bgmType = "bgm-game";
     } else if (screenPath.includes("/settings/")) {

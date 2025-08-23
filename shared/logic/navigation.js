@@ -4,6 +4,8 @@
     intro: "screens/intro/intro.html",
     home: "screens/home/home.html",
     select: "screens/select/select.html",
+    mode1: "screens/mode1/mode1.html",
+    mode2: "screens/mode2/mode2.html",
     settings: "screens/settings/settings.html",
     marketplace: "screens/marketplace/marketplace.html",
     game: "screens/game/game.html",
@@ -38,13 +40,33 @@
   }
 
   function next() {
-    const ORDER = ["intro", "home", "select", "settings", "marketplace", "game", "result"];
+    const ORDER = [
+      "intro",
+      "home",
+      "select",
+      "mode1",
+      "mode2",
+      "settings",
+      "marketplace",
+      "game",
+      "result",
+    ];
     const idx = ORDER.indexOf(current || getRouteFromHash());
     navigateTo(ORDER[(idx + 1) % ORDER.length]);
   }
 
   function prev() {
-    const ORDER = ["intro", "home", "select", "settings", "marketplace", "game", "result"];
+    const ORDER = [
+      "intro",
+      "home",
+      "select",
+      "mode1",
+      "mode2",
+      "settings",
+      "marketplace",
+      "game",
+      "result",
+    ];
     const idx = ORDER.indexOf(current || getRouteFromHash());
     navigateTo(ORDER[(idx - 1 + ORDER.length) % ORDER.length]);
   }
