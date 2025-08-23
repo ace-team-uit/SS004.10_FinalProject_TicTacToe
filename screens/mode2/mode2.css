@@ -25,6 +25,7 @@
     flex-direction: column;
     width: 100%;
     align-items: center;
+    gap: 8px;
   }
 
   .grid-btn {

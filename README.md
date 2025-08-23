@@ -102,13 +102,7 @@ Game hỗ trợ:
 │ ├── home/
 │ ├── select/
 │ ├── mode1/
-│ │ ├── mode1.html
-│ │ ├── mode1.css
-│ │ └── mode1.screen.js
 │ ├── mode2/
-│ │ ├── mode2.html
-│ │ ├── mode2.css
-│ │ └── mode2.screen.js
 │ ├── game/
 │ ├── settings/
 │ ├── marketplace/
