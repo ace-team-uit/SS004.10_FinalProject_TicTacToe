@@ -1,8 +1,67 @@
-<div class="game-screen container">
-  <h2>🕹️ Màn chơi</h2>
-  <p>Chơi thôi nào!</p>
-  <div class="flex gap-4 mt-4">
-    <button id="to-result" class="btn btn-primary">Finish → Result</button>
-    <button id="exit-btn" class="btn btn-secondary">Back</button>
+<div class="screen game-screen">
+  <div class="screen__background game-background"></div>
+
+  <div class="screen__content">
+    <!-- Header Section -->
+    <div class="game-header">
+      <!-- Left Player Profile -->
+      <div class="player-profile player-left">
+        <div class="player-avatar">
+          <img src="assets/images/game/player1-avatar.png" alt="Player 1" class="avatar-img" />
+        </div>
+        <div class="player-mark">
+          <img src="assets/images/game/icon-display-board.png" alt="Board Icon" class="mark-bg" />
+          <span class="mark-text">O</span>
+        </div>
+      </div>
+
+      <!-- Game Status Center -->
+      <div class="game-status">
+        <div class="stars-container">
+          <img src="assets/images/game/star-filled.png" alt="Star" class="star star--left" />
+          <img src="assets/images/game/star-filled.png" alt="Star" class="star star--center" />
+          <img src="assets/images/game/star-empty.png" alt="Star" class="star star--right" />
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="score-display">1:0</div>
+      </div>
+
+      <!-- Right Player Profile -->
+      <div class="player-profile player-right">
+        <div class="player-avatar">
+          <img src="assets/images/game/player2-avatar.png" alt="Player 2" class="avatar-img" />
+        </div>
+        <div class="player-mark">
+          <img src="assets/images/game/icon-display-board.png" alt="Board Icon" class="mark-bg" />
+          <span class="mark-text">X</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Board Section -->
+    <div class="game-board-container">
+      <div id="game-board" class="game-board">
+        <!-- Board cells will be generated dynamically -->
+      </div>
+    </div>
+
+    <!-- Control Buttons Section -->
+    <nav class="screen__nav">
+      <button id="music-btn" class="btn btn--nav">
+        <img src="assets/images/common/audio-button.png" alt="Marketplace" class="nav-icon" />
+      </button>
+      <button id="back-btn" class="btn btn--nav">
+        <img
+          src="assets/images/common/back-button.png"
+          alt="Back"
+          class="nav-icon btn--nav--back"
+        />
+      </button>
+      <button id="settings-btn" class="btn btn--nav">
+        <img src="assets/images/common/setting-button.png" alt="Settings" class="nav-icon" />
+      </button>
+    </nav>
   </div>
 </div>
