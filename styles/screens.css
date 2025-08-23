@@ -51,7 +51,7 @@
 }
 
 .screen__action {
-  animation: fadeInUp 1s ease-out 0.3s both;
+  animation: fadeInUp 0.5s ease-out 0.3s both;
 }
 
 .screen__footer {
@@ -138,9 +138,7 @@
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .overlay--loading.show {
