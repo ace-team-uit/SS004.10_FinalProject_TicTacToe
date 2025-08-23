@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test RoundsManager Module</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .test-section {
+        background: white;
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-title {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .test-case {
+        background: #f8f9fa;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border-left: 4px solid #007bff;
+      }
+      .test-result {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .test-pass {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .test-fail {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .test-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      .state-display {
+        background: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        margin: 10px 0;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+      .stat-card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .stat-value {
+        font-size: 2em;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .stat-label {
+        color: #666;
+        margin-top: 5px;
+      }
+      .hearts-display {
+        display: flex;
+        gap: 5px;
+        margin: 10px 0;
+      }
+      .heart {
+        color: red;
+        font-size: 24px;
+      }
+      .heart-empty {
+        color: #ccc;
+      }
+      .score-display {
+        display: flex;
+        justify-content: space-around;
+        margin: 10px 0;
+        font-size: 20px;
+      }
+      .player-score {
+        color: #007bff;
+      }
+      .ai-score {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Test RoundsManager Module</h1>
+    <p>Testing all functions in the RoundsManager module for Tic Tac Toe game</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="totalTests">0</div>
+        <div class="stat-label">Total Tests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="passedTests">0</div>
+        <div class="stat-label">Passed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="failedTests">0</div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">1. Game State Display</h2>
+      <div class="score-display">
+        <div class="player-score">Player: <span id="playerScore">0</span></div>
+        <div class="ai-score">AI: <span id="aiScore">0</span></div>
+      </div>
+      <div class="hearts-display" id="heartsDisplay"></div>
+      <div>Round: <span id="currentRound">1</span>/<span id="maxRounds">3</span></div>
+      <div>Status: <span id="gameStatus">playing</span></div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">2. Test Controls</h2>
+
+      <div class="test-case">
+        <h3>Initialize Game</h3>
+        <select id="boardSize">
+          <option value="3">3x3</option>
+          <option value="4">4x4</option>
+          <option value="5">5x5</option>
+        </select>
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <button onclick="initGame()">Initialize Game</button>
+        <div id="init-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>End Round</h3>
+        <button onclick="handleRoundEnd(1)">Player Wins</button>
+        <button onclick="handleRoundEnd(2)">AI Wins</button>
+        <button onclick="handleRoundEnd(0)">Draw</button>
+        <div id="round-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>State Management</h3>
+        <button onclick="resetState()">Reset State</button>
+        <button onclick="resetGame()">Reset Game</button>
+        <div id="reset-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>Settings</h3>
+        <button onclick="changeBoardSize(3)">3x3</button>
+        <button onclick="changeBoardSize(4)">4x4</button>
+        <button onclick="changeBoardSize(5)">5x5</button>
+        <button onclick="changeDifficulty('easy')">Easy</button>
+        <button onclick="changeDifficulty('medium')">Medium</button>
+        <button onclick="changeDifficulty('hard')">Hard</button>
+        <div id="settings-result"></div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">3. Current State</h2>
+      <div class="state-display" id="current-state">No state initialized yet</div>
+    </div>
+
+    <script src="./shared/logic/rounds.js"></script>
+    <script>
+      let currentState = null;
+
+      function updateDisplay() {
+        if (!currentState) return;
+
+        // Update scores
+        document.getElementById("playerScore").textContent = currentState.scores.player;
+        document.getElementById("aiScore").textContent = currentState.scores.ai;
+
+        // Update hearts
+        const heartsDisplay = document.getElementById("heartsDisplay");
+        heartsDisplay.innerHTML = "";
+        for (let i = 0; i < currentState.maxHearts; i++) {
+          const heart = document.createElement("span");
+          heart.className = "heart" + (i < currentState.hearts ? "" : " heart-empty");
+          heart.textContent = "❤";
+          heartsDisplay.appendChild(heart);
+        }
+
+        // Update round info
+        document.getElementById("currentRound").textContent = currentState.currentRound;
+        document.getElementById("maxRounds").textContent = currentState.maxRounds;
+        document.getElementById("gameStatus").textContent = currentState.gameStatus;
+
+        // Update state display
+        document.getElementById("current-state").textContent = JSON.stringify(
+          currentState,
+          null,
+          2
+        );
+      }
+
+      function showResult(elementId, success, message) {
+        const element = document.getElementById(elementId);
+        element.className = "test-result " + (success ? "test-pass" : "test-fail");
+        element.textContent = message;
+      }
+
+      function initGame() {
+        const size = parseInt(document.getElementById("boardSize").value);
+        const difficulty = document.getElementById("difficulty").value;
+
+        try {
+          currentState = RoundsManager.initRoundsState(size, difficulty);
+          showResult("init-result", true, "Game initialized successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("init-result", false, "Error: " + error.message);
+        }
+      }
+
+      function handleRoundEnd(winner) {
+        if (!currentState) {
+          showResult("round-result", false, "Please initialize game first");
+          return;
+        }
+
+        try {
+          currentState = RoundsManager.handleRoundEnd(currentState, winner);
+          showResult("round-result", true, "Round ended successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("round-result", false, "Error: " + error.message);
+        }
+      }
+
+      function resetState() {
+        if (!currentState) {
+          showResult("reset-result", false, "Please initialize game first");
+          return;
+        }
+
+        try {
+          currentState = RoundsManager.resetState(currentState);
+          showResult("reset-result", true, "State reset successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("reset-result", false, "Error: " + error.message);
+        }
+      }
+
+      function resetGame() {
+        if (!currentState) {
+          showResult("reset-result", false, "Please initialize game first");
+          return;
+        }
+
+        try {
+          currentState = RoundsManager.resetGame(currentState);
+          showResult("reset-result", true, "Game reset successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("reset-result", false, "Error: " + error.message);
+        }
+      }
+
+      function changeBoardSize(size) {
+        if (!currentState) {
+          showResult("settings-result", false, "Please initialize game first");
+          return;
+        }
+
+        try {
+          currentState = RoundsManager.setBoardSize(currentState, size);
+          showResult("settings-result", true, "Board size changed successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("settings-result", false, "Error: " + error.message);
+        }
+      }
+
+      function changeDifficulty(difficulty) {
+        if (!currentState) {
+          showResult("settings-result", false, "Please initialize game first");
+          return;
+        }
+
+        try {
+          currentState = RoundsManager.setDifficulty(currentState, difficulty);
+          showResult("settings-result", true, "Difficulty changed successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("settings-result", false, "Error: " + error.message);
+        }
+      }
+
+      // Initialize display
+      updateDisplay();
+    </script>
+  </body>
+</html>
