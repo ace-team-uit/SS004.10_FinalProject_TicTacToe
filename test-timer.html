@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test TimerManager Module</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .test-section {
+        background: white;
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-title {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .test-case {
+        background: #f8f9fa;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border-left: 4px solid #007bff;
+      }
+      .test-result {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .test-pass {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .test-fail {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .test-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      .state-display {
+        background: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        margin: 10px 0;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+      }
+      .timer-display {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      .time-remaining {
+        font-size: 3em;
+        font-weight: bold;
+        color: #007bff;
+        margin: 10px 0;
+      }
+      .timer-status {
+        font-size: 1.2em;
+        color: #666;
+        margin: 10px 0;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      .progress-fill {
+        height: 100%;
+        background-color: #007bff;
+        transition: width 0.3s ease;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+      .stat-card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .stat-value {
+        font-size: 2em;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .stat-label {
+        color: #666;
+        margin-top: 5px;
+      }
+      .difficulty-buttons {
+        display: flex;
+        gap: 10px;
+        margin: 10px 0;
+      }
+      .difficulty-btn {
+        background: #28a745;
+      }
+      .difficulty-btn.active {
+        background: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>⏰ Test TimerManager Module</h1>
+    <p>Testing timer functionality with difficulty integration and visual controls</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="totalTests">0</div>
+        <div class="stat-label">Total Tests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="passedTests">0</div>
+        <div class="stat-label">Passed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="failedTests">0</div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">1. Timer Display</h2>
+      <div class="timer-display">
+        <div class="time-remaining" id="timeRemaining">--</div>
+        <div class="timer-status" id="timerStatus">Not started</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div>Difficulty: <span id="currentDifficulty">medium</span></div>
+        <div>Max Time: <span id="maxTime">10</span>s</div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">2. Timer Controls</h2>
+
+      <div class="test-case">
+        <h3>Initialize Timer</h3>
+        <div class="difficulty-buttons">
+          <button class="difficulty-btn" onclick="setDifficulty('easy')">Easy (15s)</button>
+          <button class="difficulty-btn active" onclick="setDifficulty('medium')">
+            Medium (10s)
+          </button>
+          <button class="difficulty-btn" onclick="setDifficulty('hard')">Hard (5s)</button>
+        </div>
+        <button onclick="initTimer()">Initialize Timer</button>
+        <div id="init-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>Timer Operations</h3>
+        <button id="startBtn" onclick="startTimer()" disabled>Start Timer</button>
+        <button id="pauseBtn" onclick="pauseTimer()" disabled>Pause</button>
+        <button id="resumeBtn" onclick="resumeTimer()" disabled>Resume</button>
+        <button id="stopBtn" onclick="stopTimer()" disabled>Stop Timer</button>
+        <button onclick="resetTimer()">Reset Timer</button>
+        <div id="timer-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>Custom Duration</h3>
+        <input
+          type="number"
+          id="customDuration"
+          placeholder="Enter seconds"
+          min="1"
+          max="60"
+          value="10"
+        />
+        <button onclick="startCustomTimer()">Start Custom Timer</button>
+        <div id="custom-result"></div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">3. Test Scenarios</h2>
+
+      <div class="test-case">
+        <h3>Timeout Test</h3>
+        <button onclick="testTimeout()">Test Timeout (3s)</button>
+        <div id="timeout-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>Pause/Resume Test</h3>
+        <button onclick="testPauseResume()">Test Pause/Resume</button>
+        <div id="pause-resume-result"></div>
+      </div>
+
+      <div class="test-case">
+        <h3>Difficulty Change Test</h3>
+        <button onclick="testDifficultyChange()">Test Difficulty Change</button>
+        <div id="difficulty-result"></div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2 class="test-title">4. Current State</h2>
+      <div class="state-display" id="current-state">No timer initialized yet</div>
+    </div>
+
+    <script src="./shared/logic/timer.js"></script>
+    <script>
+      let currentTimerState = null;
+      let testCount = 0;
+      let passedCount = 0;
+      let failedCount = 0;
+
+      function updateStats() {
+        document.getElementById("totalTests").textContent = testCount;
+        document.getElementById("passedTests").textContent = passedCount;
+        document.getElementById("failedTests").textContent = failedCount;
+      }
+
+      function runTest(testName, testFunction, expectedResult) {
+        testCount++;
+        try {
+          const result = testFunction();
+          const passed = JSON.stringify(result) === JSON.stringify(expectedResult);
+
+          if (passed) {
+            passedCount++;
+            return `<div class="test-result test-pass">✅ PASS: ${testName}</div>`;
+          } else {
+            failedCount++;
+            return `<div class="test-result test-fail">❌ FAIL: ${testName}<br>
+                    Expected: ${JSON.stringify(expectedResult)}<br>
+                    Got: ${JSON.stringify(result)}</div>`;
+          }
+        } catch (error) {
+          failedCount++;
+          return `<div class="test-result test-fail">❌ ERROR: ${testName}<br>Error: ${error.message}</div>`;
+        } finally {
+          updateStats();
+        }
+      }
+
+      function showResult(elementId, success, message) {
+        const element = document.getElementById(elementId);
+        element.className = "test-result " + (success ? "test-pass" : "test-fail");
+        element.innerHTML = message;
+      }
+
+      function updateDisplay() {
+        if (!currentTimerState) return;
+
+        const status = TimerManager.getCurrentStatus(currentTimerState);
+
+        // Update time display
+        document.getElementById("timeRemaining").textContent = status.timeRemaining;
+        document.getElementById("timerStatus").textContent = status.isPaused
+          ? "Paused"
+          : status.isRunning
+            ? "Running"
+            : "Stopped";
+
+        // Update progress bar
+        document.getElementById("progressFill").style.width = status.progress + "%";
+
+        // Update difficulty and max time
+        document.getElementById("currentDifficulty").textContent = status.difficulty;
+        document.getElementById("maxTime").textContent = status.maxTime;
+
+        // Update button states
+        document.getElementById("startBtn").disabled = status.isRunning;
+        document.getElementById("pauseBtn").disabled = !status.isRunning || status.isPaused;
+        document.getElementById("resumeBtn").disabled = !status.isRunning || !status.isPaused;
+        document.getElementById("stopBtn").disabled = !status.isRunning;
+
+        // Update state display
+        document.getElementById("current-state").textContent = JSON.stringify(
+          currentTimerState,
+          null,
+          2
+        );
+      }
+
+      function setDifficulty(difficulty) {
+        // Update active button
+        document.querySelectorAll(".difficulty-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        if (currentTimerState) {
+          currentTimerState = TimerManager.setDifficulty(currentTimerState, difficulty);
+          updateDisplay();
+        }
+      }
+
+      function initTimer() {
+        const difficulty = document
+          .querySelector(".difficulty-btn.active")
+          .textContent.split(" ")[0]
+          .toLowerCase();
+
+        try {
+          currentTimerState = TimerManager.initTimerState(difficulty);
+          showResult("init-result", true, "Timer initialized successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("init-result", false, "Error: " + error.message);
+        }
+      }
+
+      function startTimer() {
+        if (!currentTimerState) {
+          showResult("timer-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          currentTimerState = TimerManager.startTurnTimer(
+            currentTimerState,
+            null, // Use default duration
+            () => {
+              showResult("timer-result", true, "Timer timeout! Player should switch");
+              updateDisplay();
+            },
+            (currentTime) => {
+              // onTick callback
+              updateDisplay();
+            }
+          );
+          showResult("timer-result", true, "Timer started successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("timer-result", false, "Error: " + error.message);
+        }
+      }
+
+      function startCustomTimer() {
+        if (!currentTimerState) {
+          showResult("custom-result", false, "Please initialize timer first");
+          return;
+        }
+
+        const duration = parseInt(document.getElementById("customDuration").value);
+        if (!duration || duration < 1 || duration > 60) {
+          showResult("custom-result", false, "Please enter a valid duration (1-60 seconds)");
+          return;
+        }
+
+        try {
+          currentTimerState = TimerManager.startTurnTimer(
+            currentTimerState,
+            duration,
+            () => {
+              showResult("custom-result", true, "Custom timer timeout!");
+              updateDisplay();
+            },
+            (currentTime) => {
+              updateDisplay();
+            }
+          );
+          showResult("custom-result", true, `Custom timer started with ${duration}s`);
+          updateDisplay();
+        } catch (error) {
+          showResult("custom-result", false, "Error: " + error.message);
+        }
+      }
+
+      function pauseTimer() {
+        if (!currentTimerState) {
+          showResult("timer-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          currentTimerState = TimerManager.pause(currentTimerState);
+          showResult("timer-result", true, "Timer paused successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("timer-result", false, "Error: " + error.message);
+        }
+      }
+
+      function resumeTimer() {
+        if (!currentTimerState) {
+          showResult("timer-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          currentTimerState = TimerManager.resume(currentTimerState);
+          showResult("timer-result", true, "Timer resumed successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("timer-result", false, "Error: " + error.message);
+        }
+      }
+
+      function stopTimer() {
+        if (!currentTimerState) {
+          showResult("timer-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          currentTimerState = TimerManager.stopTurnTimer(currentTimerState);
+          showResult("timer-result", true, "Timer stopped successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("timer-result", false, "Error: " + error.message);
+        }
+      }
+
+      function resetTimer() {
+        if (!currentTimerState) {
+          showResult("timer-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          currentTimerState = TimerManager.reset(currentTimerState);
+          showResult("timer-result", true, "Timer reset successfully");
+          updateDisplay();
+        } catch (error) {
+          showResult("timer-result", false, "Error: " + error.message);
+        }
+      }
+
+      function testTimeout() {
+        if (!currentTimerState) {
+          showResult("timeout-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          // Start a 3-second timer
+          currentTimerState = TimerManager.startTurnTimer(currentTimerState, 3, () => {
+            showResult("timeout-result", true, "Timeout test passed! Timer stopped automatically");
+            updateDisplay();
+          });
+          showResult("timeout-result", true, "Timeout test started (3s countdown)");
+          updateDisplay();
+        } catch (error) {
+          showResult("timeout-result", false, "Error: " + error.message);
+        }
+      }
+
+      function testPauseResume() {
+        if (!currentTimerState) {
+          showResult("pause-resume-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          // Start timer
+          currentTimerState = TimerManager.startTurnTimer(currentTimerState, 10, () => {
+            showResult("pause-resume-result", true, "Timer completed");
+            updateDisplay();
+          });
+
+          // Pause after 2 seconds
+          setTimeout(() => {
+            if (currentTimerState && currentTimerState.isRunning) {
+              currentTimerState = TimerManager.pause(currentTimerState);
+              showResult(
+                "pause-resume-result",
+                true,
+                "Timer paused after 2s. Click Resume to continue."
+              );
+              updateDisplay();
+            }
+          }, 2000);
+
+          showResult(
+            "pause-resume-result",
+            true,
+            "Pause/Resume test started. Timer will pause after 2s."
+          );
+          updateDisplay();
+        } catch (error) {
+          showResult("pause-resume-result", false, "Error: " + error.message);
+        }
+      }
+
+      function testDifficultyChange() {
+        if (!currentTimerState) {
+          showResult("difficulty-result", false, "Please initialize timer first");
+          return;
+        }
+
+        try {
+          // Change difficulty while timer is running
+          const newDifficulty = currentTimerState.difficulty === "easy" ? "hard" : "easy";
+          currentTimerState = TimerManager.setDifficulty(currentTimerState, newDifficulty);
+
+          showResult(
+            "difficulty-result",
+            true,
+            `Difficulty changed to ${newDifficulty}. Max time: ${TimerManager.getTimeByDifficulty(
+              newDifficulty
+            )}s`
+          );
+          updateDisplay();
+        } catch (error) {
+          showResult("difficulty-result", false, "Error: " + error.message);
+        }
+      }
+
+      // Initialize display
+      updateDisplay();
+    </script>
+  </body>
+</html>
