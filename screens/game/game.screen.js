@@ -136,6 +136,7 @@ function initGameScreen() {
   resizeCellTextFontSize();
 
   // Quan sát thay đổi kích thước bàn cờ
+  /* global ResizeObserver */
   if (typeof ResizeObserver !== "undefined" && gameBoard) {
     const resizeObserver = new ResizeObserver(() => {
       resizeCellTextFontSize();
@@ -254,6 +255,7 @@ function initGameScreen() {
   }
 
   // Resize cell text font size
+  /* global ResizeObserver */
   function observeCellTextResize(cell) {
     const text = cell.querySelector(".cell-text");
     if (!text) return;
