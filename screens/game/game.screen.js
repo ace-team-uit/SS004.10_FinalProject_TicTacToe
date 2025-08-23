@@ -136,9 +136,11 @@ function initGameScreen() {
       if (i === 1 || i === 3) {
         cell.setAttribute("data-value", "X");
         cellText.textContent = "X";
+        disableCell(cell);
       } else if (i === 4) {
         cell.setAttribute("data-value", "O");
         cellText.textContent = "O";
+        disableCell(cell);
       }
 
       cell.appendChild(cellText);
@@ -190,6 +192,9 @@ function initGameScreen() {
 
     cellText.textContent = mark;
 
+    // Disable the cell after marking
+    disableCell(cell);
+
     console.log(`✅ Cell ${index} marked with ${mark}`);
     updateGameState();
   }
@@ -239,6 +244,20 @@ function initGameScreen() {
       musicBtn.style.opacity = "0.5";
       musicBtn.style.filter = "grayscale(100%)";
     }
+  }
+
+  // Disable cell (remove cursor pointer and make it non-interactive)
+  function disableCell(cell) {
+    if (!cell) return;
+
+    cell.style.cursor = "not-allowed";
+    cell.style.pointerEvents = "none";
+    cell.style.opacity = "0.8";
+
+    // Add visual feedback that cell is disabled
+    cell.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+
+    console.log("🔒 Cell disabled");
   }
 
   function navigateToGameMode2() {
