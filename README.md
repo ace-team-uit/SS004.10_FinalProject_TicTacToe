@@ -69,7 +69,7 @@ Game hỗ trợ:
 - Chạy unit tests
 - Xem console logs và status
 
-### Test Game Mode 1 & 2
+### Test Game Mode 1, 2 & Game Page
 
 Để test Game Mode 1 page, mở file `screens/mode1/mode1.html` trực tiếp:
 
@@ -85,6 +85,14 @@ Game hỗ trợ:
 - Test các hình ảnh chọn kích thước lưới (3x3, 4x4, 5x5)
 - Test nút back và navigation
 - Test hover effects với scale transform
+- Xem console logs và interactions
+
+Để test Game Page, mở file `screens/game/game.html` trực tiếp:
+
+- Test UI layout với player profiles và game board
+- Test interactive board cells (click để đánh X/O)
+- Test control buttons (music, reset, settings)
+- Test dynamic grid size (3x3, 4x4, 5x5)
 - Xem console logs và interactions
 
 ## Cấu trúc thư mục
