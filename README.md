@@ -96,7 +96,7 @@ Game hỗ trợ:
 - Xem console logs và interactions
 
 ## Cấu trúc thư mục
-
+```
 ├── assets/ # Tài nguyên tĩnh
 │ ├── fonts/
 │ ├── images/
@@ -149,7 +149,7 @@ Game hỗ trợ:
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
-
+```
 ## Điều Hướng Giữa Các Màn Hình
 
 ```mermaid
@@ -222,3 +222,14 @@ Nếu là giảng viên, bạn có thể liên hệ nhóm qua Slack để đư�
 Dự án được thực hiện bởi nhóm sinh viên lớp CN1.K2025.1.TTNT – Trường Đại học Công nghệ Thông tin – ĐHQG-HCM.  
 Mục đích sử dụng: học tập và trình bày kết quả môn học.  
 Vui lòng không sao chép với mục đích thương mại hoặc học vụ khác mà không được sự cho phép của nhóm.
+
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if you find it helpful!**
+
+Made with ❤️ by Ace Team, UIT.
+
+</div>
