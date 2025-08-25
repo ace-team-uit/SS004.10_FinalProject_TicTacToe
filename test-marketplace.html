@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Test</title>
+    <link rel="stylesheet" href="screens/marketplace/marketplace.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .test-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .test-info h3 {
+            margin: 0 0 10px 0;
+            color: #1976d2;
+        }
+        .test-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .test-info li {
+            margin: 5px 0;
+        }
+        .localStorage-info {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .localStorage-info h4 {
+            margin: 0 0 10px 0;
+            color: #7b1fa2;
+        }
+        .localStorage-data {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .clear-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .clear-btn:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎮 Marketplace Test Page</h1>
+        
+        <div class="test-info">
+            <h3>📋 Test Instructions:</h3>
+            <ul>
+                <li><strong>Left Button (◀)</strong>: Chuyển về board trước đó với hiệu ứng slide</li>
+                <li><strong>Right Button (▶)</strong>: Chuyển đến board tiếp theo với hiệu ứng slide</li>
+                <li><strong>Select Button</strong>: Lưu board hiện tại vào localStorage và thoát về select screen</li>
+                <li><strong>Back Button</strong>: Thoát về select screen</li>
+            </ul>
+        </div>
+
+        <div class="localStorage-info">
+            <h4>💾 LocalStorage Data:</h4>
+            <div id="localStorageData" class="localStorage-data">No data yet</div>
+            <button class="clear-btn" onclick="clearLocalStorage()">Clear LocalStorage</button>
+        </div>
+
+        <!-- Marketplace Screen -->
+        <div class="screen marketplace-screen">
+            <div class="screen__background"></div>
+
+            <div class="screen__content">
+                <div class="screen__logo">
+                    <img src="assets/images/logo.png" alt="ACE Logo" class="logo-img" style="width: 100px; height: auto;" />
+                </div>
+
+                <div class="screen__action">
+                    <div class="marketplace-selection">
+                        <div class="">
+                            <button>
+                                <img
+                                    id="left-btn"
+                                    src="assets/images/common/triangle-left-button.png"
+                                    class="left-btn"
+                                    alt="Left"
+                                />
+                            </button>
+                        </div>
+                        <div class="">
+                            <div>
+                                <img
+                                    id="board"
+                                    src="assets/images/marketplace/board-01.png"
+                                    class="board"
+                                    alt="Board"
+                                />
+                            </div>
+                            <div class="board-container">
+                                <img
+                                    id="ground"
+                                    src="assets/images/marketplace/ground.png"
+                                    class="ground"
+                                    alt="Ground"
+                                />
+                                <button id="select-btn" class="select-btn">
+                                    <img src="assets/images/common/select-button.png" alt="Select" />
+                                </button>
+                            </div>
+                        </div>
+                        <div class="">
+                            <button>
+                                <img
+                                    id="right-btn"
+                                    src="assets/images/common/triangle-right-button.png"
+                                    class="right-btn"
+                                    alt="Right"
+                                />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 100px" />
+            </div>
+            <div class="screen__footer">
+                <img id="back-btn" src="assets/images/common/back-button.png" alt="Back" class="back-btn" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock functions for testing
+        window.playSound = function(sound) {
+            console.log(`🔊 Playing sound: ${sound}`);
+        };
+
+        window.Navigation = {
+            navigateTo: function(screen) {
+                console.log(`🔄 Navigating to: ${screen}`);
+                alert(`Navigating to ${screen} screen!`);
+            }
+        };
+
+        // Update localStorage display
+        function updateLocalStorageDisplay() {
+            const data = localStorage.getItem("selectedBoard");
+            const display = document.getElementById("localStorageData");
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    display.textContent = JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    display.textContent = "Invalid JSON data";
+                }
+            } else {
+                display.textContent = "No data yet";
+            }
+        }
+
+        // Clear localStorage
+        function clearLocalStorage() {
+            localStorage.removeItem("selectedBoard");
+            updateLocalStorageDisplay();
+            console.log("🗑️ LocalStorage cleared");
+        }
+
+        // Update display every second
+        setInterval(updateLocalStorageDisplay, 1000);
+        updateLocalStorageDisplay();
+    </script>
+
+    <script src="screens/marketplace/marketplace.screen.js"></script>
+</body>
+</html>
