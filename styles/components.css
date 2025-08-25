@@ -47,7 +47,9 @@
   letter-spacing: 0.3px;
   text-transform: uppercase;
   text-decoration: none;
-  transition: transform 120ms ease, filter 120ms ease;
+  transition-property: transform, filter;
+  transition-duration: 120ms;
+  transition-timing-function: ease;
   will-change: transform;
 }
 
