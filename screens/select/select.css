@@ -2,8 +2,9 @@
   .screen__action {
     .btn {
       width: 64vw;
-      max-width: 256px;
+      max-width: 300px;
       transition: transform 0.2s ease;
+      margin-right: -32px;
     }
   }
 
