@@ -29,6 +29,15 @@
         height: auto;
         cursor: pointer;
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
       }
 
       .board {
@@ -42,6 +51,33 @@
         transform: translateX(-50%);
 
         z-index: 1;
+
+        /* Board transition effects */
+        transition: all 0.3s ease-in-out;
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+
+      /* Board slide out to left */
+      .board.slide-left {
+        opacity: 0;
+        transform: translateX(-100%) scale(0.8);
+      }
+
+      /* Board slide out to right */
+      .board.slide-right {
+        opacity: 0;
+        transform: translateX(0%) scale(0.8);
+      }
+
+      /* Board slide in from left */
+      .board.slide-in-left {
+        animation: slideInLeft 0.3s ease-in-out;
+      }
+
+      /* Board slide in from right */
+      .board.slide-in-right {
+        animation: slideInRight 0.3s ease-in-out;
       }
 
       .ground {
@@ -100,5 +136,28 @@
         transform: scale(0.95);
       }
     }
+  }
+}
+
+/* Board slide animations */
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(0%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
   }
 }
