@@ -1,0 +1,16 @@
+{
+  "name": "tictactoe-game",
+  "version": "1.0.0",
+  "description": "Tic Tac Toe game with multiple game modes",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "ci": "npm run lint && npm run format:check"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0"
+  }
+}
