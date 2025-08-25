@@ -1,0 +1,20 @@
+# Ignore demo and test files
+demo-*.html
+test-*.html
+
+# Ignore build outputs
+dist/
+build/
+*.min.js
+
+# Ignore package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore git files
+.git/
+.gitignore
+
+# Ignore node modules
+node_modules/
