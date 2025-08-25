@@ -299,7 +299,7 @@ Click OK để tiếp tục.
       // Fade in BGM mới
       this.currentBgm = bgm;
       bgm.volume = 0;
-      bgm.play();
+      bgm?.play?.();
       await this.fadeInBGM(bgm);
 
       console.log(`🎶 Playing BGM: ${type}`);
