@@ -49,6 +49,33 @@
         width: 45vw;
         height: auto;
       }
+
+      .board-container {
+        position: relative;
+      }
+
+      .select-btn {
+        position: absolute;
+        top: 80%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: transform 0.2s ease;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        z-index: 2;
+
+        &:hover {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        &:active {
+          transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          filter: grayscale(100%);
+        }
+      }
     }
   }
 
