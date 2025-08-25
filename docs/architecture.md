@@ -4,8 +4,7 @@
 - Screen loader in `main.js` injects `screens/<name>/*.html` into `div.phone-viewport` and attaches each screen's CSS/JS.
 - Global UI foundation in `styles/*` provides variables, reset, utilities, components, and theming.
 - Navigation API in `shared/logic/navigation.js` exposes `Navigation.navigateTo(route)`.
-- Shared logic/modules live under `shared/` and common UI components in `components/`.
-- Constants and asset paths are centralized in `constants/assets/index.js`.
+- Shared logic/modules live under `shared/`.
 
 ### Screen Module Convention
 
