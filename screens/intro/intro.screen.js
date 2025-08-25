@@ -38,10 +38,10 @@ function initIntroScreen() {
   // Handle start button click
   function handleStart() {
     console.log("🎯 Start button clicked");
-    startButton.classList.add("hidden");
+    startButton?.classList.add("hidden");
 
     video
-      .play()
+      ?.play()
       .then(() => {
         console.log("🎥 Video started playing successfully");
         // Start timer for navigation
@@ -49,7 +49,7 @@ function initIntroScreen() {
       })
       .catch((error) => {
         console.error("❌ Error playing video:", error);
-        startButton.classList.remove("hidden");
+        startButton?.classList.remove("hidden");
       });
   }
 
@@ -73,10 +73,10 @@ function initIntroScreen() {
     if (introScreen) {
       introScreen.classList.add("fade-out");
       setTimeout(() => {
-        (window.Navigation || window["Navigation"]).navigateTo("home");
+        (window.Navigation || window["Navigation"])?.navigateTo("home");
       }, 500);
     } else {
-      (window.Navigation || window["Navigation"]).navigateTo("home");
+      (window.Navigation || window["Navigation"])?.navigateTo("home");
     }
   }
 

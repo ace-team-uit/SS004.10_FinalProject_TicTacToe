@@ -82,10 +82,10 @@ console.log("Audio status:", status);
 ```javascript
 // Trong audio.js, thêm vào soundMap
 this.soundMap = {
-  click: "assets/sounds/common/click.mp3",
-  win: "assets/sounds/common/win.mp3",
-  lose: "assets/sounds/common/lose.mp3",
-  draw: "assets/sounds/common/draw.mp3",
+  click: "assets/sounds/click.mp3",
+  win: "assets/sounds/win.mp3",
+  lose: "assets/sounds/lose.mp3",
+  draw: "assets/sounds/draw.mp3",
   // Thêm sound mới
   newSound: "assets/sounds/common/new-sound.mp3",
 };

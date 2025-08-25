@@ -19,10 +19,10 @@ class AudioManager {
 
     // Sound mapping
     this.soundMap = {
-      click: "assets/sounds/common/click.mp3",
-      win: "assets/sounds/common/win.mp3",
-      lose: "assets/sounds/common/lose.mp3",
-      draw: "assets/sounds/common/draw.mp3",
+      click: "assets/sounds/click.mp3",
+      win: "assets/sounds/win.mp3",
+      lose: "assets/sounds/lose.mp3",
+      draw: "assets/sounds/draw.mp3",
     };
 
     // BGM mapping
