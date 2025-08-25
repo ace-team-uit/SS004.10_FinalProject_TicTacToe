@@ -1,8 +1,8 @@
 .select-screen {
   .screen__action {
     .btn {
-      width: 320px;
-      height: 320px;
+      width: 64vw;
+      max-width: 256px;
       transition: transform 0.2s ease;
     }
   }
@@ -10,6 +10,5 @@
   .screen__nav {
     gap: 8px;
     align-items: flex-end;
-    padding-bottom: 16px;
   }
 }
