@@ -38,7 +38,6 @@
 }
 
 .screen__logo {
-  margin-top: var(--space-12);
   animation: fadeInDown 1s ease-out;
 }
 
@@ -56,7 +55,7 @@
 
 .screen__footer {
   position: absolute;
-  bottom: 24px;
+  bottom: 16px;
   width: 100%;
   text-align: center;
   animation: fadeInUp 0.5s ease-out 0.6s both;
@@ -92,16 +91,6 @@
   transform: scale(0.95);
 }
 
-.btn-img {
-  width: 200px;
-  max-width: 80vw;
-}
-
-.btn-img--wide {
-  width: 320px;
-  padding-left: 32px;
-}
-
 .img-shadow {
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
 }
@@ -110,18 +99,19 @@
 .screen__nav {
   display: flex;
   z-index: 3;
-  padding: 16px 0;
   animation: fadeInUp 1s ease-out 0.9s both;
 }
 
 .nav-icon {
-  width: 96px;
+  width: 20vw;
+  max-width: 80px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .nav-icon--home {
-  width: 120px;
+  width: 24vw;
+  max-width: 120px;
 }
 
 /* Loading Overlay */
