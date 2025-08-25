@@ -19,7 +19,7 @@ module.exports = [
         loadScreen: "readonly",
         fetch: "readonly",
         setTimeout: "readonly",
-        
+
         // DOM element types
         HTMLImageElement: "readonly",
         HTMLElement: "readonly",
