@@ -18,7 +18,6 @@
 .phone-viewport {
   height: 100dvh;
   width: 100dvw;
-  aspect-ratio: 9 / 16;
   min-width: 375px;
   max-width: 430px;
   max-height: 932px;
@@ -48,9 +47,9 @@
   letter-spacing: 0.3px;
   text-transform: uppercase;
   text-decoration: none;
-  transition:
-    transform 120ms ease,
-    filter 120ms ease;
+  transition-property: transform, filter;
+  transition-duration: 120ms;
+  transition-timing-function: ease;
   will-change: transform;
 }
 

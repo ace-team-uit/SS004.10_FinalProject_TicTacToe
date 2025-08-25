@@ -7,6 +7,10 @@
     z-index: 1;
   }
 
+  .home-logo {
+    margin-top: var(--space-12);
+  }
+
   .screen__content {
     padding: 20% 16px;
   }
@@ -14,7 +18,8 @@
   .btn.btn--pulse {
     transition: transform 0.2s ease;
     img {
-      width: 220px;
+      max-width: 220px;
+      width: 48vw;
     }
   }
 

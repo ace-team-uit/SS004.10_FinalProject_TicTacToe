@@ -9,6 +9,7 @@
   .screen__content {
     padding: 8% 16px;
     justify-content: space-between;
+    gap: 3vh;
   }
 
   .difficulty-selection {
@@ -25,11 +26,19 @@
     flex-direction: column;
     width: 100%;
     align-items: center;
+    margin-left: -60px;
+    gap: 2vh;
+  }
+
+  .medium-btn {
+    transform: scale(1.05);
   }
 
   .difficulty-btn {
-    width: 320px;
-    height: 132px;
+    width: 70vw;
+    max-width: 340px;
+    height: auto;
+    aspect-ratio: 3/1;
     cursor: pointer;
     transition: transform 0.2s ease;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
@@ -48,10 +57,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 16px 0;
 
     .back-btn {
-      width: 100px;
+      width: 24vw;
+      max-width: 120px;
       height: auto;
       cursor: pointer;
       transition: transform 0.2s ease;
