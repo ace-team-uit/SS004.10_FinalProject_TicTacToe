@@ -7,6 +7,10 @@
     z-index: 3;
   }
 
+  .screen__content {
+    gap: 2vh;
+  }
+
   .player-profile {
     display: flex;
     flex-direction: column;
@@ -14,8 +18,8 @@
   }
 
   .player-avatar {
-    width: 96px;
-    height: 96px;
+    width: 72px;
+    height: 72px;
     position: relative;
 
     .avatar-img {
@@ -28,8 +32,8 @@
   .player-mark {
     margin-top: -24px;
     position: relative;
-    width: 96px;
-    height: 96px;
+    width: 72px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,11 +60,11 @@
 
   /* Game Status Center */
   .game-status {
-    padding-top: 18px;
+    padding-top: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 2vh;
     flex: 1;
     max-width: 200px;
   }
@@ -108,12 +112,14 @@
 
   .score-display {
     font-family: var(--font-display);
-    font-size: 96px;
+    font-size: 72px;
     line-height: 1;
     font-weight: bold;
     color: var(--white);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: 0.2em;
+    text-align: center;
+    padding-left: 32px;
   }
 
   /* Game Board */
