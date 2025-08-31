@@ -7,6 +7,9 @@
 
 :root {
   color-scheme: light dark;
+  --red-400: #f87171;
+  --yellow-400: #fbbf24;
+  --green-400: #34d399;
 }
 
 @font-face {
