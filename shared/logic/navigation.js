@@ -1,4 +1,4 @@
-// Navigation helper (single source of truth)
+// Trợ giúp điều hướng (nguồn duy nhất của sự thật)
 (function () {
   const ROUTES = {
     intro: {
@@ -54,10 +54,10 @@
   let current = null;
 
   function navigateFromIntro() {
-    console.log("🏠 Navigating from intro to home");
+    console.log("🏠 Đang điều hướng từ intro đến home");
     window["AppStorage"]?.saveSettings({ gameIntroShown: true });
 
-    // Stop intro BGM before navigating
+    // Dừng BGM intro trước khi điều hướng
     if (window["audioManager"]) {
       window["audioManager"].stopBgm();
     }
@@ -96,31 +96,31 @@
   }
 
   function navigateTo(route, opts = {}) {
-    console.log("🏠 Navigating to", route);
-    // Check if intro needs to be shown
+    console.log("🏠 Đang điều hướng đến", route);
+    // Kiểm tra xem intro có cần hiển thị không
     const settings = window["AppStorage"]?.loadSettings();
     const target =
       !settings?.gameIntroShown && route !== "intro" ? "intro" : ROUTES[route] ? route : "home";
 
     if (current === target) return;
 
-    // Update current route
+    // Cập nhật route hiện tại
     current = target;
 
-    // Update hash if needed
+    // Cập nhật hash nếu cần
     if (!opts.silentHash) setHash(target);
 
-    // Update document title
+    // Cập nhật tiêu đề tài liệu
     document.title = ROUTES[target].title;
 
-    // Load screen content
+    // Tải nội dung màn hình
     if (typeof window["loadScreen"] === "function") {
       window["loadScreen"](pathOf(target));
     } else {
       setTimeout(() => window["loadScreen"] && window["loadScreen"](pathOf(target)), 0);
     }
 
-    // Dispatch navigation event
+    // Phát sự kiện điều hướng
     window.dispatchEvent(
       new window.CustomEvent("navigation", {
         detail: {
@@ -162,17 +162,17 @@
     navigateFromIntro,
   };
 
-  // Handle initial route
+  // Xử lý route ban đầu
   window.addEventListener("load", () => {
-    // Check if intro was shown
+    // Kiểm tra xem intro đã được hiển thị chưa
     const settings = window["AppStorage"]?.loadSettings();
 
-    // Force intro if not shown, otherwise use hash route
+    // Bắt buộc hiển thị intro nếu chưa hiển thị, nếu không thì sử dụng route từ hash
     const route = !settings?.gameIntroShown ? "intro" : getRouteFromHash();
     navigateTo(route, { silentHash: true });
   });
 
-  // Handle hash changes
+  // Xử lý thay đổi hash
   window.addEventListener("hashchange", () => {
     const route = getRouteFromHash();
     if (route !== current) {
@@ -180,7 +180,7 @@
     }
   });
 
-  // Handle popstate (browser back/forward)
+  // Xử lý popstate (nút back/forward của trình duyệt)
   window.addEventListener("popstate", () => {
     const route = getRouteFromHash();
     if (route !== current) {

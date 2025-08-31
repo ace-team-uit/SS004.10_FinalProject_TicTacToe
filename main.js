@@ -1,8 +1,8 @@
-// Track loaded resources
+// Theo dõi tài nguyên đã tải
 let lastCSS = null;
 let lastJS = null;
 
-// App shell setup
+// Thiết lập app shell
 function ensureAppShell() {
   const app = document.getElementById("app");
   if (!app) throw new Error("#app not found");
@@ -17,7 +17,7 @@ function ensureAppShell() {
   return viewport;
 }
 
-// Screen loading
+// Tải màn hình
 async function loadScreen(screenPath) {
   try {
     const html = await fetch(screenPath).then((res) => res.text());
@@ -30,17 +30,17 @@ async function loadScreen(screenPath) {
     const jsPath = screenPath.replace(/\.html$/, ".screen.js");
     loadScript(jsPath);
 
-    // Auto BGM change
+    // Tự động thay đổi BGM
     autoChangeBGM(screenPath);
 
-    // Apply settings
+    // Áp dụng cài đặt
     applySettings();
   } catch (err) {
     console.error("Load screen error:", err);
   }
 }
 
-// Resource loading
+// Tải tài nguyên
 function loadCSS(path) {
   if (lastCSS !== path) {
     const existing = document.querySelector("link[data-screen-css]");
@@ -71,7 +71,7 @@ function loadScript(path) {
   }
 }
 
-// Audio module loading
+// Tải module âm thanh
 function loadAudioModule() {
   return new Promise((resolve, reject) => {
     const script = document.createElement("script");
@@ -83,57 +83,31 @@ function loadAudioModule() {
   });
 }
 
-// BGM management
+// Quản lý BGM
 function autoChangeBGM(screenPath) {
   if (!window["audioManager"]) return;
 
   try {
-    const bgmMap = {
-      "/intro/": null,
-      "/home/": "bgm-home",
-      "/select/": "bgm-select",
-      "/mode1/": "bgm-select",
-      "/mode2/": "bgm-select",
-      "/game/": "bgm-game",
-      "/settings/": "bgm-settings",
-      "/result/": "bgm-result",
-    };
-
-    const bgmType = Object.entries(bgmMap).find(([path]) => screenPath.includes(path))?.[1];
-
-    if (bgmType === null) {
-      if (window["audioManager"].getStatus().currentBgm) {
-        console.log("🎵 Stopping BGM for intro screen");
-        window["audioManager"].stopBgm();
-      }
-      return;
-    }
-
-    const currentBgm = window["audioManager"].getStatus().currentBgm;
-    const newBgmPath = window["audioManager"].bgmMap[bgmType];
-
-    if (currentBgm !== newBgmPath) {
-      console.log(`🎵 Auto-changing BGM to: ${bgmType}`);
-      window["playBgm"](bgmType);
-    }
+    // Ủy quyền cho phương thức autoChangeBGM của audio manager
+    window["audioManager"].autoChangeBGM(screenPath);
   } catch (error) {
     console.warn("⚠️ Error auto-changing BGM:", error);
   }
 }
 
-// Settings management
+// Quản lý cài đặt
 function applySettings() {
   if (!window["AppStorage"]) return;
 
   const settings = window["AppStorage"].loadSettings();
 
-  // Apply theme
+  // Áp dụng theme
   document.documentElement.setAttribute("data-theme", settings.gameTheme);
 
-  // Apply language
+  // Áp dụng ngôn ngữ
   document.documentElement.setAttribute("lang", settings.gameLanguage);
 
-  // Apply audio settings
+  // Áp dụng cài đặt âm thanh
   if (settings.gameMusicEnabled !== undefined || settings.gameSoundEnabled !== undefined) {
     window["AppStorage"]?.saveSettings({
       gameMusicEnabled: settings.gameMusicEnabled,
@@ -154,13 +128,13 @@ function toggleTheme() {
   applySettings();
 }
 
-// Audio initialization
+// Khởi tạo âm thanh
 async function initializeAudio() {
   try {
     await loadAudioModule();
     await window["initAudio"]();
 
-    // Auto-play BGM based on settings
+    // Tự động phát BGM dựa trên cài đặt
     const settings = window["AppStorage"]?.loadSettings();
     if (settings?.gameMusicEnabled && !settings?.gameIntroShown) {
       window["playBgm"]("bgm-home");
@@ -172,7 +146,7 @@ async function initializeAudio() {
   }
 }
 
-// Global event handlers
+// Xử lý sự kiện toàn cục
 document.addEventListener("click", function (event) {
   const target = event.target;
   // @ts-ignore
@@ -181,18 +155,18 @@ document.addEventListener("click", function (event) {
   }
 });
 
-// Navigation event handler
+// Xử lý sự kiện điều hướng
 window.addEventListener("navigation", function (event) {
   const customEvent = /** @type {CustomEvent} */ (event);
   const { from, to } = customEvent.detail;
   console.log(`🚀 Navigation: ${from || "initial"} -> ${to}`);
 });
 
-// Expose global functions
+// Xuất các hàm toàn cục
 window.loadScreen = loadScreen;
 window.toggleTheme = toggleTheme;
 
-// Initialize app
+// Khởi tạo ứng dụng
 (async function init() {
   ensureAppShell();
   applySettings();
@@ -203,7 +177,7 @@ window.toggleTheme = toggleTheme;
     console.warn("⚠️ Audio initialization failed:", error);
   }
 
-  // Load initial screen based on navigation
+  // Tải màn hình ban đầu dựa trên điều hướng
   const route = window["Navigation"]?.getRouteFromHash() || "intro";
   window["Navigation"]?.navigateTo(route);
 })();

@@ -1,5 +1,5 @@
 .game-screen {
-  /* Game Header */
+  /* Tiêu đề Game */
   .game-header {
     display: flex;
     justify-content: space-between;
@@ -54,11 +54,14 @@
       font-size: 32px;
       font-weight: bold;
       color: var(--white);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      text-shadow:
+        2px 2px 0 rgba(255, 255, 255, 0.2),
+        -2px -2px 0 rgba(0, 0, 0, 0.1),
+        0 0 10px rgba(255, 255, 255, 0.3);
     }
   }
 
-  /* Game Status Center */
+  /* Trung tâm Trạng thái Game */
   .game-status {
     padding-top: 12px;
     display: flex;
@@ -110,7 +113,7 @@
     box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
   }
 
-  /* HUD Animation Styles */
+  /* Kiểu Hiệu ứng HUD */
   .score-updated {
     transform: scale(1.1);
     color: var(--yellow-400);
@@ -161,7 +164,7 @@
     padding-left: 32px;
   }
 
-  /* Game Board */
+  /* Bàn cờ Game */
   .game-board-container {
     display: flex;
     justify-content: center;
@@ -220,12 +223,17 @@
       font-size: 32px;
       font-weight: bold;
       color: var(--white);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      text-shadow:
+        2px 2px 0 rgba(255, 255, 255, 0.2),
+        /* Subtle white edge */ -2px -2px 0 rgba(0, 0, 0, 0.1),
+        /* Subtle dark edge */ 0 0 10px rgba(255, 255, 255, 0.3); /* Soft glow */
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
       height: 100%;
+      filter: brightness(1.2); /* Make it slightly brighter */
+      transition: all 0.2s ease;
     }
   }
 
