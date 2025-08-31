@@ -1,3 +1,5 @@
+/* global GameHUD, KeyboardEvent, setInterval, clearInterval */
+
 /**
  * Test file for HUD Component
  * Run this in browser console or test environment
@@ -53,7 +55,6 @@ function testUpdateScores() {
   console.log("📊 Testing updateScores...");
 
   const mockElements = createMockDOM();
-  const originalText = mockElements.scoreDisplay.textContent;
 
   // Test updating scores
   GameHUD.elements.scoreDisplay = mockElements.scoreDisplay;
