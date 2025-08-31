@@ -12,12 +12,6 @@ function initHomeScreen() {
 
   console.log("✅ Found required elements");
 
-  // Ensure Home screen has BGM
-  if (window["playBgm"]) {
-    console.log("🎵 Starting home BGM");
-    window["playBgm"]("bgm-home");
-  }
-
   // Play button click handler
   if (playButton) {
     playButton.addEventListener("click", async () => {
@@ -31,12 +25,12 @@ function initHomeScreen() {
         await playLoadingVideo();
 
         // Navigate to select screen
-        navigateToSelect();
+        window["Navigation"]?.navigateTo("select");
       } catch (error) {
         console.error("Error during loading:", error);
         // Fallback: navigate directly if video fails
         hideLoading();
-        navigateToSelect();
+        window["Navigation"]?.navigateTo("select");
       }
     });
   }
@@ -114,20 +108,6 @@ function initHomeScreen() {
         window.setTimeout(() => resolve(), 2000);
       }
     });
-  }
-
-  // Navigate to select screen
-  function navigateToSelect() {
-    // Check if Navigation object exists
-    // @ts-ignore - Navigation is a custom object added by the app
-    if (window.Navigation || window["Navigation"]) {
-      // @ts-ignore - Navigation is a custom object added by the app
-      (window.Navigation || window["Navigation"]).navigateTo("select");
-    } else {
-      console.warn("Navigation not available, redirecting manually");
-      // Fallback navigation
-      window.location.href = "#select";
-    }
   }
 
   console.log("🏠 Home screen initialized");

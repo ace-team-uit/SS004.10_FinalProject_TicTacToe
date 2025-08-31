@@ -124,15 +124,11 @@ function selectBoard() {
     name: `Board ${window["currentBoardIndex"] + 1}`,
   };
 
-  localStorage.setItem("selectedBoard", JSON.stringify(selectedBoard));
-  console.log(`🎯 Selected board: ${window["currentBoardIndex"] + 1} - Saved to localStorage`);
+  window["AppStorage"]?.set("selectedBoard", selectedBoard);
+  console.log(`🎯 Selected board: ${window["currentBoardIndex"] + 1} - Saved to storage`);
 
-  // Navigate back to select screen (same as back button)
-  if (window.Navigation || window["Navigation"]) {
-    (window.Navigation || window["Navigation"]).navigateTo("select");
-  } else {
-    window.location.href = "#select";
-  }
+  // Navigate back to select screen
+  window["Navigation"]?.navigateTo("select");
 }
 
 // Back button functionality
@@ -141,11 +137,7 @@ function handleBackButton() {
     window["playSound"]("click");
   }
 
-  if (window.Navigation || window["Navigation"]) {
-    (window.Navigation || window["Navigation"]).navigateTo("select");
-  } else {
-    window.location.href = "#select";
-  }
+  window["Navigation"]?.navigateTo("select");
 }
 
 // Setup all event listeners
