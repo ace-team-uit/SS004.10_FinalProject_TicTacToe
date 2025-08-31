@@ -95,6 +95,19 @@ Game hỗ trợ:
 - Test dynamic grid size (3x3, 4x4, 5x5)
 - Xem console logs và interactions
 
+### Test HUD Component
+
+Để test HUD component độc lập, mở file `demo-hud.html`:
+
+- Test tất cả các function của HUD: updateScores, updateTimer, updateStars
+- Test color palette và theme preview
+- Test keyboard shortcuts (ESC, M, S, R)
+- Test visual effects và animations
+- Chạy unit tests để kiểm tra logic
+- Xem console logs và test results
+
+Để chạy unit tests, mở file `tests/hud.test.js` hoặc sử dụng `runAllTests()` trong console.
+
 ## Cấu trúc thư mục
 
 ```

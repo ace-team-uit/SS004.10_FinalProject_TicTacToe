@@ -105,9 +105,48 @@
     height: 100%;
     background: var(--green-400);
     border-radius: 4px;
-    width: 60%;
+    width: 100%;
     transition: width 0.3s ease;
     box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+  }
+
+  /* HUD Animation Styles */
+  .score-updated {
+    transform: scale(1.1);
+    color: var(--yellow-400);
+    text-shadow: 0 0 10px var(--yellow-400);
+    transition: all 0.3s ease;
+  }
+
+  .stars-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-5px);
+    }
+    75% {
+      transform: translateX(5px);
+    }
+  }
+
+  .timer-urgent {
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 
   .score-display {

@@ -40,4 +40,13 @@ if (typeof window !== "undefined") {
     script.src = "./shared/logic/timer.js";
     document.head.appendChild(script);
   }
+
+  // Load GameHUD if not already loaded
+  if (!(/** @type {any} */ (window).GameHUD)) {
+    const script = document.createElement("script");
+    script.src = "../../ui/header.js";
+    script.onload = () => console.log("✅ GameHUD script loaded successfully");
+    script.onerror = () => console.error("❌ Failed to load GameHUD script");
+    document.head.appendChild(script);
+  }
 }
