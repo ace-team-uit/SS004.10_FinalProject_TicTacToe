@@ -1,8 +1,8 @@
-// Storage helper (single source of truth)
+// Trợ giúp lưu trữ (nguồn duy nhất của sự thật)
 (function () {
   const NAMESPACE = "tictactoe";
 
-  // Default settings
+  // Cài đặt mặc định
   const DEFAULTS = {
     gameTheme: "dark",
     gameLanguage: "en",
@@ -14,7 +14,7 @@
     gameAudioAlertShown: false,
   };
 
-  // Legacy key mapping for migration
+  // Ánh xạ khóa cũ để di chuyển
   const LEGACY_KEYS = {
     musicEnabled: "gameMusicEnabled",
     soundEnabled: "gameSoundEnabled",
@@ -22,7 +22,7 @@
     introShown: "gameIntroShown",
   };
 
-  // Utility functions
+  // Các hàm tiện ích
   function getKey(key) {
     return `${NAMESPACE}.${key}`;
   }
@@ -54,7 +54,7 @@
     });
   }
 
-  // Settings management
+  // Quản lý cài đặt
   function loadSettings() {
     return {
       gameTheme: get("gameTheme") ?? DEFAULTS.gameTheme,
@@ -76,47 +76,47 @@
     });
   }
 
-  // Migration helper
+  // Trợ giúp di chuyển
   function migrateLegacySettings() {
-    // Migrate legacy keys
+    // Di chuyển các khóa cũ
     Object.entries(LEGACY_KEYS).forEach(([oldKey, newKey]) => {
       const value = localStorage.getItem(oldKey);
       if (value !== null) {
         set(newKey, value);
         localStorage.removeItem(oldKey);
-        console.log(`🔄 Migrated ${oldKey} -> ${getKey(newKey)}: ${value}`);
+        console.log(`🔄 Đã di chuyển ${oldKey} -> ${getKey(newKey)}: ${value}`);
       }
     });
 
-    // Migrate any direct localStorage values
+    // Di chuyển bất kỳ giá trị localStorage trực tiếp nào
     const settings = loadSettings();
     Object.keys(settings).forEach((key) => {
       const legacyValue = localStorage.getItem(key);
       if (legacyValue !== null) {
         set(key, legacyValue);
         localStorage.removeItem(key);
-        console.log(`🔄 Migrated direct ${key} -> ${getKey(key)}: ${legacyValue}`);
+        console.log(`🔄 Đã di chuyển trực tiếp ${key} -> ${getKey(key)}: ${legacyValue}`);
       }
     });
   }
 
-  // Run migration on init
+  // Chạy di chuyển khi khởi tạo
   migrateLegacySettings();
 
-  // Export API
+  // Xuất API
   /** @type {any} */ (window).AppStorage = {
-    // Core storage operations
+    // Các thao tác lưu trữ cốt lõi
     get,
     set,
     remove,
     clear,
 
-    // Settings management
+    // Quản lý cài đặt
     loadSettings,
     saveSettings,
     DEFAULTS,
 
-    // Debug helpers
+    // Trợ giúp debug
     getKey,
   };
 })();

@@ -2,8 +2,36 @@
  * Audio Manager Module
  * Quản lý âm thanh và BGM cho game Tic Tac Toe
  *
+ * Module này xử lý:
+ * - Load và preload các file âm thanh
+ * - Phát sound effects và BGM
+ * - Xử lý fade in/out cho BGM
+ * - Điều khiển volume và mute
+ * - Tự động thay đổi BGM theo màn hình
+ * - Xử lý autoplay policy của browser
+ *
  * @author ACE Team
- * @version 1.0.0
+ * @version 1.1.0
+ *
+ * @example
+ * // Initialize audio system
+ * await window.initAudio();
+ *
+ * // Play a sound effect
+ * window.playSound("click");
+ *
+ * // Play background music
+ * window.playBgm("bgm-game");
+ *
+ * // Get audio manager instance
+ * const manager = window.audioManager;
+ *
+ * // Control volume
+ * manager.setVolume(0.8);
+ * manager.setBgmVolume(0.5);
+ *
+ * // Toggle mute
+ * manager.toggleMute();
  */
 
 class AudioManager {
@@ -17,7 +45,7 @@ class AudioManager {
     this.bgmVolume = 0.7;
     this.autoplayAlertShown = false;
 
-    // Sound mapping
+    // Ánh xạ âm thanh
     this.soundMap = {
       click: "assets/sounds/click.mp3",
       win: "assets/sounds/win.mp3",
@@ -25,7 +53,7 @@ class AudioManager {
       draw: "assets/sounds/draw.mp3",
     };
 
-    // BGM mapping
+    // Ánh xạ BGM
     this.bgmMap = {
       "bgm-home": "assets/sounds/bgm/Elevator.mp3",
       "bgm-game": "assets/sounds/bgm/Run-Amok.mp3",
@@ -49,13 +77,13 @@ class AudioManager {
         this.audioContext = new (AudioContext || window["webkitAudioContext"])();
       }
 
-      // Preload tất cả sounds
+      // Tải trước tất cả âm thanh
       await this.preloadSounds();
 
-      // Preload tất cả BGM
+      // Tải trước tất cả BGM
       await this.preloadBGM();
 
-      // Kiểm tra autoplay policy và hiển thị alert nếu cần
+      // Kiểm tra chính sách tự động phát và hiển thị cảnh báo nếu cần
       await this.checkAutoplayPolicy();
 
       console.log("🎵 Audio system initialized successfully");
@@ -97,7 +125,11 @@ class AudioManager {
   }
 
   /**
-   * Load một sound effect
+   * Load một sound effect và lưu vào cache
+   * @param {string} name - Tên của sound effect
+   * @param {string} path - Đường dẫn đến file âm thanh
+   * @returns {Promise<HTMLAudioElement|null>} Audio element hoặc null nếu load thất bại
+   * @throws {Error} Nếu path không hợp lệ hoặc file không tồn tại
    */
   async loadSound(name, path) {
     try {
@@ -106,7 +138,7 @@ class AudioManager {
 
       // Xử lý lỗi 404
       audio.onerror = () => {
-        console.warn(`⚠️ Failed to load sound: ${path}`);
+        console.warn(`⚠️ Không thể tải âm thanh: ${path}`);
         this.sounds.set(name, null);
       };
 
@@ -123,7 +155,11 @@ class AudioManager {
   }
 
   /**
-   * Load một BGM
+   * Load một BGM và lưu vào cache
+   * @param {string} name - Tên của BGM track
+   * @param {string} path - Đường dẫn đến file âm thanh
+   * @returns {Promise<HTMLAudioElement|null>} Audio element hoặc null nếu load thất bại
+   * @throws {Error} Nếu path không hợp lệ hoặc file không tồn tại
    */
   async loadBGM(name, path) {
     try {
@@ -133,7 +169,7 @@ class AudioManager {
 
       // Xử lý lỗi 404
       audio.onerror = () => {
-        console.warn(`⚠️ Failed to load BGM: ${path}`);
+        console.warn(`⚠️ Không thể tải BGM: ${path}`);
         this.bgm.set(name, null);
       };
 
@@ -161,10 +197,10 @@ class AudioManager {
         return;
       }
 
-      // Test autoplay với một sound ngắn
+      // Kiểm tra tự động phát với một âm thanh ngắn
       const testSound = this.sounds.get("click");
       if (testSound) {
-        // Tạm thời set volume = 0 để test mà không phát âm thanh
+        // Tạm thời đặt volume = 0 để kiểm tra mà không phát âm thanh
         const originalVolume = testSound.volume;
         testSound.volume = 0;
 
@@ -248,6 +284,12 @@ Click OK để tiếp tục.
 
   /**
    * Phát sound effect (hỗ trợ overlapping)
+   * @param {string} soundName - Tên của sound effect cần phát
+   * @returns {void}
+   * @throws {Error} Nếu sound không tồn tại hoặc không thể phát
+   * @example
+   * audioManager.playSound("click");
+   * audioManager.playSound("win");
    */
   playSound(soundName) {
     if (this.isMuted) return;
@@ -259,7 +301,7 @@ Click OK để tiếp tục.
     }
 
     try {
-      // Clone audio để có thể phát nhiều lần cùng lúc
+      // Sao chép audio để có thể phát nhiều lần cùng lúc
       const soundClone = sound.cloneNode();
       soundClone.volume = this.volume;
 
@@ -267,7 +309,7 @@ Click OK để tiếp tục.
         console.warn(`⚠️ Failed to play sound ${soundName}:`, error);
       });
 
-      // Cleanup sau khi phát xong
+      // Dọn dẹp sau khi phát xong
       soundClone.onended = () => {
         soundClone.remove();
       };
@@ -278,6 +320,12 @@ Click OK để tiếp tục.
 
   /**
    * Phát BGM với fade effect
+   * @param {string} type - Loại BGM cần phát (bgm-home, bgm-game, etc.)
+   * @returns {Promise<void>}
+   * @throws {Error} Nếu BGM không tồn tại hoặc không thể phát
+   * @example
+   * await audioManager.playBgm("bgm-game");
+   * await audioManager.playBgm("bgm-home");
    */
   async playBgm(type) {
     if (this.isMuted) return;
@@ -289,14 +337,14 @@ Click OK để tiếp tục.
     }
 
     try {
-      // Fade out BGM hiện tại nếu có
+      // Làm mờ dần BGM hiện tại nếu có
       if (this.currentBgm && this.currentBgm !== bgm) {
         await this.fadeOutBGM(this.currentBgm);
         this.currentBgm.pause();
         this.currentBgm.currentTime = 0;
       }
 
-      // Fade in BGM mới
+      // Làm rõ dần BGM mới
       this.currentBgm = bgm;
       bgm.volume = 0;
       bgm?.play?.();
@@ -309,7 +357,10 @@ Click OK để tiếp tục.
   }
 
   /**
-   * Fade in BGM
+   * Fade in BGM với hiệu ứng mượt mà
+   * @param {HTMLAudioElement} audio - Audio element cần fade in
+   * @param {number} [duration=1000] - Thời gian fade in (ms)
+   * @returns {Promise<void>}
    */
   async fadeInBGM(audio, duration = 1000) {
     const steps = 20;
@@ -324,7 +375,10 @@ Click OK để tiếp tục.
   }
 
   /**
-   * Fade out BGM
+   * Fade out BGM với hiệu ứng mượt mà
+   * @param {HTMLAudioElement} audio - Audio element cần fade out
+   * @param {number} [duration=500] - Thời gian fade out (ms)
+   * @returns {Promise<void>}
    */
   async fadeOutBGM(audio, duration = 500) {
     const steps = 10;
@@ -365,7 +419,10 @@ Click OK để tiếp tục.
   }
 
   /**
-   * Điều chỉnh volume
+   * Điều chỉnh volume cho sound effects
+   * @param {number} volume - Giá trị volume (0.0 - 1.0)
+   * @returns {void}
+   * @throws {Error} Nếu volume không hợp lệ
    */
   setVolume(volume) {
     this.volume = Math.max(0, Math.min(1, volume));
@@ -373,7 +430,10 @@ Click OK để tiếp tục.
   }
 
   /**
-   * Điều chỉnh BGM volume
+   * Điều chỉnh volume cho BGM
+   * @param {number} volume - Giá trị volume (0.0 - 1.0)
+   * @returns {void}
+   * @throws {Error} Nếu volume không hợp lệ
    */
   setBgmVolume(volume) {
     this.bgmVolume = Math.max(0, Math.min(1, volume));
@@ -386,7 +446,15 @@ Click OK để tiếp tục.
   }
 
   /**
-   * Lấy trạng thái audio
+   * Lấy trạng thái hiện tại của audio system
+   * @returns {{
+   *   isMuted: boolean,
+   *   volume: number,
+   *   bgmVolume: number,
+   *   currentBgm: string|null,
+   *   soundsLoaded: number,
+   *   bgmLoaded: number
+   * }} Trạng thái audio system
    */
   getStatus() {
     return {
@@ -415,16 +483,16 @@ Click OK để tiếp tục.
   }
 }
 
-// Tạo instance global
+// Tạo instance toàn cục
 const audioManager = new AudioManager();
 
-// Export functions để main.js sử dụng
+// Xuất các hàm để main.js sử dụng
 window["audioManager"] = audioManager;
 window["initAudio"] = () => audioManager.initAudio();
 window["playSound"] = (soundName) => audioManager.playSound(soundName);
 window["playBgm"] = (type) => audioManager.playBgm(type);
 
-// Export cho testing
+// Xuất cho việc kiểm thử
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { AudioManager, audioManager };
 }
