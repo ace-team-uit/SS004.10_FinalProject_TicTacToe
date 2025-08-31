@@ -10,24 +10,11 @@ function initSelectGameScreen() {
 
   console.log("✅ Found required elements");
 
-  // Ensure Select screen has appropriate BGM
-  if (window["playBgm"]) {
-    console.log("🎵 Starting select game BGM");
-    window["playBgm"]("bgm-select");
-  }
-
   // Single Player button click handler
   if (singlePlayerBtn) {
     singlePlayerBtn.addEventListener("click", () => {
       console.log("🎯 Single Player selected");
-
-      // Play click sound if available
-      if (window["playSound"]) {
-        window["playSound"]("click");
-      }
-
-      // Navigate to Game Mode 1 (difficulty selection)
-      navigateToGameMode1();
+      window["Navigation"]?.navigateTo("mode1");
     });
   }
 
@@ -35,14 +22,7 @@ function initSelectGameScreen() {
   if (marketplaceBtn) {
     marketplaceBtn.addEventListener("click", () => {
       console.log("🛒 Marketplace selected");
-
-      // Play click sound if available
-      if (window["playSound"]) {
-        window["playSound"]("click");
-      }
-
-      // Navigate to Marketplace
-      navigateToMarketplace();
+      window["Navigation"]?.navigateTo("marketplace");
     });
   }
 
@@ -50,14 +30,7 @@ function initSelectGameScreen() {
   if (homeBtn) {
     homeBtn.addEventListener("click", () => {
       console.log("🏠 Home selected");
-
-      // Play click sound if available
-      if (window["playSound"]) {
-        window["playSound"]("click");
-      }
-
-      // Navigate to Home
-      navigateToHome();
+      window["Navigation"]?.navigateTo("home");
     });
   }
 
@@ -65,52 +38,8 @@ function initSelectGameScreen() {
   if (settingsBtn) {
     settingsBtn.addEventListener("click", () => {
       console.log("⚙️ Settings selected");
-
-      // Play click sound if available
-      if (window["playSound"]) {
-        window["playSound"]("click");
-      }
-
-      // Navigate to Settings
-      navigateToSettings();
+      window["Navigation"]?.navigateTo("settings");
     });
-  }
-
-  // Navigation functions
-  function navigateToGameMode1() {
-    if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("mode1");
-    } else {
-      console.warn("Navigation not available, redirecting manually");
-      window.location.href = "#mode1";
-    }
-  }
-
-  function navigateToMarketplace() {
-    if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("marketplace");
-    } else {
-      console.warn("Navigation not available, redirecting manually");
-      window.location.href = "#marketplace";
-    }
-  }
-
-  function navigateToHome() {
-    if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("home");
-    } else {
-      console.warn("Navigation not available, redirecting manually");
-      window.location.href = "#home";
-    }
-  }
-
-  function navigateToSettings() {
-    if (window.Navigation || window["Navigation"]) {
-      (window.Navigation || window["Navigation"]).navigateTo("settings");
-    } else {
-      console.warn("Navigation not available, redirecting manually");
-      window.location.href = "#settings";
-    }
   }
 
   // Add hover effects for better UX
