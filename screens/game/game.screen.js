@@ -242,6 +242,22 @@ function initGameScreen() {
     document.documentElement.setAttribute("data-theme", settings.gameTheme);
     document.documentElement.setAttribute("lang", settings.gameLanguage);
 
+    // Apply gradient colors to player marks
+    const selectedBoard = window["AppStorage"]?.get("selectedBoard");
+    if (selectedBoard?.colors) {
+      const markTexts = document.querySelectorAll(".mark-text");
+      markTexts.forEach(text => {
+        const isX = text.textContent === "X";
+        const gradient = isX ? selectedBoard.colors.x : selectedBoard.colors.o;
+        const markTextElement = /** @type {HTMLElement} */ (text);
+        markTextElement.style.background = gradient;
+        markTextElement.style.webkitBackgroundClip = "text";
+        markTextElement.style.webkitTextFillColor = "transparent";
+        markTextElement.style.backgroundClip = "text";
+        markTextElement.style.filter = "brightness(1.2)";
+      });
+    }
+
     // Update music button state
     const musicBtn = document.getElementById("music-btn");
     if (musicBtn) {
@@ -385,6 +401,17 @@ function initGameScreen() {
         cell.appendChild(cellText);
       }
 
+      // Apply gradient color from selected board
+      const selectedBoard = window["AppStorage"]?.get("selectedBoard");
+      if (selectedBoard?.colors) {
+        const gradient = playerMark === "X" ? selectedBoard.colors.x : selectedBoard.colors.o;
+        const cellTextElement = /** @type {HTMLElement} */ (cellText);
+        cellTextElement.style.background = gradient;
+        cellTextElement.style.webkitBackgroundClip = "text";
+        cellTextElement.style.webkitTextFillColor = "transparent";
+        cellTextElement.style.backgroundClip = "text";
+      }
+
       cellText.textContent = playerMark;
 
       // Vô hiệu hóa ô sau khi đánh dấu
@@ -434,7 +461,19 @@ function initGameScreen() {
             cell.appendChild(cellText);
           }
 
-          cellText.textContent = newValue === 1 ? "X" : newValue === 2 ? "O" : "";
+          const playerMark = newValue === 1 ? "X" : newValue === 2 ? "O" : "";
+          cellText.textContent = playerMark;
+
+          // Apply gradient color from selected board
+          const selectedBoard = window["AppStorage"]?.get("selectedBoard");
+          if (selectedBoard?.colors && playerMark) {
+            const gradient = playerMark === "X" ? selectedBoard.colors.x : selectedBoard.colors.o;
+            const cellTextElement = /** @type {HTMLElement} */ (cellText);
+            cellTextElement.style.background = gradient;
+            cellTextElement.style.webkitBackgroundClip = "text";
+            cellTextElement.style.webkitTextFillColor = "transparent";
+            cellTextElement.style.backgroundClip = "text";
+          }
 
           // Cập nhật trạng thái ô
           if (newValue !== null) {
