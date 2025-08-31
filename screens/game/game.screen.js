@@ -194,7 +194,7 @@ function initGameScreen() {
         const sizeStr = settings.gameGridSize.toString();
         const parsed = parseInt(sizeStr.includes("x") ? sizeStr.split("x")[0] : sizeStr);
         console.log("🔄 Parsed grid size:", parsed, "from", sizeStr);
-        
+
         if (!isNaN(parsed) && parsed >= 3 && parsed <= 5) {
           gridSize = parsed;
           // Đảm bảo format nhất quán trong storage
