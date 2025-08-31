@@ -179,31 +179,79 @@ function initGameScreen() {
   // ===== GAME INITIALIZATION =====
 
   function initializeGameData() {
-    // Lấy kích thước bàn cờ từ localStorage hoặc game state
-    let gridSize = 3; // Mặc định 3x3
-
-    if (window["gameState"] && window["gameState"].gridSize) {
-      gridSize = parseInt(window["gameState"].gridSize.split("x")[0]);
-    } else {
-      const storedSize = localStorage.getItem("gameGridSize");
-      if (storedSize) {
-        gridSize = parseInt(storedSize.split("x")[0]);
-      }
+    // Lấy settings từ storage hoặc dùng defaults
+    const settings = window["AppStorage"]?.loadSettings() || window["AppStorage"]?.DEFAULTS;
+    if (!settings) {
+      console.error("❌ Không thể lấy settings từ storage");
+      return;
     }
 
-    console.log(`🎯 Khởi tạo game với kích thước: ${gridSize}x${gridSize}`);
+    // Parse grid size từ settings
+    let gridSize = 3; // Default fallback
+    try {
+      if (settings.gameGridSize) {
+        // Xử lý cả trường hợp "5" và "5x5"
+        const sizeStr = settings.gameGridSize.toString();
+        const parsed = parseInt(sizeStr.includes("x") ? sizeStr.split("x")[0] : sizeStr);
+        console.log("🔄 Parsed grid size:", parsed, "from", sizeStr);
 
-    // Kiểm tra xem có cần khởi tạo lại bàn cờ không
-    if (window["GameData"].gridSize !== gridSize) {
-      console.log(
-        `🔄 Kích thước bàn cờ thay đổi từ ${window["GameData"].gridSize}x${window["GameData"].gridSize} sang ${gridSize}x${gridSize}`
-      );
-      window["GameData"].initBoard(gridSize);
-    } else if (window["GameData"].board.length === 0) {
-      // Nếu bàn cờ chưa được khởi tạo
+        if (!isNaN(parsed) && parsed >= 3 && parsed <= 5) {
+          gridSize = parsed;
+          // Đảm bảo format nhất quán trong storage
+          const formattedSize = `${gridSize}x${gridSize}`;
+          if (settings.gameGridSize !== formattedSize) {
+            window["AppStorage"]?.saveSettings({ gameGridSize: formattedSize });
+            console.log("🔄 Normalized grid size format in storage:", formattedSize);
+          }
+          console.log(`✅ Using grid size: ${gridSize}x${gridSize}`);
+        } else {
+          console.warn("⚠️ Invalid grid size:", parsed, "using default:", gridSize);
+          window["AppStorage"]?.saveSettings({ gameGridSize: `${gridSize}x${gridSize}` });
+        }
+      } else {
+        console.warn("⚠️ No grid size setting found, using default:", gridSize);
+        window["AppStorage"]?.saveSettings({ gameGridSize: `${gridSize}x${gridSize}` });
+      }
+    } catch (error) {
+      console.error("❌ Error parsing grid size:", error);
+      window["AppStorage"]?.saveSettings({ gameGridSize: `${gridSize}x${gridSize}` });
+    }
+
+    console.log("⚙️ Game settings:", {
+      gridSize: `${gridSize}x${gridSize}`,
+      difficulty: settings.difficulty,
+      theme: settings.theme,
+      language: settings.language,
+    });
+
+    // Khởi tạo hoặc cập nhật bàn cờ
+    const needsReset =
+      !window["GameData"] ||
+      !window["GameData"].board ||
+      window["GameData"].board.length === 0 ||
+      window["GameData"].gridSize !== gridSize;
+
+    if (needsReset) {
+      console.log(`🔄 Khởi tạo bàn cờ mới ${gridSize}x${gridSize}`);
       window["GameData"].initBoard(gridSize);
     } else {
-      console.log(`✅ Bàn cờ ${gridSize}x${gridSize} đã được khởi tạo`);
+      console.log(`✅ Sử dụng bàn cờ hiện tại ${gridSize}x${gridSize}`);
+    }
+
+    // Apply game settings
+    document.documentElement.setAttribute("data-theme", settings.gameTheme);
+    document.documentElement.setAttribute("lang", settings.gameLanguage);
+
+    // Update music button state
+    const musicBtn = document.getElementById("music-btn");
+    if (musicBtn) {
+      if (settings.gameMusicEnabled) {
+        musicBtn.style.opacity = "1";
+        musicBtn.style.filter = "none";
+      } else {
+        musicBtn.style.opacity = "0.5";
+        musicBtn.style.filter = "grayscale(100%)";
+      }
     }
 
     console.log("✅ Game data initialized successfully");
@@ -424,9 +472,11 @@ function initGameScreen() {
   // Toggle music
   function toggleMusic() {
     console.log("🎵 Toggling music");
-    const musicEnabled = localStorage.getItem("musicEnabled") !== "false";
-    const newState = !musicEnabled;
-    localStorage.setItem("musicEnabled", newState.toString());
+    const settings = window["AppStorage"]?.loadSettings();
+    if (!settings) return;
+
+    const newState = !settings.gameMusicEnabled;
+    window["AppStorage"]?.saveSettings({ gameMusicEnabled: newState });
     updateMusicButton(newState);
 
     if (window["playSound"]) {
@@ -468,8 +518,10 @@ function initGameScreen() {
 
   // Khởi tạo trạng thái music
   function initializeMusicState() {
-    const musicEnabled = localStorage.getItem("musicEnabled") !== "false";
-    updateMusicButton(musicEnabled);
+    const settings = window["AppStorage"]?.loadSettings();
+    if (settings) {
+      updateMusicButton(settings.gameMusicEnabled);
+    }
   }
 
   // Khởi tạo

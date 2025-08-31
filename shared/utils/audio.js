@@ -155,8 +155,8 @@ class AudioManager {
   async checkAutoplayPolicy() {
     try {
       // Kiểm tra xem đã hiển thị alert chưa
-      const alertShown = localStorage.getItem("audio_alert_shown");
-      if (alertShown === "true") {
+      const settings = window["AppStorage"]?.loadSettings();
+      if (settings?.gameAudioAlertShown) {
         console.log("✅ Audio alert already shown, skipping");
         return;
       }
@@ -193,8 +193,8 @@ class AudioManager {
     if (this.autoplayAlertShown) return;
     this.autoplayAlertShown = true;
 
-    // Lưu vào localStorage để không hiển thị lại
-    localStorage.setItem("audio_alert_shown", "true");
+    // Lưu vào storage để không hiển thị lại
+    window["AppStorage"]?.saveSettings({ gameAudioAlertShown: true });
 
     const alertMessage = `
 🎵 Để có trải nghiệm âm thanh tốt nhất, vui lòng:
