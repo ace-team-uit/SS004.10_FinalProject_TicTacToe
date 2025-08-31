@@ -129,6 +129,9 @@ function initGameScreen() {
   // Khởi tạo dữ liệu game
   initializeGameData();
 
+  // Initialize HUD with difficulty
+  initializeHUD();
+
   // Khởi tạo bàn cờ UI
   initializeGameBoard();
 
@@ -344,6 +347,11 @@ function initGameScreen() {
       // TODO: Các bạn khác sẽ thêm logic kiểm tra thắng/thua ở đây
       // TODO: Các bạn khác sẽ thêm logic AI ở đây
 
+      // Reset timer cho lượt mới
+      if (window["GameHUD"]) {
+        window["GameHUD"].resetTimer();
+      }
+
       // Chuyển lượt chơi
       window["GameData"].currentPlayer = window["GameData"].currentPlayer === 1 ? 2 : 1;
       console.log(`🔄 Chuyển lượt cho người chơi: ${window["GameData"].currentPlayer}`);
@@ -467,6 +475,29 @@ function initGameScreen() {
   // Khởi tạo
   initializeMusicState();
   console.log("🎮 Game screen initialized");
+}
+
+// ===== HUD INTEGRATION =====
+function initializeHUD() {
+  // Get difficulty from gameState or localStorage
+  let difficulty = 'easy';
+  
+  if (window["gameState"] && window["gameState"].difficulty) {
+    difficulty = window["gameState"].difficulty;
+  } else {
+    difficulty = localStorage.getItem('gameDifficulty') || 'easy';
+  }
+  
+  console.log('🎮 Starting HUD initialization with difficulty:', difficulty);
+  
+  // Initialize GameHUD if available
+  if (window["GameHUD"]) {
+    console.log('✅ GameHUD found, initializing game...');
+    window["GameHUD"].init();
+    window["GameHUD"].initializeGame(difficulty);
+  } else {
+    console.error('❌ GameHUD not found! Make sure header.js is loaded.');
+  }
 }
 
 // Khởi tạo khi DOM ready
