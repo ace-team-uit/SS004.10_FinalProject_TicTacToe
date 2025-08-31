@@ -246,7 +246,7 @@ function initGameScreen() {
     const selectedBoard = window["AppStorage"]?.get("selectedBoard");
     if (selectedBoard?.colors) {
       const markTexts = document.querySelectorAll(".mark-text");
-      markTexts.forEach(text => {
+      markTexts.forEach((text) => {
         const isX = text.textContent === "X";
         const gradient = isX ? selectedBoard.colors.x : selectedBoard.colors.o;
         const markTextElement = /** @type {HTMLElement} */ (text);
