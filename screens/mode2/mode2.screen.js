@@ -64,14 +64,12 @@ function initGameMode2Screen() {
       window["playSound"]("click");
     }
 
-    // Store grid size in game state
-    if (window["gameState"]) {
-      window["gameState"].gridSize = size;
-      console.log(`💾 Grid size saved to game state: ${size}`);
+    // Store grid size in AppStorage
+    if (window["AppStorage"]) {
+      window["AppStorage"].saveSettings({ gameGridSize: size });
+      console.log(`💾 Grid size saved to AppStorage: ${size}`);
     } else {
-      // Fallback: store in localStorage
-      localStorage.setItem("gameGridSize", size);
-      console.log(`💾 Grid size saved to localStorage: ${size}`);
+      console.error("❌ AppStorage not available");
     }
 
     // Navigate to Game screen
