@@ -88,34 +88,8 @@ function autoChangeBGM(screenPath) {
   if (!window["audioManager"]) return;
 
   try {
-    const bgmMap = {
-      "/intro/": null,
-      "/home/": "bgm-home",
-      "/select/": "bgm-select",
-      "/mode1/": "bgm-select",
-      "/mode2/": "bgm-select",
-      "/game/": "bgm-game",
-      "/settings/": "bgm-settings",
-      "/result/": "bgm-result",
-    };
-
-    const bgmType = Object.entries(bgmMap).find(([path]) => screenPath.includes(path))?.[1];
-
-    if (bgmType === null) {
-      if (window["audioManager"].getStatus().currentBgm) {
-        console.log("🎵 Stopping BGM for intro screen");
-        window["audioManager"].stopBgm();
-      }
-      return;
-    }
-
-    const currentBgm = window["audioManager"].getStatus().currentBgm;
-    const newBgmPath = window["audioManager"].bgmMap[bgmType];
-
-    if (currentBgm !== newBgmPath) {
-      console.log(`🎵 Auto-changing BGM to: ${bgmType}`);
-      window["playBgm"](bgmType);
-    }
+    // Delegate to audio manager's autoChangeBGM method
+    window["audioManager"].autoChangeBGM(screenPath);
   } catch (error) {
     console.warn("⚠️ Error auto-changing BGM:", error);
   }
