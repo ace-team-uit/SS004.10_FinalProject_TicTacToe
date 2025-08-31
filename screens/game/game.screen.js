@@ -480,23 +480,23 @@ function initGameScreen() {
 // ===== HUD INTEGRATION =====
 function initializeHUD() {
   // Get difficulty from gameState or localStorage
-  let difficulty = 'easy';
-  
+  let difficulty = "easy";
+
   if (window["gameState"] && window["gameState"].difficulty) {
     difficulty = window["gameState"].difficulty;
   } else {
-    difficulty = localStorage.getItem('gameDifficulty') || 'easy';
+    difficulty = localStorage.getItem("gameDifficulty") || "easy";
   }
-  
-  console.log('🎮 Starting HUD initialization with difficulty:', difficulty);
-  
+
+  console.log("🎮 Starting HUD initialization with difficulty:", difficulty);
+
   // Initialize GameHUD if available
   if (window["GameHUD"]) {
-    console.log('✅ GameHUD found, initializing game...');
+    console.log("✅ GameHUD found, initializing game...");
     window["GameHUD"].init();
     window["GameHUD"].initializeGame(difficulty);
   } else {
-    console.error('❌ GameHUD not found! Make sure header.js is loaded.');
+    console.error("❌ GameHUD not found! Make sure header.js is loaded.");
   }
 }
 

@@ -1,3 +1,5 @@
+/* global CustomEvent, clearInterval, setInterval */
+
 /**
  * Game Header Component for HUD (Heads Up Display)
  * @namespace
@@ -6,13 +8,13 @@ const GameHUD = {
   // DOM elements
   elements: {
     /** @type {HTMLElement|null} */ scoreDisplay: null,
-    /** @type {HTMLElement|null} */ starsContainer: null, 
+    /** @type {HTMLElement|null} */ starsContainer: null,
     /** @type {any[]} */ stars: [],
     /** @type {HTMLElement|null} */ progressBar: null,
     /** @type {HTMLElement|null} */ progressFill: null,
     /** @type {HTMLElement|null} */ musicBtn: null,
     /** @type {HTMLElement|null} */ backBtn: null,
-    /** @type {HTMLElement|null} */ settingsBtn: null
+    /** @type {HTMLElement|null} */ settingsBtn: null,
   },
 
   // Game state
@@ -21,7 +23,7 @@ const GameHUD = {
     stars: 3,
     timeLeft: 15,
     totalTime: 15,
-    difficulty: 'easy'
+    difficulty: "easy",
   },
 
   /**
@@ -30,28 +32,28 @@ const GameHUD = {
   init() {
     const elements = this.elements;
 
-    console.log('🔍 Searching for HUD elements...');
+    console.log("🔍 Searching for HUD elements...");
 
     // Find all HUD elements by ID
-    elements.scoreDisplay = document.getElementById('score-display');
-    elements.starsContainer = document.getElementById('stars-container');
+    elements.scoreDisplay = document.getElementById("score-display");
+    elements.starsContainer = document.getElementById("stars-container");
     elements.stars = [
-      document.getElementById('star-left'),
-      document.getElementById('star-center'),
-      document.getElementById('star-right')
+      document.getElementById("star-left"),
+      document.getElementById("star-center"),
+      document.getElementById("star-right"),
     ].filter(Boolean);
-    elements.progressBar = document.getElementById('progress-bar');
-    elements.progressFill = document.getElementById('progress-fill');
-    elements.musicBtn = document.getElementById('music-btn');
-    elements.backBtn = document.getElementById('back-btn');
-    elements.settingsBtn = document.getElementById('settings-btn');
+    elements.progressBar = document.getElementById("progress-bar");
+    elements.progressFill = document.getElementById("progress-fill");
+    elements.musicBtn = document.getElementById("music-btn");
+    elements.backBtn = document.getElementById("back-btn");
+    elements.settingsBtn = document.getElementById("settings-btn");
 
-    console.log('🔍 DOM elements found:', {
+    console.log("🔍 DOM elements found:", {
       scoreDisplay: elements.scoreDisplay,
       starsContainer: elements.starsContainer,
       stars: elements.stars,
       progressBar: elements.progressBar,
-      progressFill: elements.progressFill
+      progressFill: elements.progressFill,
     });
 
     // Validate required elements
@@ -65,13 +67,13 @@ const GameHUD = {
     this.updateStars(3);
     this.updateTimer({ current: 15, total: 15 });
 
-    console.log('🎮 Game HUD initialized');
-    console.log('🔍 Found elements:', {
+    console.log("🎮 Game HUD initialized");
+    console.log("🔍 Found elements:", {
       scoreDisplay: !!elements.scoreDisplay,
       starsContainer: !!elements.starsContainer,
       stars: elements.stars.length,
       progressBar: !!elements.progressBar,
-      progressFill: !!elements.progressFill
+      progressFill: !!elements.progressFill,
     });
   },
 
@@ -80,15 +82,18 @@ const GameHUD = {
    */
   validateElements() {
     const requiredElements = [
-      { name: 'scoreDisplay', element: this.elements.scoreDisplay },
-      { name: 'starsContainer', element: this.elements.starsContainer },
-      { name: 'progressBar', element: this.elements.progressBar },
-      { name: 'progressFill', element: this.elements.progressFill }
+      { name: "scoreDisplay", element: this.elements.scoreDisplay },
+      { name: "starsContainer", element: this.elements.starsContainer },
+      { name: "progressBar", element: this.elements.progressBar },
+      { name: "progressFill", element: this.elements.progressFill },
     ];
 
-    const missingElements = requiredElements.filter(item => !item.element);
+    const missingElements = requiredElements.filter((item) => !item.element);
     if (missingElements.length > 0) {
-      console.warn('⚠️ Missing HUD elements:', missingElements.map(item => item.name));
+      console.warn(
+        "⚠️ Missing HUD elements:",
+        missingElements.map((item) => item.name)
+      );
     }
   },
 
@@ -96,27 +101,27 @@ const GameHUD = {
    * Setup keyboard shortcuts for navigation
    */
   bindKeyboardControls() {
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener("keydown", (e) => {
       // Only handle shortcuts when game is active
       if (!this.elements.backBtn) return;
 
-      switch(e.key.toLowerCase()) {
-        case 'escape':
+      switch (e.key.toLowerCase()) {
+        case "escape":
           this.elements.backBtn?.click();
           break;
-        case 'm':
+        case "m":
           this.elements.musicBtn?.click();
-          break; 
-        case 's':
+          break;
+        case "s":
           this.elements.settingsBtn?.click();
           break;
-        case 'r':
+        case "r":
           // Reset game shortcut
           this.resetGame();
           break;
       }
     });
-    console.log('⌨️ Keyboard controls bound');
+    console.log("⌨️ Keyboard controls bound");
   },
 
   /**
@@ -126,20 +131,20 @@ const GameHUD = {
   updateScores(scores) {
     const display = this.elements.scoreDisplay;
     if (!display) {
-      console.warn('⚠️ Score display element not found');
+      console.warn("⚠️ Score display element not found");
       return;
     }
 
     const p1 = scores.player1 ?? 0;
     const p2 = scores.player2 ?? 0;
-    
+
     // Format score display
     display.textContent = `${p1}:${p2}`;
-    
+
     // Add visual feedback for score changes
-    display.classList.add('score-updated');
+    display.classList.add("score-updated");
     setTimeout(() => {
-      display.classList.remove('score-updated');
+      display.classList.remove("score-updated");
     }, 300);
 
     // Update internal state
@@ -155,7 +160,7 @@ const GameHUD = {
   updateTimer(time) {
     const fill = this.elements.progressFill;
     if (!fill) {
-      console.warn('⚠️ Progress fill element not found');
+      console.warn("⚠️ Progress fill element not found");
       return;
     }
 
@@ -171,17 +176,17 @@ const GameHUD = {
 
     // Update color based on time remaining
     if (percent <= 20) {
-      fill.style.background = 'var(--red-400)';
-      fill.classList.add('timer-urgent');
-      console.log('🔴 Timer urgent - Red color');
+      fill.style.background = "var(--red-400)";
+      fill.classList.add("timer-urgent");
+      console.log("🔴 Timer urgent - Red color");
     } else if (percent <= 50) {
-      fill.style.background = 'var(--yellow-400)';
-      fill.classList.remove('timer-urgent');
-      console.log('🟡 Timer warning - Yellow color');
+      fill.style.background = "var(--yellow-400)";
+      fill.classList.remove("timer-urgent");
+      console.log("🟡 Timer warning - Yellow color");
     } else {
-      fill.style.background = 'var(--green-400)';
-      fill.classList.remove('timer-urgent');
-      console.log('🟢 Timer normal - Green color');
+      fill.style.background = "var(--green-400)";
+      fill.classList.remove("timer-urgent");
+      console.log("🟢 Timer normal - Green color");
     }
 
     // Update internal state
@@ -198,7 +203,7 @@ const GameHUD = {
   updateStars(count) {
     const stars = this.elements.stars;
     if (!stars.length) {
-      console.warn('⚠️ Star elements not found');
+      console.warn("⚠️ Star elements not found");
       return;
     }
 
@@ -209,10 +214,10 @@ const GameHUD = {
     // Update each star
     stars.forEach((star, i) => {
       const isFilled = i < count;
-      const starType = isFilled ? 'filled' : 'empty';
-      
+      const starType = isFilled ? "filled" : "empty";
+
       // Update star image using src property
-      if (star && 'src' in star) {
+      if (star && "src" in star) {
         star.src = `assets/images/game/star-${starType}.png`;
       }
     });
@@ -235,9 +240,9 @@ const GameHUD = {
     const starsContainer = this.elements.starsContainer;
     if (!starsContainer) return;
 
-    starsContainer.classList.add('stars-shake');
+    starsContainer.classList.add("stars-shake");
     setTimeout(() => {
-      starsContainer.classList.remove('stars-shake');
+      starsContainer.classList.remove("stars-shake");
     }, 500);
   },
 
@@ -246,39 +251,39 @@ const GameHUD = {
    * @returns {HTMLElement} Color palette DOM element
    */
   createColorPalette() {
-    const palette = document.createElement('div');
-    palette.className = 'color-palette';
-    palette.setAttribute('role', 'toolbar');
-    palette.setAttribute('aria-label', 'Theme color options');
+    const palette = document.createElement("div");
+    palette.className = "color-palette";
+    palette.setAttribute("role", "toolbar");
+    palette.setAttribute("aria-label", "Theme color options");
 
     // Theme color options
     const colors = [
-      { name: 'Dark', value: '#1a1a1a', class: 'theme-dark' },
-      { name: 'Light', value: '#ffffff', class: 'theme-light' },
-      { name: 'Blue', value: '#3b82f6', class: 'theme-blue' },
-      { name: 'Green', value: '#10b981', class: 'theme-green' },
-      { name: 'Purple', value: '#8b5cf6', class: 'theme-purple' },
-      { name: 'Orange', value: '#f59e0b', class: 'theme-orange' }
+      { name: "Dark", value: "#1a1a1a", class: "theme-dark" },
+      { name: "Light", value: "#ffffff", class: "theme-light" },
+      { name: "Blue", value: "#3b82f6", class: "theme-blue" },
+      { name: "Green", value: "#10b981", class: "theme-green" },
+      { name: "Purple", value: "#8b5cf6", class: "theme-purple" },
+      { name: "Orange", value: "#f59e0b", class: "theme-orange" },
     ];
 
-    colors.forEach(color => {
-      const swatch = document.createElement('button');
+    colors.forEach((color) => {
+      const swatch = document.createElement("button");
       swatch.className = `color-swatch ${color.class}`;
-      swatch.setAttribute('type', 'button');
-      swatch.setAttribute('aria-label', `Select ${color.name} theme`);
+      swatch.setAttribute("type", "button");
+      swatch.setAttribute("aria-label", `Select ${color.name} theme`);
       swatch.style.backgroundColor = color.value;
-      
+
       // Add hover effect
-      swatch.addEventListener('mouseenter', () => {
-        swatch.style.transform = 'scale(1.1)';
+      swatch.addEventListener("mouseenter", () => {
+        swatch.style.transform = "scale(1.1)";
       });
-      
-      swatch.addEventListener('mouseleave', () => {
-        swatch.style.transform = 'scale(1)';
+
+      swatch.addEventListener("mouseleave", () => {
+        swatch.style.transform = "scale(1)";
       });
 
       // Handle click to preview theme
-      swatch.addEventListener('click', () => {
+      swatch.addEventListener("click", () => {
         this.previewTheme(color);
       });
 
@@ -294,19 +299,19 @@ const GameHUD = {
    */
   previewTheme(color) {
     // Dispatch theme preview event
-    const themeEvent = new CustomEvent('theme:preview', {
-      detail: { 
+    const themeEvent = new CustomEvent("theme:preview", {
+      detail: {
         color: color.value,
         name: color.name,
-        class: color.class
-      }
+        class: color.class,
+      },
     });
-    
+
     document.dispatchEvent(themeEvent);
-    
+
     // Visual feedback
     this.showThemePreview(color);
-    
+
     console.log(`🎨 Theme preview: ${color.name} (${color.value})`);
   },
 
@@ -316,21 +321,21 @@ const GameHUD = {
    */
   showThemePreview(color) {
     // Remove existing preview
-    const existingPreview = document.querySelector('.theme-preview');
+    const existingPreview = document.querySelector(".theme-preview");
     if (existingPreview) {
       existingPreview.remove();
     }
 
     // Create preview element
-    const preview = document.createElement('div');
-    preview.className = 'theme-preview';
+    const preview = document.createElement("div");
+    preview.className = "theme-preview";
     preview.textContent = `${color.name} Theme`;
     preview.style.backgroundColor = color.value;
     preview.style.color = this.getContrastColor(color.value);
-    
+
     // Position and show preview
     document.body.appendChild(preview);
-    
+
     // Auto-hide after 2 seconds
     setTimeout(() => {
       preview.remove();
@@ -347,11 +352,11 @@ const GameHUD = {
     const r = parseInt(hexColor.slice(1, 3), 16);
     const g = parseInt(hexColor.slice(3, 5), 16);
     const b = parseInt(hexColor.slice(5, 7), 16);
-    
+
     // Calculate luminance
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    
-    return luminance > 0.5 ? '#000000' : '#ffffff';
+
+    return luminance > 0.5 ? "#000000" : "#ffffff";
   },
 
   /**
@@ -359,15 +364,15 @@ const GameHUD = {
    */
   resetGame() {
     // Dispatch reset event
-    const resetEvent = new CustomEvent('game:reset');
+    const resetEvent = new CustomEvent("game:reset");
     document.dispatchEvent(resetEvent);
-    
+
     // Reset HUD to default state
     this.updateScores({ player1: 0, player2: 0 });
     this.updateStars(3);
     this.updateTimer({ current: 15, total: 15 });
-    
-    console.log('🔄 Game reset via keyboard shortcut');
+
+    console.log("🔄 Game reset via keyboard shortcut");
   },
 
   /**
@@ -380,9 +385,9 @@ const GameHUD = {
       stars: this.gameState.stars,
       timer: {
         current: this.gameState.timeLeft,
-        total: this.gameState.totalTime
+        total: this.gameState.totalTime,
       },
-      difficulty: this.gameState.difficulty
+      difficulty: this.gameState.difficulty,
     };
   },
 
@@ -392,40 +397,40 @@ const GameHUD = {
    */
   initializeGame(difficulty) {
     console.log(`🎯 Initializing game with difficulty: ${difficulty}`);
-    
+
     // Set timer based on difficulty
-    switch(difficulty) {
-      case 'hard':
+    switch (difficulty) {
+      case "hard":
         this.gameState.timeLeft = 5;
         this.gameState.totalTime = 5;
         break;
-      case 'medium':
+      case "medium":
         this.gameState.timeLeft = 10;
         this.gameState.totalTime = 10;
         break;
-      case 'easy':
+      case "easy":
       default:
         this.gameState.timeLeft = 15;
         this.gameState.totalTime = 15;
         break;
     }
-    
+
     this.gameState.difficulty = difficulty;
-    
+
     console.log(`⏱️ Timer set to: ${this.gameState.timeLeft}/${this.gameState.totalTime}s`);
-    
+
     // Force update progress bar immediately
-    this.updateTimer({ 
-      current: this.gameState.timeLeft, 
-      total: this.gameState.totalTime 
+    this.updateTimer({
+      current: this.gameState.timeLeft,
+      total: this.gameState.totalTime,
     });
-    
+
     // Update HUD display
     this.updateHUD();
-    
+
     // Start game timer
     this.startGameTimer();
-    
+
     console.log(`🎯 Game initialized with ${difficulty} difficulty (${this.gameState.timeLeft}s)`);
   },
 
@@ -435,12 +440,14 @@ const GameHUD = {
   updateHUD() {
     this.updateScores(this.gameState.scores);
     this.updateStars(this.gameState.stars);
-    this.updateTimer({ 
-      current: this.gameState.timeLeft, 
-      total: this.gameState.totalTime 
+    this.updateTimer({
+      current: this.gameState.timeLeft,
+      total: this.gameState.totalTime,
     });
-    
-    console.log(`🔄 HUD updated - Time: ${this.gameState.timeLeft}/${this.gameState.totalTime}s, Stars: ${this.gameState.stars}`);
+
+    console.log(
+      `🔄 HUD updated - Time: ${this.gameState.timeLeft}/${this.gameState.totalTime}s, Stars: ${this.gameState.stars}`
+    );
   },
 
   /**
@@ -449,16 +456,16 @@ const GameHUD = {
   resetTimer() {
     // Reset time left to total time
     this.gameState.timeLeft = this.gameState.totalTime;
-    
+
     // Update display
     this.updateTimer({
       current: this.gameState.timeLeft,
-      total: this.gameState.totalTime
+      total: this.gameState.totalTime,
     });
-    
+
     // Restart timer
     this.startGameTimer();
-    
+
     console.log(`🔄 Timer reset to ${this.gameState.timeLeft}s`);
   },
 
@@ -477,11 +484,11 @@ const GameHUD = {
       if (this.gameState.timeLeft > 0) {
         this.gameState.timeLeft--;
         console.log(`⏱️ Timer tick: ${this.gameState.timeLeft}s remaining`);
-        
+
         // Update timer display immediately
-        this.updateTimer({ 
-          current: this.gameState.timeLeft, 
-          total: this.gameState.totalTime 
+        this.updateTimer({
+          current: this.gameState.timeLeft,
+          total: this.gameState.totalTime,
         });
       } else {
         clearInterval(this.gameTimer);
@@ -496,10 +503,10 @@ const GameHUD = {
   onTimeExpired() {
     // Decrement star
     this.gameState.stars = Math.max(0, this.gameState.stars - 1);
-    
+
     if (this.gameState.stars <= 0) {
       // Game over
-      console.log('❌ Game Over - No stars remaining!');
+      console.log("❌ Game Over - No stars remaining!");
       // TODO: Show game over popup
     } else {
       // Reset timer for next round
@@ -507,7 +514,7 @@ const GameHUD = {
       this.updateHUD();
       this.startGameTimer();
     }
-    
+
     // Animate star loss
     this.animateStarLoss();
   },
@@ -516,16 +523,16 @@ const GameHUD = {
    * Test function to manually test progress bar
    */
   testProgressBar() {
-    console.log('🧪 Testing progress bar...');
-    
-    const progressFill = document.getElementById('progress-fill');
+    console.log("🧪 Testing progress bar...");
+
+    const progressFill = document.getElementById("progress-fill");
     if (!progressFill) {
-      console.error('❌ progress-fill element not found!');
+      console.error("❌ progress-fill element not found!");
       return;
     }
-    
-    console.log('✅ progress-fill found, testing...');
-    
+
+    console.log("✅ progress-fill found, testing...");
+
     // Test different values
     this.updateTimer({ current: 15, total: 15 }); // 100%
     setTimeout(() => {
@@ -537,34 +544,34 @@ const GameHUD = {
     setTimeout(() => {
       this.updateTimer({ current: 1, total: 15 }); // 6.7%
     }, 3000);
-  }
+  },
 };
 
 // Debug: Log when header.js is loaded
-console.log('📜 header.js loaded, checking DOM state...');
+console.log("📜 header.js loaded, checking DOM state...");
 
 // Initialize when DOM loads
-if (document.readyState === 'loading') {
-  console.log('⏳ DOM still loading, waiting for DOMContentLoaded...');
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎯 DOMContentLoaded fired, initializing GameHUD...');
+if (document.readyState === "loading") {
+  console.log("⏳ DOM still loading, waiting for DOMContentLoaded...");
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("🎯 DOMContentLoaded fired, initializing GameHUD...");
     // Check if GameHUD already exists
-    if (!/** @type {any} */ (window).GameHUD) {
+    if (!(/** @type {any} */ (window).GameHUD)) {
       GameHUD.init();
       /** @type {any} */ (window).GameHUD = GameHUD;
-      console.log('🎮 GameHUD initialized and made global');
+      console.log("🎮 GameHUD initialized and made global");
     } else {
-      console.log('🔄 GameHUD already exists, skipping initialization');
+      console.log("🔄 GameHUD already exists, skipping initialization");
     }
   });
 } else {
-  console.log('✅ DOM already ready, initializing GameHUD immediately...');
+  console.log("✅ DOM already ready, initializing GameHUD immediately...");
   // Check if GameHUD already exists
-  if (!/** @type {any} */ (window).GameHUD) {
+  if (!(/** @type {any} */ (window).GameHUD)) {
     GameHUD.init();
     /** @type {any} */ (window).GameHUD = GameHUD;
-    console.log('🎮 GameHUD initialized and made global');
+    console.log("🎮 GameHUD initialized and made global");
   } else {
-    console.log('🔄 GameHUD already exists, skipping initialization');
+    console.log("🔄 GameHUD already exists, skipping initialization");
   }
 }

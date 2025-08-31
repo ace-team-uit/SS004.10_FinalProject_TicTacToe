@@ -42,7 +42,7 @@ if (typeof window !== "undefined") {
   }
 
   // Load GameHUD if not already loaded
-  if (!/** @type {any} */ (window).GameHUD) {
+  if (!(/** @type {any} */ (window).GameHUD)) {
     const script = document.createElement("script");
     script.src = "../../ui/header.js";
     script.onload = () => console.log("✅ GameHUD script loaded successfully");
