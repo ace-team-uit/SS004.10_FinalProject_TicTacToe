@@ -1,8 +1,8 @@
 console.log("🛒 Marketplace screen loaded");
 
-// Check if variables are already declared to avoid redeclaration errors
+// Kiểm tra xem các biến đã được khai báo chưa để tránh lỗi khai báo lại
 if (typeof window["marketplaceInitialized"] === "undefined") {
-  // Board images array
+  // Mảng hình ảnh bàn cờ
   window["boardImages"] = [
     "assets/images/marketplace/board-01.png",
     "assets/images/marketplace/board-02.png",
@@ -23,7 +23,7 @@ if (typeof window["marketplaceInitialized"] === "undefined") {
   window["marketplaceInitialized"] = true;
 }
 
-// Get DOM elements
+// Lấy các phần tử DOM
 function getElements() {
   return {
     boardImg: document.getElementById("board"),
@@ -34,7 +34,7 @@ function getElements() {
   };
 }
 
-// Initialize board display
+// Khởi tạo hiển thị bàn cờ
 function updateBoardDisplay() {
   const elements = getElements();
   if (elements.boardImg && elements.boardImg instanceof HTMLImageElement) {
@@ -43,7 +43,7 @@ function updateBoardDisplay() {
   }
 }
 
-// Navigate to previous board with animation
+// Điều hướng đến bàn cờ trước đó với hiệu ứng
 function showPreviousBoard() {
   if (window["playSound"]) {
     window["playSound"]("click");
@@ -52,7 +52,7 @@ function showPreviousBoard() {
   const elements = getElements();
   if (!elements.boardImg) return;
 
-  // Add slide out animation
+  // Thêm hiệu ứng trượt ra
   elements.boardImg.classList.add("slide-left");
 
   setTimeout(() => {
@@ -62,12 +62,12 @@ function showPreviousBoard() {
         : window["boardImages"].length - 1;
     updateBoardDisplay();
 
-    // Remove slide out and add slide in animation
+    // Xóa hiệu ứng trượt ra và thêm hiệu ứng trượt vào
     if (elements.boardImg) {
       elements.boardImg.classList.remove("slide-left");
       elements.boardImg.classList.add("slide-in-left");
 
-      // Remove animation class after animation completes
+      // Xóa class hiệu ứng sau khi hoàn thành
       setTimeout(() => {
         if (elements.boardImg) {
           elements.boardImg.classList.remove("slide-in-left");
@@ -77,7 +77,7 @@ function showPreviousBoard() {
   }, 150);
 }
 
-// Navigate to next board with animation
+// Điều hướng đến bàn cờ tiếp theo với hiệu ứng
 function showNextBoard() {
   if (window["playSound"]) {
     window["playSound"]("click");
@@ -86,7 +86,7 @@ function showNextBoard() {
   const elements = getElements();
   if (!elements.boardImg) return;
 
-  // Add slide out animation
+  // Thêm hiệu ứng trượt ra
   elements.boardImg.classList.add("slide-right");
 
   setTimeout(() => {
@@ -96,12 +96,12 @@ function showNextBoard() {
         : 0;
     updateBoardDisplay();
 
-    // Remove slide out and add slide in animation
+    // Xóa hiệu ứng trượt ra và thêm hiệu ứng trượt vào
     if (elements.boardImg) {
       elements.boardImg.classList.remove("slide-right");
       elements.boardImg.classList.add("slide-in-right");
 
-      // Remove animation class after animation completes
+      // Xóa class hiệu ứng sau khi hoàn thành
       setTimeout(() => {
         if (elements.boardImg) {
           elements.boardImg.classList.remove("slide-in-right");
@@ -111,82 +111,82 @@ function showNextBoard() {
   }, 150);
 }
 
-// Select current board and save to localStorage
+// Chọn bàn cờ hiện tại và lưu vào localStorage
 function selectBoard() {
   if (window["playSound"]) {
     window["playSound"]("click");
   }
 
-  // Predefined color pairs for each board
+  // Các cặp màu được định nghĩa sẵn cho từng bàn cờ
   const boardColorPairs = [
-    // Board 1 - Classic Blue & Red
+    // Bàn cờ 1 - Xanh dương & Đỏ cổ điển
     {
       x: "linear-gradient(45deg, #2196F3, #1976D2)",
       o: "linear-gradient(45deg, #F44336, #D32F2F)",
     },
-    // Board 2 - Purple & Gold
+    // Bàn cờ 2 - Tím & Vàng
     {
       x: "linear-gradient(45deg, #9C27B0, #7B1FA2)",
       o: "linear-gradient(45deg, #FFC107, #FFA000)",
     },
-    // Board 3 - Green & Orange
+    // Bàn cờ 3 - Xanh lá & Cam
     {
       x: "linear-gradient(45deg, #4CAF50, #388E3C)",
       o: "linear-gradient(45deg, #FF9800, #F57C00)",
     },
-    // Board 4 - Pink & Teal
+    // Bàn cờ 4 - Hồng & Xanh ngọc
     {
       x: "linear-gradient(45deg, #E91E63, #C2185B)",
       o: "linear-gradient(45deg, #009688, #00796B)",
     },
-    // Board 5 - Deep Purple & Amber
+    // Bàn cờ 5 - Tím đậm & Hổ phách
     {
       x: "linear-gradient(45deg, #673AB7, #512DA8)",
       o: "linear-gradient(45deg, #FFC107, #FFA000)",
     },
-    // Board 6 - Indigo & Deep Orange
+    // Bàn cờ 6 - Chàm & Cam đậm
     {
       x: "linear-gradient(45deg, #3F51B5, #303F9F)",
       o: "linear-gradient(45deg, #FF5722, #E64A19)",
     },
-    // Board 7 - Light Blue & Red
+    // Bàn cờ 7 - Xanh dương nhạt & Đỏ
     {
       x: "linear-gradient(45deg, #03A9F4, #0288D1)",
       o: "linear-gradient(45deg, #F44336, #D32F2F)",
     },
-    // Board 8 - Cyan & Pink
+    // Bàn cờ 8 - Xanh lơ & Hồng
     {
       x: "linear-gradient(45deg, #00BCD4, #0097A7)",
       o: "linear-gradient(45deg, #E91E63, #C2185B)",
     },
-    // Board 9 - Teal & Orange
+    // Bàn cờ 9 - Xanh ngọc & Cam
     {
       x: "linear-gradient(45deg, #009688, #00796B)",
       o: "linear-gradient(45deg, #FF9800, #F57C00)",
     },
-    // Board 10 - Green & Purple
+    // Bàn cờ 10 - Xanh lá & Tím
     {
       x: "linear-gradient(45deg, #4CAF50, #388E3C)",
       o: "linear-gradient(45deg, #9C27B0, #7B1FA2)",
     },
-    // Board 11 - Blue & Yellow
+    // Bàn cờ 11 - Xanh dương & Vàng
     {
       x: "linear-gradient(45deg, #2196F3, #1976D2)",
       o: "linear-gradient(45deg, #FFEB3B, #FBC02D)",
     },
-    // Board 12 - Deep Purple & Light Green
+    // Bàn cờ 12 - Tím đậm & Xanh lá nhạt
     {
       x: "linear-gradient(45deg, #673AB7, #512DA8)",
       o: "linear-gradient(45deg, #8BC34A, #689F38)",
     },
-    // Board 13 - Brown & Blue Grey
+    // Bàn cờ 13 - Nâu & Xanh xám
     {
       x: "linear-gradient(45deg, #795548, #5D4037)",
       o: "linear-gradient(45deg, #607D8B, #455A64)",
     },
   ];
 
-  // Save selected board and its predefined colors to localStorage
+  // Lưu bàn cờ được chọn và màu sắc được định nghĩa sẵn vào localStorage
   const selectedBoard = {
     index: window["currentBoardIndex"],
     image: window["boardImages"][window["currentBoardIndex"]],
@@ -196,14 +196,14 @@ function selectBoard() {
 
   window["AppStorage"]?.set("selectedBoard", selectedBoard);
   console.log(
-    `🎯 Selected board: ${window["currentBoardIndex"] + 1} with colors - Saved to storage`
+    `🎯 Đã chọn bàn cờ: ${window["currentBoardIndex"] + 1} với màu sắc - Đã lưu vào bộ nhớ`
   );
 
-  // Navigate back to select screen
+  // Điều hướng về màn hình chọn
   window["Navigation"]?.navigateTo("select");
 }
 
-// Back button functionality
+// Chức năng nút quay lại
 function handleBackButton() {
   if (window["playSound"]) {
     window["playSound"]("click");
@@ -212,11 +212,11 @@ function handleBackButton() {
   window["Navigation"]?.navigateTo("select");
 }
 
-// Setup all event listeners
+// Thiết lập tất cả các trình lắng nghe sự kiện
 function setupEventListeners() {
   const elements = getElements();
 
-  // Remove existing listeners by cloning elements (this removes all event listeners)
+  // Xóa các trình lắng nghe hiện có bằng cách sao chép phần tử (điều này xóa tất cả các trình lắng nghe sự kiện)
   if (elements.leftBtn && elements.leftBtn.parentNode) {
     const newLeftBtn = elements.leftBtn.cloneNode(true);
     elements.leftBtn.parentNode.replaceChild(newLeftBtn, elements.leftBtn);
@@ -242,14 +242,14 @@ function setupEventListeners() {
   }
 }
 
-// Initialize everything
+// Khởi tạo tất cả
 function initializeMarketplace() {
   setupEventListeners();
   updateBoardDisplay();
   console.log("🎮 Marketplace initialized successfully");
 }
 
-// Initialize when DOM is ready
+// Khởi tạo khi DOM sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initializeMarketplace);
 } else {

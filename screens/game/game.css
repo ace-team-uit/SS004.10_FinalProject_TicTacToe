@@ -1,5 +1,5 @@
 .game-screen {
-  /* Game Header */
+  /* Tiêu đề Game */
   .game-header {
     display: flex;
     justify-content: space-between;
@@ -61,7 +61,7 @@
     }
   }
 
-  /* Game Status Center */
+  /* Trung tâm Trạng thái Game */
   .game-status {
     padding-top: 12px;
     display: flex;
@@ -113,7 +113,7 @@
     box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
   }
 
-  /* HUD Animation Styles */
+  /* Kiểu Hiệu ứng HUD */
   .score-updated {
     transform: scale(1.1);
     color: var(--yellow-400);
@@ -164,7 +164,7 @@
     padding-left: 32px;
   }
 
-  /* Game Board */
+  /* Bàn cờ Game */
   .game-board-container {
     display: flex;
     justify-content: center;
