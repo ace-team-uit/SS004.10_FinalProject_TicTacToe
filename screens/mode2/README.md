@@ -23,7 +23,7 @@ Màn hình chọn kích thước lưới của game, cho phép người chơi ch
 
 ### Design Approach
 
-- **Image-based UI**: Sử dụng hình ảnh buttons trực tiếp từ `assets/images/game-mode-2/`
+- **Image-based UI**: Sử dụng hình ảnh buttons trực tiếp từ `assets/images/mode2/`
 - **No text overlays**: Tất cả text đã có sẵn trong hình ảnh
 - **Mobile-first**: Layout cố định cho mobile app, không responsive
 - **Simple interactions**: Hover effects với scale transform
@@ -50,7 +50,7 @@ Select Game → Game Mode 1 (Difficulty) → Game Mode 2 (Grid Size) → Game
 
 - `styles/variables.css` - CSS variables và design tokens
 - `styles/screens.css` - Base screen styles
-- `assets/images/game-mode-2/` - Grid size button images
+- `assets/images/mode2/` - Grid size button images
 - `assets/images/common/` - Back button image
 
 ## Technical Notes
