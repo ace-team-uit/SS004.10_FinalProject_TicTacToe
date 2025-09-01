@@ -30,7 +30,7 @@ Màn hình chọn độ khó của game, cho phép người chơi chọn giữa 
 
 ### Design Approach
 
-- **Image-based UI**: Sử dụng hình ảnh buttons trực tiếp từ `assets/images/game-mode-1/`
+- **Image-based UI**: Sử dụng hình ảnh buttons trực tiếp từ `assets/images/mode1/`
 - **No text overlays**: Tất cả text đã có sẵn trong hình ảnh
 - **Mobile-first**: Layout cố định cho mobile app, không responsive
 - **Simple interactions**: Hover effects với scale transform
@@ -50,7 +50,7 @@ Select Game → Game Mode 1 (Difficulty) → Game Mode 2 (Grid Size)
 
 - `styles/variables.css` - CSS variables và design tokens
 - `styles/screens.css` - Base screen styles
-- `assets/images/game-mode-1/` - Difficulty icons
+- `assets/images/mode1/` - Difficulty icons
 - `assets/images/common/` - Back button icon
 
 ## Technical Notes

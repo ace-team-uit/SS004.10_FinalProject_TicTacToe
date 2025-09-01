@@ -27,7 +27,7 @@ The Select Game Page is a key screen in the ACE Tic-Tac-Toe game that allows pla
 
 #### Single Player Button
 
-- **Button Image**: Uses `assets/images/select-game/single-player.png` as specified
+- **Button Image**: Uses `assets/images/select/single-player.png` as specified
 - Hover and active states with scale effects
 - Drop shadow for depth
 
@@ -61,7 +61,7 @@ The Select Game Page is a key screen in the ACE Tic-Tac-Toe game that allows pla
 - `styles/components.css` - Phone viewport configuration
 - `shared/logic/navigation.js` - Navigation system
 - `assets/images/logo.png` - Game logo
-- `assets/images/select-game/single-player.png` - Single player button
+- `assets/images/select/single-player.png` - Single player button
 - `assets/images/common/*.png` - Navigation button images
 
 ### Navigation Routes
