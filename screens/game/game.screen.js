@@ -425,9 +425,12 @@ function initGameScreen() {
         window["GameData"].state.currentPlayer === 2 &&
         window["GameData"].state.gameStatus === "playing"
       ) {
-        setTimeout(() => {
-          autoAIMove();
-        }, Math.random() * (7000 - 500) + 500);
+        setTimeout(
+          () => {
+            autoAIMove();
+          },
+          Math.random() * (7000 - 500) + 500
+        );
       } else {
         // Nếu không phải lượt AI, enable lại các ô chưa đánh cho người chơi
         if (gameBoardEl) {
