@@ -166,7 +166,19 @@ function initGameScreen() {
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       console.log("🔄 Back button clicked");
-      navigateToGameMode2();
+      
+      // Phát âm thanh click
+      if (window["playSound"]) {
+        window["playSound"]("click");
+      }
+      
+      // Hiển thị popup xác nhận thoát
+      if (window["PopupManager"]) {
+        window["PopupManager"].showExitPopup();
+      } else {
+        // Fallback về điều hướng trực tiếp nếu popup system chưa sẵn sàng
+        navigateToGameMode2();
+      }
     });
   }
 
@@ -435,16 +447,44 @@ function initGameScreen() {
       // Cập nhật hiển thị bàn cờ
       updateBoardDisplay();
 
-      // Hiển thị alert khi có người thắng
+      // Hiển thị popup khi có người thắng hoặc hòa
       if (gameData.state.gameStatus === "won") {
         const winner = gameData.state.currentPlayer === 1 ? 1 : 2;
-        const winnerText = winner === 1 ? "Người chơi X" : "Người chơi O (AI)";
         setTimeout(() => {
-          alert(winnerText + " thắng!");
+          if (window["PopupManager"]) {
+            if (winner === 1) {
+              // Người chơi thắng
+              window["PopupManager"].showWinPopup();
+              // Phát âm thanh thắng
+              if (window["playSound"]) {
+                window["playSound"]("win");
+              }
+            } else {
+              // AI thắng
+              window["PopupManager"].showLosePopup();
+              // Phát âm thanh thua
+              if (window["playSound"]) {
+                window["playSound"]("lose");
+              }
+            }
+          } else {
+            // Fallback về alert nếu popup system chưa sẵn sàng
+            const winnerText = winner === 1 ? "Người chơi X" : "Người chơi O (AI)";
+            alert(winnerText + " thắng!");
+          }
         }, 100);
       } else if (gameData.state.gameStatus === "draw") {
         setTimeout(() => {
-          alert("Hòa!");
+          if (window["PopupManager"]) {
+            window["PopupManager"].showDrawPopup();
+            // Phát âm thanh hòa
+            if (window["playSound"]) {
+              window["playSound"]("draw");
+            }
+          } else {
+            // Fallback về alert nếu popup system chưa sẵn sàng
+            alert("Hòa!");
+          }
         }, 100);
       }
 

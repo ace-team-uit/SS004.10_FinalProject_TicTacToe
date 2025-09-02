@@ -222,17 +222,24 @@ class AudioManager {
   }
 
   /**
-   * Hiển thị alert yêu cầu user cho phép âm thanh
+   * Hiển thị popup yêu cầu user cho phép âm thanh
    */
   showAutoplayAlert() {
-    // Chỉ hiển thị alert một lần
+    // Chỉ hiển thị popup một lần
     if (this.autoplayAlertShown) return;
     this.autoplayAlertShown = true;
 
     // Lưu vào storage để không hiển thị lại
     window["AppStorage"]?.saveSettings({ gameAudioAlertShown: true });
 
-    const alertMessage = `
+    // Sử dụng popup system thay vì alert
+    if (window["PopupManager"]) {
+      console.log("🎵 Showing access audio popup");
+      window["PopupManager"].showAccessAudioPopup();
+    } else {
+      // Fallback về alert nếu popup system chưa sẵn sàng
+      console.warn("⚠️ PopupManager not available, falling back to alert");
+      const alertMessage = `
 🎵 Để có trải nghiệm âm thanh tốt nhất, vui lòng:
 
 1. Click vào bất kỳ đâu trên trang để cho phép âm thanh
@@ -243,9 +250,9 @@ class AudioManager {
    - Không có extension nào chặn âm thanh
 
 Click OK để tiếp tục.
-    `;
-
-    alert(alertMessage);
+      `;
+      alert(alertMessage);
+    }
   }
 
   /**
