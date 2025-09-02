@@ -67,7 +67,7 @@ class AudioManager {
   /**
    * Khởi tạo audio context và preload các sound assets
    */
-  async initAudio() {
+  async initAudio () {
     try {
       // Tạo audio context nếu browser hỗ trợ
       if (
@@ -97,7 +97,7 @@ class AudioManager {
   /**
    * Preload tất cả sound effects
    */
-  async preloadSounds() {
+  async preloadSounds () {
     const promises = Object.entries(this.soundMap).map(([name, path]) =>
       this.loadSound(name, path)
     );
@@ -113,7 +113,7 @@ class AudioManager {
   /**
    * Preload tất cả BGM
    */
-  async preloadBGM() {
+  async preloadBGM () {
     const promises = Object.entries(this.bgmMap).map(([name, path]) => this.loadBGM(name, path));
 
     try {
@@ -131,7 +131,7 @@ class AudioManager {
    * @returns {Promise<HTMLAudioElement|null>} Audio element hoặc null nếu load thất bại
    * @throws {Error} Nếu path không hợp lệ hoặc file không tồn tại
    */
-  async loadSound(name, path) {
+  async loadSound (name, path) {
     try {
       const audio = new Audio();
       audio.preload = "auto";
@@ -161,7 +161,7 @@ class AudioManager {
    * @returns {Promise<HTMLAudioElement|null>} Audio element hoặc null nếu load thất bại
    * @throws {Error} Nếu path không hợp lệ hoặc file không tồn tại
    */
-  async loadBGM(name, path) {
+  async loadBGM (name, path) {
     try {
       const audio = new Audio();
       audio.preload = "auto";
@@ -188,7 +188,7 @@ class AudioManager {
   /**
    * Kiểm tra autoplay policy và hiển thị alert nếu cần
    */
-  async checkAutoplayPolicy() {
+  async checkAutoplayPolicy () {
     try {
       // Kiểm tra xem đã hiển thị alert chưa
       const settings = window["AppStorage"]?.loadSettings();
@@ -224,7 +224,7 @@ class AudioManager {
   /**
    * Hiển thị alert yêu cầu user cho phép âm thanh
    */
-  showAutoplayAlert() {
+  showAutoplayAlert () {
     // Chỉ hiển thị alert một lần
     if (this.autoplayAlertShown) return;
     this.autoplayAlertShown = true;
@@ -251,7 +251,7 @@ Click OK để tiếp tục.
   /**
    * Tự động thay đổi BGM dựa trên màn hình
    */
-  autoChangeBGM(screenPath) {
+  autoChangeBGM (screenPath) {
     try {
       let bgmType = "bgm-home"; // default
 
@@ -291,7 +291,7 @@ Click OK để tiếp tục.
    * audioManager.playSound("click");
    * audioManager.playSound("win");
    */
-  playSound(soundName) {
+  playSound (soundName) {
     if (this.isMuted) return;
 
     const sound = this.sounds.get(soundName);
@@ -327,7 +327,7 @@ Click OK để tiếp tục.
    * await audioManager.playBgm("bgm-game");
    * await audioManager.playBgm("bgm-home");
    */
-  async playBgm(type) {
+  async playBgm (type) {
     if (this.isMuted) return;
 
     const bgm = this.bgm.get(type);
@@ -362,7 +362,7 @@ Click OK để tiếp tục.
    * @param {number} [duration=1000] - Thời gian fade in (ms)
    * @returns {Promise<void>}
    */
-  async fadeInBGM(audio, duration = 1000) {
+  async fadeInBGM (audio, duration = 1000) {
     const steps = 20;
     const stepDuration = duration / steps;
     const volumeStep = this.bgmVolume / steps;
@@ -380,7 +380,7 @@ Click OK để tiếp tục.
    * @param {number} [duration=500] - Thời gian fade out (ms)
    * @returns {Promise<void>}
    */
-  async fadeOutBGM(audio, duration = 500) {
+  async fadeOutBGM (audio, duration = 500) {
     const steps = 10;
     const stepDuration = duration / steps;
     const currentVolume = audio.volume;
@@ -396,7 +396,7 @@ Click OK để tiếp tục.
   /**
    * Dừng BGM hiện tại
    */
-  stopBgm() {
+  stopBgm () {
     if (this.currentBgm) {
       this.currentBgm.pause();
       this.currentBgm.currentTime = 0;
@@ -407,8 +407,8 @@ Click OK để tiếp tục.
   /**
    * Tắt/bật âm thanh
    */
-  toggleMute() {
-    this.isMuted = !this.isMuted;
+  toggleMute (isMuted = !this.isMuted) {
+    this.isMuted = isMuted;
 
     if (this.isMuted) {
       this.stopBgm();
@@ -424,7 +424,7 @@ Click OK để tiếp tục.
    * @returns {void}
    * @throws {Error} Nếu volume không hợp lệ
    */
-  setVolume(volume) {
+  setVolume (volume) {
     this.volume = Math.max(0, Math.min(1, volume));
     console.log(`🔊 Sound volume set to: ${this.volume}`);
   }
@@ -435,7 +435,7 @@ Click OK để tiếp tục.
    * @returns {void}
    * @throws {Error} Nếu volume không hợp lệ
    */
-  setBgmVolume(volume) {
+  setBgmVolume (volume) {
     this.bgmVolume = Math.max(0, Math.min(1, volume));
 
     if (this.currentBgm) {
@@ -456,7 +456,7 @@ Click OK để tiếp tục.
    *   bgmLoaded: number
    * }} Trạng thái audio system
    */
-  getStatus() {
+  getStatus () {
     return {
       isMuted: this.isMuted,
       volume: this.volume,
@@ -470,7 +470,7 @@ Click OK để tiếp tục.
   /**
    * Cleanup resources
    */
-  destroy() {
+  destroy () {
     this.stopBgm();
     this.sounds.clear();
     this.bgm.clear();
