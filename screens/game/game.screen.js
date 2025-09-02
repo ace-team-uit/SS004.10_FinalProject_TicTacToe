@@ -621,37 +621,6 @@ function initializeHUD () {
   }
 }
 
-// /**
-//  * Cập nhật thanh thời gian và xử lý hết giờ
-//  * @param {{current?: number, total?: number}} time
-//  * @param {function} onTimeout - callback khi hết giờ
-//  */
-// function updateTimer (time, onTimeout) {
-//   const fill = document.getElementById("progress-fill");
-//   if (!fill) {
-//     console.warn("⚠️ Progress fill element not found");
-//     return;
-//   }
-//   const current = time.current ?? 0;
-//   const total = time.total ?? 15;
-//   const percent = Math.max(0, Math.min(100, (current / total) * 100));
-//   fill.style.width = `${percent}%`;
-//   if (percent <= 20) {
-//     fill.style.background = "var(--red-400)";
-//     fill.classList.add("timer-urgent");
-//   } else if (percent <= 50) {
-//     fill.style.background = "var(--yellow-400)";
-//     fill.classList.remove("timer-urgent");
-//   } else {
-//     fill.style.background = "var(--green-400)";
-//     fill.classList.remove("timer-urgent");
-//   }
-//   // Nếu hết giờ
-//   if (current <= 0 && typeof onTimeout === "function") {
-//     onTimeout();
-//   }
-// }
-
 // Khởi tạo khi DOM sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initGameScreen);
