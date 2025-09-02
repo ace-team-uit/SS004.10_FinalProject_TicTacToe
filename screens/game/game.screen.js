@@ -235,16 +235,7 @@ function initGameScreen () {
     }
 
     // Cập nhật trạng thái nút âm nhạc
-    const musicBtn = document.getElementById("music-btn");
-    if (musicBtn) {
-      if (settings.gameMusicEnabled) {
-        musicBtn.style.opacity = "1";
-        musicBtn.style.filter = "none";
-      } else {
-        musicBtn.style.opacity = "0.5";
-        musicBtn.style.filter = "grayscale(100%)";
-      }
-    }
+    updateMusicButton(settings.gameMusicEnabled);
 
     console.log("✅ Dữ liệu game đã được khởi tạo thành công");
   }
@@ -354,6 +345,13 @@ function initGameScreen () {
 
   // Xử lý khi click vào ô
   function handleCellClick (cell, index) {
+    // Sau khi người chơi đi, disable toàn bộ bàn cờ
+    const gameBoardEl = document.getElementById("game-board");
+    if (gameBoardEl) {
+      const allCells = gameBoardEl.querySelectorAll(".board-cell");
+      allCells.forEach(disableCell);
+    }
+
     // Phát âm thanh click nếu có
     if (window["playSound"]) {
       window["playSound"]("click");
@@ -398,9 +396,6 @@ function initGameScreen () {
 
       cellText.textContent = playerMark;
 
-      // Vô hiệu hóa ô sau khi đánh dấu
-      disableCell(cell);
-
       console.log(`✅ Ô ${index} được đánh dấu với ${playerMark}`);
 
       // Đặt lại timer cho lượt mới
@@ -429,6 +424,17 @@ function initGameScreen () {
         setTimeout(() => {
           autoAIMove();
         }, 350);
+      } else {
+        // Nếu không phải lượt AI, enable lại các ô chưa đánh cho người chơi
+        if (gameBoardEl) {
+          const allCells = gameBoardEl.querySelectorAll(".board-cell");
+          const flatBoard = window["GameData"].getFlatBoard();
+          allCells.forEach((cell, idx) => {
+            if (flatBoard[idx] && flatBoard[idx].value === null) {
+              enableCell(cell);
+            }
+          });
+        }
       }
     } else {
       console.log(`❌ Không thể đánh dấu ô ${index}`);
@@ -466,6 +472,19 @@ function initGameScreen () {
   // Khởi tạo
   initializeMusicState();
   console.log("🎮 Màn hình game đã được khởi tạo");
+}
+
+// Cập nhật trạng thái nút âm nhạc
+function updateMusicButton (enabled) {
+  const musicBtn = document.getElementById("music-btn");
+  if (!musicBtn) return;
+  if (enabled) {
+    musicBtn.style.opacity = "1";
+    musicBtn.style.filter = "none";
+  } else {
+    musicBtn.style.opacity = "0.5";
+    musicBtn.style.filter = "grayscale(100%)";
+  }
 }
 
 // Cập nhật hiển thị bàn cờ
@@ -508,13 +527,6 @@ function updateBoardDisplay () {
           cellTextElement.style.backgroundClip = "text";
         }
       }
-
-      // Cập nhật trạng thái ô
-      if (newValue !== null) {
-        disableCell(cell);
-      } else {
-        enableCell(cell);
-      }
     }
   });
 }
@@ -528,7 +540,6 @@ function disableCell (cell) {
   cell.style.pointerEvents = "none";
   cell.style.opacity = "0.8";
   cell.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
-  console.log("🔒 Ô đã bị vô hiệu hóa");
 }
 
 // Kích hoạt ô (cho phép click)
@@ -538,7 +549,6 @@ function enableCell (cell) {
   cell.style.pointerEvents = "auto";
   cell.style.opacity = "1";
   cell.style.backgroundColor = "";
-  console.log("🔓 Ô đã được kích hoạt");
 }
 
 // Toggle music
@@ -554,18 +564,17 @@ function toggleMusic () {
   if (window["playSound"]) {
     window["playSound"]("click");
   }
+
+  window["audioManager"].toggleMute(!newState);
   console.log(`🎵 Music ${newState ? "enabled" : "disabled"}`);
 }
 
-// Cập nhật trạng thái nút âm nhạc
-function updateMusicButton (enabled) {
-  if (!musicBtn) return;
-  if (enabled) {
-    musicBtn.style.opacity = "1";
-    musicBtn.style.filter = "none";
-  } else {
-    musicBtn.style.opacity = "0.5";
-    musicBtn.style.filter = "grayscale(100%)";
+// Khởi tạo trạng thái âm nhạc
+function initializeMusicState () {
+  const settings = window["AppStorage"]?.loadSettings();
+  if (settings) {
+    updateMusicButton(settings.gameMusicEnabled);
+    window["audioManager"].toggleMute(!settings.gameMusicEnabled);
   }
 }
 
@@ -588,13 +597,6 @@ function navigateToSettings () {
   }
 }
 
-// Khởi tạo trạng thái âm nhạc
-function initializeMusicState () {
-  const settings = window["AppStorage"]?.loadSettings();
-  if (settings) {
-    updateMusicButton(settings.gameMusicEnabled);
-  }
-}
 
 // ===== TÍCH HỢP HUD =====
 function initializeHUD () {
@@ -619,36 +621,36 @@ function initializeHUD () {
   }
 }
 
-/**
- * Cập nhật thanh thời gian và xử lý hết giờ
- * @param {{current?: number, total?: number}} time
- * @param {function} onTimeout - callback khi hết giờ
- */
-function updateTimer (time, onTimeout) {
-  const fill = document.getElementById("progress-fill");
-  if (!fill) {
-    console.warn("⚠️ Progress fill element not found");
-    return;
-  }
-  const current = time.current ?? 0;
-  const total = time.total ?? 15;
-  const percent = Math.max(0, Math.min(100, (current / total) * 100));
-  fill.style.width = `${percent}%`;
-  if (percent <= 20) {
-    fill.style.background = "var(--red-400)";
-    fill.classList.add("timer-urgent");
-  } else if (percent <= 50) {
-    fill.style.background = "var(--yellow-400)";
-    fill.classList.remove("timer-urgent");
-  } else {
-    fill.style.background = "var(--green-400)";
-    fill.classList.remove("timer-urgent");
-  }
-  // Nếu hết giờ
-  if (current <= 0 && typeof onTimeout === "function") {
-    onTimeout();
-  }
-}
+// /**
+//  * Cập nhật thanh thời gian và xử lý hết giờ
+//  * @param {{current?: number, total?: number}} time
+//  * @param {function} onTimeout - callback khi hết giờ
+//  */
+// function updateTimer (time, onTimeout) {
+//   const fill = document.getElementById("progress-fill");
+//   if (!fill) {
+//     console.warn("⚠️ Progress fill element not found");
+//     return;
+//   }
+//   const current = time.current ?? 0;
+//   const total = time.total ?? 15;
+//   const percent = Math.max(0, Math.min(100, (current / total) * 100));
+//   fill.style.width = `${percent}%`;
+//   if (percent <= 20) {
+//     fill.style.background = "var(--red-400)";
+//     fill.classList.add("timer-urgent");
+//   } else if (percent <= 50) {
+//     fill.style.background = "var(--yellow-400)";
+//     fill.classList.remove("timer-urgent");
+//   } else {
+//     fill.style.background = "var(--green-400)";
+//     fill.classList.remove("timer-urgent");
+//   }
+//   // Nếu hết giờ
+//   if (current <= 0 && typeof onTimeout === "function") {
+//     onTimeout();
+//   }
+// }
 
 // Khởi tạo khi DOM sẵn sàng
 if (document.readyState === "loading") {
