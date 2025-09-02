@@ -3,9 +3,6 @@
  * Export tất cả các module logic để sử dụng trong game
  */
 
-// Export BoardManager
-export { default as BoardManager } from "./board.js";
-
 // Load other modules as global objects for browser compatibility
 if (typeof window !== "undefined") {
   // Load BoardManager if not already loaded
