@@ -407,8 +407,8 @@ Click OK để tiếp tục.
   /**
    * Tắt/bật âm thanh
    */
-  toggleMute() {
-    this.isMuted = !this.isMuted;
+  toggleMute(isMuted = !this.isMuted) {
+    this.isMuted = isMuted;
 
     if (this.isMuted) {
       this.stopBgm();
