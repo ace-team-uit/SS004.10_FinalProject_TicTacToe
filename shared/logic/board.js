@@ -86,95 +86,73 @@ const BoardManager = {
    */
   checkWinner (state) {
     const { board, size } = state;
-    // Helper kiểm tra 1 dòng với các luật đặc biệt
-    function checkLineSpecial (getCell, length, size) {
-      let count = 0;
-      let last = null;
-      let block = 0;
-      for (let i = 0; i < length; i++) {
-        const cell = getCell(i);
-        if (cell === last && cell !== null) {
-          count++;
-        } else {
-          count = 1;
-          last = cell;
+    const boardSize = size * size;
+
+    // Duyệt qua tất cả các ô trên bàn cờ
+    for (let i = 0; i < boardSize; i++) {
+      // Bỏ qua nếu ô trống
+      if (board[i] === null) continue;
+
+      const row = Math.floor(i / size);
+      const col = i % size;
+
+      // Các hướng kiểm tra: [hàng, cột]
+      const directions = [
+        [0, 1],  // Ngang ->
+        [1, 0],  // Dọc  ↓
+        [1, 1],  // Chéo chính \
+        [1, -1], // Chéo phụ /
+      ];
+
+      for (const [dr, dc] of directions) {
+        const result = this._checkLine(state, row, col, dr, dc);
+        if (result) {
+          // Tìm thấy người thắng, trả về ngay lập tức
+          return result;
         }
-        if (cell === null) block++;
-        // 3x3: 3 liên tiếp là thắng
-        if (size === 3 && count === 3 && last !== null) return { winner: last, length: 3 };
-        // 4x4, 5x5: 4 liên tiếp chỉ thắng nếu không có block (không có ô trống)
-        if ((size === 4 || size === 5) && count === 4 && block === 0 && last !== null) return { winner: last, length: 4 };
-        // 4x4, 5x5: 5 liên tiếp thắng nếu có tối đa 1 block
-        if ((size === 4 || size === 5) && count === 5 && block <= 1 && last !== null) return { winner: last, length: 5 };
       }
-      return null;
     }
 
-    // Hàng ngang
-    for (let row = 0; row < size; row++) {
-      for (let col = 0; col <= size - 3; col++) {
-        const maxLen = size - col;
-        for (let len = 3; len <= Math.min(5, maxLen); len++) {
-          const getCell = (i) => board[row * size + col + i];
-          const result = checkLineSpecial(getCell, len, size);
-          if (result) {
-            return {
-              winner: result.winner,
-              winningLine: this._getWinningLineIndices(row, col, result.length, size, "horizontal"),
-            };
-          }
-        }
-      }
-    }
-    // Hàng dọc
-    for (let col = 0; col < size; col++) {
-      for (let row = 0; row <= size - 3; row++) {
-        const maxLen = size - row;
-        for (let len = 3; len <= Math.min(5, maxLen); len++) {
-          const getCell = (i) => board[(row + i) * size + col];
-          const result = checkLineSpecial(getCell, len, size);
-          if (result) {
-            return {
-              winner: result.winner,
-              winningLine: this._getWinningLineIndices(row, col, result.length, size, "vertical"),
-            };
-          }
-        }
-      }
-    }
-    // Đường chéo chính
-    for (let row = 0; row <= size - 3; row++) {
-      for (let col = 0; col <= size - 3; col++) {
-        const maxLen = Math.min(size - row, size - col);
-        for (let len = 3; len <= Math.min(5, maxLen); len++) {
-          const getCell = (i) => board[(row + i) * size + (col + i)];
-          const result = checkLineSpecial(getCell, len, size);
-          if (result) {
-            return {
-              winner: result.winner,
-              winningLine: this._getWinningLineIndices(row, col, result.length, size, "diagonal-main"),
-            };
-          }
-        }
-      }
-    }
-    // Đường chéo phụ
-    for (let row = 0; row <= size - 3; row++) {
-      for (let col = 2; col < size; col++) {
-        const maxLen = Math.min(size - row, col + 1);
-        for (let len = 3; len <= Math.min(5, maxLen); len++) {
-          const getCell = (i) => board[(row + i) * size + (col - i)];
-          const result = checkLineSpecial(getCell, len, size);
-          if (result) {
-            return {
-              winner: result.winner,
-              winningLine: this._getWinningLineIndices(row, col, result.length, size, "diagonal-anti"),
-            };
-          }
-        }
-      }
-    }
+    // Không tìm thấy người thắng
     return null;
+  },
+
+  // ===== PRIVATE METHODS =====
+
+  /**
+   * [HÀM PHỤ TRỢ MỚI] Kiểm tra một đường thẳng bắt đầu từ (startRow, startCol)
+   * theo hướng (dr, dc) có tạo thành chuỗi thắng không.
+   * @private
+   */
+  _checkLine (state, startRow, startCol, dr, dc) {
+    const { board, size } = state;
+    const player = board[startRow * size + startCol];
+
+    // Số quân cờ cần để thắng giờ đây chính bằng kích thước bàn cờ (winLength = size)
+    const winLength = size;
+    const lineIndices = [];
+
+    // Vòng lặp để kiểm tra chính xác 'winLength' quân cờ liên tiếp
+    for (let i = 0; i < winLength; i++) {
+      const r = startRow + i * dr;
+      const c = startCol + i * dc;
+
+      // Kiểm tra 1: Ô có nằm ngoài bàn cờ không?
+      if (r < 0 || r >= size || c < 0 || c >= size) {
+        return null; // Đường thắng đi ra ngoài bàn cờ -> không hợp lệ
+      }
+
+      // Kiểm tra 2: Quân cờ tại ô này có phải của người chơi không?
+      if (board[r * size + c] !== player) {
+        return null; // Chuỗi bị phá vỡ -> không hợp lệ
+      }
+
+      // Nếu mọi thứ đều ổn, thêm chỉ số của ô này vào danh sách đường thắng
+      lineIndices.push(r * size + c);
+    }
+
+    // Nếu vòng lặp chạy hết mà không bị `return null`, có nghĩa là đã tìm thấy người thắng
+    return { winner: player, winningLine: lineIndices };
   },
 
   /**
