@@ -3,9 +3,6 @@ node_modules/
 .env
 .cursorrules
 
-# Large media files
-assets/sounds/bgm/*.mp3
-
 # npx --yes prettier --check .
 # npx eslint . --ext .js --fix
 # npx prettier --write .
