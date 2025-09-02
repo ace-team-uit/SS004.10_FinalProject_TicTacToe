@@ -1,361 +1,386 @@
-/**
- * AI Core cho game Tic Tac Toe
- * Hỗ trợ minimax algorithm với alpha-beta pruning
- * Tối ưu hóa cho các kích thước bàn 3x3, 4x4, 5x5
- */
-
 const TTT_AI = {
-  // Cache để tránh tính toán lại
+  // Cache để tránh tính toán lại các thế cờ đã gặp
   _cache: new Map(),
 
-  // Giới hạn độ sâu mặc định cho từng kích thước bàn
+  // Giới hạn độ sâu mặc định cho thuật toán Minimax theo kích thước bàn cờ
   _maxDepths: {
-    9: 9, // 3x3: tìm kiếm toàn bộ
-    16: 6, // 4x4: giới hạn độ sâu để tối ưu thời gian
-    25: 4, // 5x5: giới hạn nghiêm ngặt để đảm bảo UX
+    9: 9,   // 3x3: tìm kiếm toàn bộ cây trạng thái
+    16: 6,  // 4x4: giới hạn độ sâu để tối ưu thời gian
+    25: 4,  // 5x5: giới hạn nghiêm ngặt hơn để đảm bảo trải nghiệm người dùng
   },
 
   /**
-   * Tìm nước đi tốt nhất cho AI
-   * @param {Array} board - Mảng đại diện bàn cờ (null = ô trống, 1 = X, 2 = O)
-   * @param {number} player - Người chơi hiện tại (1 hoặc 2)
-   * @returns {number} Index của ô tốt nhất, -1 nếu không có nước đi
+   * Lấy nước đi cho AI dựa trên độ khó được chọn.
+   * @param {Object} state - Trạng thái game (từ BoardManager).
+   * @param {string} difficulty - 'easy' | 'medium' | 'hard'.
+   * @returns {number} Index của nước đi tối ưu.
    */
-  findBestMove(board, player = 2) {
+  getAIMove: function (state, difficulty = "easy") {
+    if (!state || state.gameStatus !== "playing") return -1;
+
+    const board = [...state.board];
+    const player = 2; // AI luôn là người chơi 2 (O)
+    const emptyCells = this._getEmptyCells(board);
+    if (emptyCells.length === 0) return -1;
+
+    // EASY: chỉ random, không ưu tiên thắng/chặn
+    if (difficulty === "easy") {
+      return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    }
+
+    // MEDIUM/HARD: ưu tiên thắng/chặn trước
+    const immediateMove = this._findImmediateWinOrBlock(board, player);
+    if (immediateMove !== -1) {
+      return immediateMove;
+    }
+
+    // MEDIUM: 80% minimax, 20% random
+    if (difficulty === "medium") {
+      if (Math.random() < 0.8) {
+        return this.findBestMove(board, player, 2);
+      } else {
+        return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      }
+    }
+
+    // HARD: luôn minimax tối đa
+    return this.findBestMove(board, player);
+  },
+
+  /**
+   * Tìm nước đi có thể thắng ngay hoặc chặn đối thủ thắng ngay.
+   * @param {Array} board - Mảng bàn cờ.
+   * @param {number} player - Người chơi hiện tại (AI).
+   * @returns {number} Index của nước đi, hoặc -1 nếu không có.
+   */
+  _findImmediateWinOrBlock: function (board, player) {
+    const opponent = player === 1 ? 2 : 1;
+    const emptyCells = this._getEmptyCells(board);
+
+    // 1. Kiểm tra xem AI có thể thắng ngay không.
+    for (const move of emptyCells) {
+      board[move] = player;
+      if (this._checkWinner(board)) {
+        board[move] = null; // Hoàn tác
+        return move;
+      }
+      board[move] = null; // Hoàn tác
+    }
+
+    // 2. Kiểm tra xem đối thủ có thể thắng ở lượt tiếp theo không (để chặn).
+    for (const move of emptyCells) {
+      board[move] = opponent;
+      if (this._checkWinner(board)) {
+        board[move] = null; // Hoàn tác
+        return move;
+      }
+      board[move] = null; // Hoàn tác
+    }
+
+    return -1; // Không có nước đi nào cần ưu tiên ngay.
+  },
+
+  /**
+   * Tìm nước đi tốt nhất cho AI sử dụng Minimax với Alpha-Beta Pruning.
+   * @param {Array} board - Mảng bàn cờ.
+   * @param {number} player - Người chơi hiện tại (AI).
+   * @param {number} [customMaxDepth] - Tùy chọn độ sâu tối đa (dùng cho độ khó Medium).
+   * @returns {number} Index của nước đi tốt nhất.
+   */
+  findBestMove (board, player = 2, customMaxDepth) {
     if (!board || board.length === 0) return -1;
 
-    const boardSize = board.length;
-    const maxDepth = this._maxDepths[boardSize] || 4;
+    // Xóa cache nếu quá lớn để tránh tốn bộ nhớ.
+    if (this._cache.size > 5000) this._cache.clear();
 
-    // Xóa cache cũ nếu bàn cờ thay đổi quá nhiều
-    if (this._cache.size > 1000) {
-      this._cache.clear();
-    }
+    const boardSize = board.length;
+    const maxDepth = customMaxDepth || this._maxDepths[boardSize] || 4;
 
     let bestScore = -Infinity;
     let bestMove = -1;
     let alpha = -Infinity;
     let beta = Infinity;
 
-    // Tìm tất cả các ô trống
     const emptyCells = this._getEmptyCells(board);
     if (emptyCells.length === 0) return -1;
 
-    // Sắp xếp các ô trống theo ưu tiên (góc, cạnh, giữa)
+    // Ưu tiên duyệt các nước đi ở trung tâm để tăng hiệu quả cắt tỉa alpha-beta.
     const prioritizedMoves = this._prioritizeMoves(emptyCells, boardSize);
 
     for (const move of prioritizedMoves) {
-      if (board[move] === null) {
-        // Thử nước đi
-        board[move] = player;
+      board[move] = player; // Thử nước đi
+      const score = this.minimax(board, maxDepth - 1, alpha, beta, false, player);
+      board[move] = null; // Hoàn tác
 
-        // Tính điểm minimax
-        const score = this.minimax(board, maxDepth - 1, alpha, beta, false, player);
-
-        // Hoàn tác nước đi
-        board[move] = null;
-
-        // Cập nhật nước đi tốt nhất
-        if (score > bestScore) {
-          bestScore = score;
-          bestMove = move;
-        }
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = move;
       }
+      alpha = Math.max(alpha, score); // Cập nhật alpha
     }
 
-    return bestMove;
+    // Nếu không tìm thấy nước đi nào (trường hợp hiếm), trả về một nước đi ngẫu nhiên.
+    return bestMove !== -1 ? bestMove : emptyCells[0];
   },
 
   /**
-   * Minimax algorithm với alpha-beta pruning
-   * @param {Array} board - Bàn cờ hiện tại
-   * @param {number} depth - Độ sâu còn lại
-   * @param {number} alpha - Alpha value cho pruning
-   * @param {number} beta - Beta value cho pruning
-   * @param {boolean} isMaximizing - Có phải lượt tối đa hóa không
-   * @param {number} player - Người chơi hiện tại
-   * @returns {number} Điểm số tốt nhất
+   * Thuật toán Minimax với cắt tỉa Alpha-Beta.
+   * @param {Array} board - Bàn cờ.
+   * @param {number} depth - Độ sâu còn lại.
+   * @param {number} alpha - Giá trị Alpha.
+   * @param {number} beta - Giá trị Beta.
+   * @param {boolean} isMaximizing - Lượt của người chơi tối đa hóa (AI) hay không.
+   * @param {number} player - Người chơi AI.
+   * @returns {number} Điểm số tốt nhất.
    */
-  minimax(board, depth, alpha, beta, isMaximizing, player) {
-    const boardSize = board.length;
-    const cacheKey = this._generateCacheKey(board, depth, isMaximizing, player);
-
-    // Kiểm tra cache
+  minimax (board, depth, alpha, beta, isMaximizing, player) {
+    const cacheKey = this._generateCacheKey(board, depth, isMaximizing);
     if (this._cache.has(cacheKey)) {
       return this._cache.get(cacheKey);
     }
 
-    // Kiểm tra điều kiện dừng
-    const winner = this._checkWinner(board, boardSize);
-    if (winner !== null || depth === 0) {
-      const score = this.evaluateBoard(board, player);
+    const winnerInfo = this._checkWinner(board);
+    if (winnerInfo || depth === 0) {
+      const score = this.evaluateBoard(board, player, depth);
       this._cache.set(cacheKey, score);
       return score;
     }
 
     const opponent = player === 1 ? 2 : 1;
-    let bestScore = isMaximizing ? -Infinity : Infinity;
-
     const emptyCells = this._getEmptyCells(board);
 
-    for (const move of emptyCells) {
-      if (board[move] === null) {
-        // Thử nước đi
-        board[move] = isMaximizing ? player : opponent;
-
-        // Đệ quy
-        const score = this.minimax(board, depth - 1, alpha, beta, !isMaximizing, player);
-
-        // Hoàn tác
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (const move of emptyCells) {
+        board[move] = player;
+        const score = this.minimax(board, depth - 1, alpha, beta, false, player);
         board[move] = null;
-
-        // Cập nhật điểm tốt nhất
-        if (isMaximizing) {
-          bestScore = Math.max(bestScore, score);
-          alpha = Math.max(alpha, score);
-        } else {
-          bestScore = Math.min(bestScore, score);
-          beta = Math.min(beta, score);
-        }
-
-        // Alpha-beta pruning
-        if (beta <= alpha) break;
+        bestScore = Math.max(bestScore, score);
+        alpha = Math.max(alpha, score);
+        if (beta <= alpha) break; // Cắt tỉa Beta
       }
+      this._cache.set(cacheKey, bestScore);
+      return bestScore;
+    } else { // isMinimizing
+      let bestScore = Infinity;
+      for (const move of emptyCells) {
+        board[move] = opponent;
+        const score = this.minimax(board, depth - 1, alpha, beta, true, player);
+        board[move] = null;
+        bestScore = Math.min(bestScore, score);
+        beta = Math.min(beta, score);
+        if (beta <= alpha) break; // Cắt tỉa Alpha
+      }
+      this._cache.set(cacheKey, bestScore);
+      return bestScore;
     }
-
-    // Lưu vào cache
-    this._cache.set(cacheKey, bestScore);
-    return bestScore;
   },
 
   /**
-   * Đánh giá bàn cờ và trả về điểm số
-   * @param {Array} board - Bàn cờ cần đánh giá
-   * @param {number} player - Người chơi cần đánh giá (1 hoặc 2)
-   * @returns {number} Điểm số (-1000 đến 1000)
+   * Hàm đánh giá điểm số của bàn cờ (Heuristic function).
+   * @param {Array} board - Bàn cờ.
+   * @param {number} player - Người chơi AI.
+   * @param {number} depth - Độ sâu còn lại (để ưu tiên thắng nhanh).
+   * @returns {number} Điểm số.
    */
-  evaluateBoard(board, player) {
-    const boardSize = board.length;
-    const gridSize = Math.sqrt(boardSize);
+  evaluateBoard (board, player, depth) {
+    const winnerInfo = this._checkWinner(board);
+    if (winnerInfo) {
+      if (winnerInfo.winner === player) return 100000 + depth * 100; // Thắng, cộng thêm điểm nếu thắng nhanh
+      if (winnerInfo.winner === (player === 1 ? 2 : 1)) return -100000 - depth * 100; // Thua
+      if (winnerInfo.winner === "draw") return 0; // Hòa
+    }
+
+    // Nếu chưa kết thúc, tính điểm tiềm năng
+    let score = 0;
+    const allLines = this._getAllLines(board);
+    const winCondition = this._getWinCondition(board.length);
+
+    for (const line of allLines) {
+      score += this._evaluateLine(line, player, winCondition);
+    }
+    return score;
+  },
+
+  /**
+   * Đánh giá điểm cho một đường (hàng, cột, chéo).
+   * @param {Array} line - Mảng các ô trên một đường.
+   * @param {number} player - Người chơi AI.
+   * @param {number} winCondition - Số quân liên tiếp để thắng.
+   * @returns {number} Điểm của đường đó.
+   */
+  _evaluateLine (line, player, winCondition) {
     const opponent = player === 1 ? 2 : 1;
-
-    // Kiểm tra người thắng
-    const winner = this._checkWinner(board, boardSize);
-    if (winner === player) return 1000;
-    if (winner === opponent) return -1000;
-    if (winner === "draw") return 0;
-
     let score = 0;
 
-    // Đánh giá theo hàng ngang
-    for (let row = 0; row < gridSize; row++) {
-      score += this._evaluateLine(board, row * gridSize, row * gridSize + gridSize - 1, 1, player);
+    // Đếm số chuỗi 2, 3, 4... của AI và đối thủ
+    for (let i = 2; i < winCondition; i++) {
+      score += this._countConsecutive(line, player, i) * Math.pow(10, i);
+      score -= this._countConsecutive(line, opponent, i) * Math.pow(10, i) * 1.5; // Điểm chặn đối thủ cao hơn 1 chút
     }
-
-    // Đánh giá theo cột dọc
-    for (let col = 0; col < gridSize; col++) {
-      score += this._evaluateLine(board, col, col + (gridSize - 1) * gridSize, gridSize, player);
-    }
-
-    // Đánh giá đường chéo chính
-    score += this._evaluateLine(board, 0, boardSize - 1, gridSize + 1, player);
-
-    // Đánh giá đường chéo phụ
-    score += this._evaluateLine(board, gridSize - 1, boardSize - gridSize, gridSize - 1, player);
 
     return score;
   },
 
   /**
-   * Đánh giá một đường (hàng, cột hoặc đường chéo)
-   * @param {Array} board - Bàn cờ
-   * @param {number} start - Vị trí bắt đầu
-   * @param {number} end - Vị trí kết thúc
-   * @param {number} step - Bước nhảy
-   * @param {number} player - Người chơi
-   * @returns {number} Điểm số của đường
+   * Đếm số chuỗi N quân liên tiếp có đầu mở.
    */
-  _evaluateLine(board, start, end, step, player) {
-    const opponent = player === 1 ? 2 : 1;
-    let playerCount = 0;
-    let opponentCount = 0;
-    let emptyCount = 0;
-
-    for (let i = start; i <= end; i += step) {
-      if (board[i] === player) playerCount++;
-      else if (board[i] === opponent) opponentCount++;
-      else emptyCount++;
+  _countConsecutive (line, player, count) {
+    let sequences = 0;
+    for (let i = 0; i <= line.length - count; i++) {
+      const slice = line.slice(i, i + count);
+      if (slice.every(cell => cell === player)) {
+        // Kiểm tra 2 đầu có trống không (đầu mở)
+        const before = i > 0 ? line[i - 1] : null;
+        const after = i + count < line.length ? line[i + count] : null;
+        if (before === null && after === null) {
+          sequences += 10; // 2 đầu mở là rất mạnh
+        } else if (before === null || after === null) {
+          sequences += 1; // 1 đầu mở
+        }
+      }
     }
-
-    console.log("[evaluateLine] emptyCount", emptyCount);
-
-    // Tính điểm dựa trên số lượng quân cờ
-    if (opponentCount === 0) {
-      // Chỉ có quân của player
-      return Math.pow(10, playerCount);
-    } else if (playerCount === 0) {
-      // Chỉ có quân của opponent
-      return -Math.pow(10, opponentCount);
-    }
-
-    // Cả hai đều có quân (blocked)
-    return 0;
+    return sequences;
   },
 
   /**
-   * Kiểm tra người thắng
-   * @param {Array} board - Bàn cờ
-   * @param {number} boardSize - Kích thước bàn cờ
-   * @returns {number|string|null} 1, 2, 'draw', hoặc null
+   * Lấy điều kiện thắng dựa trên kích thước bàn cờ.
    */
-  _checkWinner(board, boardSize) {
-    const gridSize = Math.sqrt(boardSize);
+  _getWinCondition: function (boardSize) {
+    if (boardSize === 9) return 3; // 3x3
+    return 4; // 4x4 và 5x5
+  },
 
-    // Kiểm tra hàng ngang
-    for (let row = 0; row < gridSize; row++) {
-      const start = row * gridSize;
-      if (this._checkLine(board, start, start + gridSize - 1, 1)) {
-        return board[start];
+  /**
+   * Kiểm tra người thắng dựa trên luật chơi (3-in-a-row hoặc 4-in-a-row).
+   * @param {Array} board - Bàn cờ.
+   * @returns {Object|null} Trả về { winner, line } nếu có người thắng, 'draw' hoặc null.
+   */
+  _checkWinner (board) {
+    const boardSize = board.length;
+    const winCondition = this._getWinCondition(boardSize);
+    const allLines = this._getAllLines(board, true); // Lấy cả index
+
+    for (const lineInfo of allLines) {
+      const line = lineInfo.line;
+      const indices = lineInfo.indices;
+      for (let i = 0; i <= line.length - winCondition; i++) {
+        const first = line[i];
+        if (first !== null) {
+          const segment = line.slice(i, i + winCondition);
+          if (segment.every(cell => cell === first)) {
+            return {
+              winner: first,
+              line: indices.slice(i, i + winCondition)
+            };
+          }
+        }
       }
     }
 
-    // Kiểm tra cột dọc
-    for (let col = 0; col < gridSize; col++) {
-      if (this._checkLine(board, col, col + (gridSize - 1) * gridSize, gridSize)) {
-        return board[col];
-      }
-    }
-
-    // Kiểm tra đường chéo chính
-    if (this._checkLine(board, 0, boardSize - 1, gridSize + 1)) {
-      return board[0];
-    }
-
-    // Kiểm tra đường chéo phụ
-    if (this._checkLine(board, gridSize - 1, boardSize - gridSize, gridSize - 1)) {
-      return board[gridSize - 1];
-    }
-
-    // Kiểm tra hòa
     if (this._getEmptyCells(board).length === 0) {
-      return "draw";
+      return { winner: "draw", line: [] };
     }
 
     return null;
   },
 
   /**
-   * Kiểm tra một đường có cùng giá trị không
-   * @param {Array} board - Bàn cờ
-   * @param {number} start - Vị trí bắt đầu
-   * @param {number} end - Vị trí kết thúc
-   * @param {number} step - Bước nhảy
-   * @returns {boolean} True nếu đường có cùng giá trị
+   * Lấy tất cả các đường (hàng, cột, chéo) trên bàn cờ.
+   * @param {Array} board - Bàn cờ.
+   * @param {boolean} withIndices - Có trả về index của các ô không.
+   * @returns {Array} Mảng các đường.
    */
-  _checkLine(board, start, end, step) {
-    const first = board[start];
-    if (first === null) return false;
+  _getAllLines (board, withIndices = false) {
+    const size = Math.sqrt(board.length);
+    const lines = [];
 
-    for (let i = start + step; i <= end; i += step) {
-      if (board[i] !== first) return false;
+    // Hàng và Cột
+    for (let i = 0; i < size; i++) {
+      const row = [];
+      const col = [];
+      const rowIndex = [];
+      const colIndex = [];
+      for (let j = 0; j < size; j++) {
+        row.push(board[i * size + j]);
+        col.push(board[j * size + i]);
+        if (withIndices) {
+          rowIndex.push(i * size + j);
+          colIndex.push(j * size + i);
+        }
+      }
+      lines.push(withIndices ? { line: row, indices: rowIndex } : row);
+      lines.push(withIndices ? { line: col, indices: colIndex } : col);
     }
-    return true;
+
+    // Đường chéo
+    for (let i = 0; i <= 2 * (size - 1); i++) {
+      const diag1 = [];
+      const diag2 = [];
+      const diag1Index = [];
+      const diag2Index = [];
+      for (let j = 0; j <= i; j++) {
+        const k = i - j;
+        if (j < size && k < size) {
+          diag1.push(board[j * size + k]);
+          diag2.push(board[(size - 1 - j) * size + k]);
+          if (withIndices) {
+            diag1Index.push(j * size + k);
+            diag2Index.push((size - 1 - j) * size + k);
+          }
+        }
+      }
+      if (diag1.length > 0) lines.push(withIndices ? { line: diag1, indices: diag1Index } : diag1);
+      if (diag2.length > 0) lines.push(withIndices ? { line: diag2, indices: diag2Index } : diag2);
+    }
+
+    return lines;
   },
 
   /**
-   * Lấy danh sách các ô trống
-   * @param {Array} board - Bàn cờ
-   * @returns {Array} Mảng index của các ô trống
+   * Lấy danh sách các ô còn trống.
    */
-  _getEmptyCells(board) {
-    const empty = [];
+  _getEmptyCells (board) {
+    const cells = [];
     for (let i = 0; i < board.length; i++) {
-      if (board[i] === null || board[i] === "") {
-        empty.push(i);
+      if (board[i] === null) {
+        cells.push(i);
       }
     }
-    return empty;
+    return cells;
   },
 
   /**
-   * Ưu tiên các nước đi theo thứ tự: góc, cạnh, giữa
-   * @param {Array} moves - Danh sách các nước đi
-   * @param {number} boardSize - Kích thước bàn cờ
-   * @returns {Array} Mảng các nước đi đã sắp xếp
+   * Ưu tiên các nước đi ở trung tâm để tăng hiệu quả tìm kiếm.
    */
-  _prioritizeMoves(moves, boardSize) {
-    const gridSize = Math.sqrt(boardSize);
-    const corners = [0, gridSize - 1, boardSize - gridSize, boardSize - 1];
-    const edges = [];
+  _prioritizeMoves (moves, boardSize) {
     const center = Math.floor(boardSize / 2);
-
-    // Tìm các ô cạnh
-    for (let i = 0; i < gridSize; i++) {
-      if (i !== 0 && i !== gridSize - 1) {
-        edges.push(i); // Cạnh trên
-        edges.push(i + (gridSize - 1) * gridSize); // Cạnh dưới
-        edges.push(i * gridSize); // Cạnh trái
-        edges.push(i * gridSize + gridSize - 1); // Cạnh phải
-      }
-    }
-
-    const prioritized = [];
-
-    // Thêm góc trước
-    for (const move of moves) {
-      if (corners.includes(move)) {
-        prioritized.push(move);
-      }
-    }
-
-    // Thêm cạnh
-    for (const move of moves) {
-      if (edges.includes(move) && !prioritized.includes(move)) {
-        prioritized.push(move);
-      }
-    }
-
-    // Thêm giữa
-    for (const move of moves) {
-      if (move === center && !prioritized.includes(move)) {
-        prioritized.push(move);
-      }
-    }
-
-    // Thêm các ô còn lại
-    for (const move of moves) {
-      if (!prioritized.includes(move)) {
-        prioritized.push(move);
-      }
-    }
-
-    return prioritized;
+    moves.sort((a, b) => {
+      const distA = Math.abs(a - center);
+      const distB = Math.abs(b - center);
+      return distA - distB;
+    });
+    return moves;
   },
 
   /**
-   * Tạo key cho cache
-   * @param {Array} board - Bàn cờ
-   * @param {number} depth - Độ sâu
-   * @param {boolean} isMaximizing - Có phải lượt tối đa hóa không
-   * @param {number} player - Người chơi
-   * @returns {string} Key cho cache
+   * Tạo key cho cache.
    */
-  _generateCacheKey(board, depth, isMaximizing, player) {
-    return `${board.join(",")}|${depth}|${isMaximizing}|${player}`;
+  _generateCacheKey (board, depth, isMaximizing) {
+    return `${board.join('')}|${depth}|${isMaximizing}`;
   },
 
   /**
-   * Xóa cache
+   * Xóa cache.
    */
-  clearCache() {
+  clearCache () {
     this._cache.clear();
   },
 
   /**
-   * Lấy thống kê cache
-   * @returns {Object} Thống kê cache
+   * Lấy thống kê cache.
    */
-  getCacheStats() {
+  getCacheStats () {
     return {
       size: this._cache.size,
       maxDepths: this._maxDepths,
@@ -363,7 +388,7 @@ const TTT_AI = {
   },
 };
 
-// Export cho sử dụng global
+// Export cho môi trường trình duyệt
 if (typeof window !== "undefined") {
   // @ts-ignore
   window.TTT_AI = TTT_AI;
