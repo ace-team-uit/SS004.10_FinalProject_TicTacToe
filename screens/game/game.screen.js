@@ -166,12 +166,12 @@ function initGameScreen() {
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       console.log("🔄 Back button clicked");
-      
+
       // Phát âm thanh click
       if (window["playSound"]) {
         window["playSound"]("click");
       }
-      
+
       // Hiển thị popup xác nhận thoát
       if (window["PopupManager"]) {
         window["PopupManager"].showExitPopup();
