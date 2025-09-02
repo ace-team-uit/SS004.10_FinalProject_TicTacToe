@@ -1,6 +1,5 @@
 console.log("🎮 Game screen loaded");
 
-
 // ===== SỬ DỤNG BoardManager =====
 if (typeof window["GameData"] === "undefined") {
   // Khởi tạo GameData sử dụng BoardManager
@@ -8,40 +7,42 @@ if (typeof window["GameData"] === "undefined") {
     // State của BoardManager
     state: null,
     // Khởi tạo bàn cờ mới
-    initBoard (size = 3) {
+    initBoard(size = 3) {
       this.state = window.BoardManager.initState(size);
       if (size === 3) {
         console.log("✅ Luật thắng: 3 liên tiếp là thắng (không cần block)");
       } else {
-        console.log("✅ Luật thắng: 4 liên tiếp không bị chặn hoặc 5 liên tiếp có thể bị chặn là thắng");
+        console.log(
+          "✅ Luật thắng: 4 liên tiếp không bị chặn hoặc 5 liên tiếp có thể bị chặn là thắng"
+        );
       }
       console.log(`✅ Khởi tạo bàn cờ ${size}x${size} (BoardManager)`);
     },
     // Đặt giá trị ô tại index
-    setCellByIndex (index, value) {
+    setCellByIndex(index, value) {
       if (!this.state || this.state.board[index] !== null) return false;
       this.state.board[index] = value;
       return true;
     },
     // Lấy giá trị ô tại index
-    getCellByIndex (index) {
+    getCellByIndex(index) {
       if (!this.state) return null;
       return this.state.board[index];
     },
     // Chuyển đổi index thành tọa độ (hàng, cột)
-    indexToCoordinates (index) {
+    indexToCoordinates(index) {
       const size = this.state?.size || 3;
       const row = Math.floor(index / size);
       const col = index % size;
       return { row, col };
     },
     // Chuyển đổi tọa độ (hàng, cột) thành index
-    coordinatesToIndex (row, col) {
+    coordinatesToIndex(row, col) {
       const size = this.state?.size || 3;
       return row * size + col;
     },
     // Lấy bàn cờ dạng mảng phẳng
-    getFlatBoard () {
+    getFlatBoard() {
       if (!this.state) return [];
       return this.state.board.map((value, index) => {
         const { row, col } = this.indexToCoordinates(index);
@@ -49,28 +50,28 @@ if (typeof window["GameData"] === "undefined") {
       });
     },
     // Reset bàn cờ
-    reset () {
+    reset() {
       if (this.state) {
         this.state = window.BoardManager.resetForNewRound(this.state);
       }
     },
     // Truy cập các thuộc tính chính
-    get gridSize () {
+    get gridSize() {
       return this.state?.size || 3;
     },
-    get currentPlayer () {
+    get currentPlayer() {
       return this.state?.currentPlayer || 1;
     },
-    set currentPlayer (val) {
+    set currentPlayer(val) {
       if (this.state) this.state.currentPlayer = val;
     },
-    get gameStatus () {
+    get gameStatus() {
       return this.state?.gameStatus || "playing";
     },
-    set gameStatus (val) {
+    set gameStatus(val) {
       if (this.state) this.state.gameStatus = val;
     },
-    get winner () {
+    get winner() {
       // Lấy winner từ state nếu có
       if (this.state?.gameStatus === "won") {
         const winnerResult = window.BoardManager.checkWinner(this.state);
@@ -87,7 +88,7 @@ if (typeof window["GameData"] === "undefined") {
 // KHÔNG tạo reference local để tránh lỗi duplicate declaration
 
 // ===== KHỞI TẠO MÀN HÌNH GAME =====
-function initGameScreen () {
+function initGameScreen() {
   // Các phần tử DOM
   const gameBoard = document.getElementById("game-board");
   const musicBtn = document.getElementById("music-btn");
@@ -154,7 +155,7 @@ function initGameScreen () {
 
   // ===== KHỞI TẠO GAME =====
 
-  function initializeGameData () {
+  function initializeGameData() {
     // Lấy cài đặt từ storage hoặc dùng mặc định
     const settings = window["AppStorage"]?.loadSettings() || window["AppStorage"]?.DEFAULTS;
     if (!settings) {
@@ -240,7 +241,7 @@ function initGameScreen () {
     console.log("✅ Dữ liệu game đã được khởi tạo thành công");
   }
 
-  function initializeGameBoard () {
+  function initializeGameBoard() {
     if (!gameBoard) return;
 
     const gridSize = window["GameData"].gridSize;
@@ -262,7 +263,7 @@ function initGameScreen () {
   }
 
   // Tạo các ô trong bàn cờ
-  function generateBoardCells (gridSize) {
+  function generateBoardCells(gridSize) {
     if (!gameBoard) return;
 
     gameBoard.innerHTML = "";
@@ -290,7 +291,7 @@ function initGameScreen () {
 
   // Thay đổi kích thước font của text trong ô
   /* global ResizeObserver */
-  function observeCellTextResize (cell) {
+  function observeCellTextResize(cell) {
     const text = cell.querySelector(".cell-text");
     if (!text) return;
 
@@ -306,7 +307,7 @@ function initGameScreen () {
   }
 
   // Căn chỉnh kích thước font cho tất cả các ô
-  function resizeCellTextFontSize () {
+  function resizeCellTextFontSize() {
     const cells = document.querySelectorAll(".board-cell");
     cells.forEach((cell) => {
       const cellText = cell.querySelector(".cell-text");
@@ -319,7 +320,7 @@ function initGameScreen () {
   }
 
   // Thêm trình xử lý sự kiện click cho các ô
-  function addCellClickHandlers () {
+  function addCellClickHandlers() {
     if (!gameBoard) return;
 
     const cells = gameBoard.querySelectorAll(".board-cell");
@@ -344,7 +345,7 @@ function initGameScreen () {
   }
 
   // Xử lý khi click vào ô
-  function handleCellClick (cell, index) {
+  function handleCellClick(cell, index) {
     // Sau khi người chơi đi, disable toàn bộ bàn cờ
     const gameBoardEl = document.getElementById("game-board");
     if (gameBoardEl) {
@@ -420,7 +421,10 @@ function initGameScreen () {
       }
 
       // Nếu đến lượt AI (O), gọi AI tự động đánh
-      if (window["GameData"].state.currentPlayer === 2 && window["GameData"].state.gameStatus === "playing") {
+      if (
+        window["GameData"].state.currentPlayer === 2 &&
+        window["GameData"].state.gameStatus === "playing"
+      ) {
         setTimeout(() => {
           autoAIMove();
         }, 350);
@@ -442,7 +446,7 @@ function initGameScreen () {
   }
 
   // Hàm cho AI tự động đánh nếu đến lượt O
-  function autoAIMove () {
+  function autoAIMove() {
     const gameData = window["GameData"];
     if (!gameData.state) return;
     if (gameData.state.gameStatus !== "playing") return;
@@ -475,7 +479,7 @@ function initGameScreen () {
 }
 
 // Cập nhật trạng thái nút âm nhạc
-function updateMusicButton (enabled) {
+function updateMusicButton(enabled) {
   const musicBtn = document.getElementById("music-btn");
   if (!musicBtn) return;
   if (enabled) {
@@ -488,7 +492,7 @@ function updateMusicButton (enabled) {
 }
 
 // Cập nhật hiển thị bàn cờ
-function updateBoardDisplay () {
+function updateBoardDisplay() {
   // Lấy lại phần tử gameBoard trong hàm để tránh lỗi scope
   const gameBoard = document.getElementById("game-board");
   if (!gameBoard) return;
@@ -534,7 +538,7 @@ function updateBoardDisplay () {
 // ===== CÁC HÀM TIỆN ÍCH =====
 
 // Vô hiệu hóa ô (không cho click nữa)
-function disableCell (cell) {
+function disableCell(cell) {
   if (!cell) return;
   cell.style.cursor = "not-allowed";
   cell.style.pointerEvents = "none";
@@ -543,7 +547,7 @@ function disableCell (cell) {
 }
 
 // Kích hoạt ô (cho phép click)
-function enableCell (cell) {
+function enableCell(cell) {
   if (!cell) return;
   cell.style.cursor = "pointer";
   cell.style.pointerEvents = "auto";
@@ -552,7 +556,7 @@ function enableCell (cell) {
 }
 
 // Toggle music
-function toggleMusic () {
+function toggleMusic() {
   console.log("🎵 Toggling music");
   const settings = window["AppStorage"]?.loadSettings();
   if (!settings) return;
@@ -570,7 +574,7 @@ function toggleMusic () {
 }
 
 // Khởi tạo trạng thái âm nhạc
-function initializeMusicState () {
+function initializeMusicState() {
   const settings = window["AppStorage"]?.loadSettings();
   if (settings) {
     updateMusicButton(settings.gameMusicEnabled);
@@ -579,7 +583,7 @@ function initializeMusicState () {
 }
 
 // Các hàm điều hướng
-function navigateToGameMode2 () {
+function navigateToGameMode2() {
   if (window["Navigation"]) {
     window["Navigation"].navigateTo("mode2");
   } else {
@@ -588,7 +592,7 @@ function navigateToGameMode2 () {
   }
 }
 
-function navigateToSettings () {
+function navigateToSettings() {
   if (window["Navigation"]) {
     window["Navigation"].navigateTo("settings");
   } else {
@@ -597,9 +601,8 @@ function navigateToSettings () {
   }
 }
 
-
 // ===== TÍCH HỢP HUD =====
-function initializeHUD () {
+function initializeHUD() {
   // Lấy độ khó từ gameState hoặc localStorage
   let difficulty = "easy";
 

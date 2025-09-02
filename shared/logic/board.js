@@ -11,7 +11,7 @@ const BoardManager = {
    * @param {number} [winLength] - Số ô liên tiếp để thắng (mặc định = size)
    * @returns {Object} State mẫu với đầy đủ thông tin game
    */
-  initState (size = 3, winLength) {
+  initState(size = 3, winLength) {
     if (![3, 4, 5].includes(size)) {
       throw new Error("Size must be 3, 4, or 5");
     }
@@ -37,13 +37,9 @@ const BoardManager = {
    * @param {number} index - Index của ô được chọn (0-based)
    * @returns {Object} State mới sau khi thực hiện nước đi
    */
-  makeMove (state, index) {
+  makeMove(state, index) {
     // Validate
-    if (
-      !state ||
-      state.board[index] !== null ||
-      state.gameStatus !== "playing"
-    ) {
+    if (!state || state.board[index] !== null || state.gameStatus !== "playing") {
       console.warn("Invalid move attempted.");
       return state; // Trả về state cũ nếu nước đi không hợp lệ
     }
@@ -84,7 +80,7 @@ const BoardManager = {
    * @param {Object} state - Trạng thái game
    * @returns {Object|null} Thông tin người thắng hoặc null
    */
-  checkWinner (state) {
+  checkWinner(state) {
     const { board, size } = state;
     const boardSize = size * size;
 
@@ -98,9 +94,9 @@ const BoardManager = {
 
       // Các hướng kiểm tra: [hàng, cột]
       const directions = [
-        [0, 1],  // Ngang ->
-        [1, 0],  // Dọc  ↓
-        [1, 1],  // Chéo chính \
+        [0, 1], // Ngang ->
+        [1, 0], // Dọc  ↓
+        [1, 1], // Chéo chính \
         [1, -1], // Chéo phụ /
       ];
 
@@ -124,7 +120,7 @@ const BoardManager = {
    * theo hướng (dr, dc) có tạo thành chuỗi thắng không.
    * @private
    */
-  _checkLine (state, startRow, startCol, dr, dc) {
+  _checkLine(state, startRow, startCol, dr, dc) {
     const { board, size } = state;
     const player = board[startRow * size + startCol];
 
@@ -160,7 +156,7 @@ const BoardManager = {
    * @param {Object} state - Trạng thái game
    * @returns {boolean} True nếu bàn đầy
    */
-  isBoardFull (state) {
+  isBoardFull(state) {
     return state.board.every((cell) => cell !== null);
   },
 
@@ -169,7 +165,7 @@ const BoardManager = {
    * @param {number} currentPlayer - Người chơi hiện tại
    * @returns {number} Người chơi tiếp theo
    */
-  switchPlayer (currentPlayer) {
+  switchPlayer(currentPlayer) {
     return currentPlayer === 1 ? 2 : 1;
   },
 
@@ -178,7 +174,7 @@ const BoardManager = {
    * @param {Object} state - Trạng thái game hiện tại
    * @returns {Object} State mới với bàn cờ trống
    */
-  resetForNewRound (state) {
+  resetForNewRound(state) {
     return {
       ...state,
       board: new Array(state.size * state.size).fill(null),
@@ -191,12 +187,12 @@ const BoardManager = {
 
   // ===== PRIVATE METHODS =====
 
-  _isWinningLine (line) {
+  _isWinningLine(line) {
     if (line[0] === null) return false;
     return line.every((cell) => cell === line[0]);
   },
 
-  _getWinningLineIndices (startRow, startCol, length, size, direction) {
+  _getWinningLineIndices(startRow, startCol, length, size, direction) {
     const indices = [];
     for (let i = 0; i < length; i++) {
       switch (direction) {
@@ -217,7 +213,7 @@ const BoardManager = {
     return indices;
   },
 
-  _updateScores (scores, winner) {
+  _updateScores(scores, winner) {
     const newScores = { ...scores };
     if (winner === 1) {
       newScores.player += 1;

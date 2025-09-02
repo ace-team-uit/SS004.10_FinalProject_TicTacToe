@@ -4,9 +4,9 @@ const TTT_AI = {
 
   // Giới hạn độ sâu mặc định cho thuật toán Minimax theo kích thước bàn cờ
   _maxDepths: {
-    9: 9,   // 3x3: tìm kiếm toàn bộ cây trạng thái
-    16: 6,  // 4x4: giới hạn độ sâu để tối ưu thời gian
-    25: 4,  // 5x5: giới hạn nghiêm ngặt hơn để đảm bảo trải nghiệm người dùng
+    9: 9, // 3x3: tìm kiếm toàn bộ cây trạng thái
+    16: 6, // 4x4: giới hạn độ sâu để tối ưu thời gian
+    25: 4, // 5x5: giới hạn nghiêm ngặt hơn để đảm bảo trải nghiệm người dùng
   },
 
   /**
@@ -87,7 +87,7 @@ const TTT_AI = {
    * @param {number} [customMaxDepth] - Tùy chọn độ sâu tối đa (dùng cho độ khó Medium).
    * @returns {number} Index của nước đi tốt nhất.
    */
-  findBestMove (board, player = 2, customMaxDepth) {
+  findBestMove(board, player = 2, customMaxDepth) {
     if (!board || board.length === 0) return -1;
 
     // Xóa cache nếu quá lớn để tránh tốn bộ nhớ.
@@ -133,7 +133,7 @@ const TTT_AI = {
    * @param {number} player - Người chơi AI.
    * @returns {number} Điểm số tốt nhất.
    */
-  minimax (board, depth, alpha, beta, isMaximizing, player) {
+  minimax(board, depth, alpha, beta, isMaximizing, player) {
     const cacheKey = this._generateCacheKey(board, depth, isMaximizing);
     if (this._cache.has(cacheKey)) {
       return this._cache.get(cacheKey);
@@ -161,7 +161,8 @@ const TTT_AI = {
       }
       this._cache.set(cacheKey, bestScore);
       return bestScore;
-    } else { // isMinimizing
+    } else {
+      // isMinimizing
       let bestScore = Infinity;
       for (const move of emptyCells) {
         board[move] = opponent;
@@ -183,7 +184,7 @@ const TTT_AI = {
    * @param {number} depth - Độ sâu còn lại (để ưu tiên thắng nhanh).
    * @returns {number} Điểm số.
    */
-  evaluateBoard (board, player, depth) {
+  evaluateBoard(board, player, depth) {
     const winnerInfo = this._checkWinner(board);
     if (winnerInfo) {
       if (winnerInfo.winner === player) return 100000 + depth * 100; // Thắng, cộng thêm điểm nếu thắng nhanh
@@ -209,7 +210,7 @@ const TTT_AI = {
    * @param {number} winCondition - Số quân liên tiếp để thắng.
    * @returns {number} Điểm của đường đó.
    */
-  _evaluateLine (line, player, winCondition) {
+  _evaluateLine(line, player, winCondition) {
     const opponent = player === 1 ? 2 : 1;
     let score = 0;
 
@@ -225,11 +226,11 @@ const TTT_AI = {
   /**
    * Đếm số chuỗi N quân liên tiếp có đầu mở.
    */
-  _countConsecutive (line, player, count) {
+  _countConsecutive(line, player, count) {
     let sequences = 0;
     for (let i = 0; i <= line.length - count; i++) {
       const slice = line.slice(i, i + count);
-      if (slice.every(cell => cell === player)) {
+      if (slice.every((cell) => cell === player)) {
         // Kiểm tra 2 đầu có trống không (đầu mở)
         const before = i > 0 ? line[i - 1] : null;
         const after = i + count < line.length ? line[i + count] : null;
@@ -256,7 +257,7 @@ const TTT_AI = {
    * @param {Array} board - Bàn cờ.
    * @returns {Object|null} Trả về { winner, line } nếu có người thắng, 'draw' hoặc null.
    */
-  _checkWinner (board) {
+  _checkWinner(board) {
     const boardSize = board.length;
     const winCondition = this._getWinCondition(boardSize);
     const allLines = this._getAllLines(board, true); // Lấy cả index
@@ -268,10 +269,10 @@ const TTT_AI = {
         const first = line[i];
         if (first !== null) {
           const segment = line.slice(i, i + winCondition);
-          if (segment.every(cell => cell === first)) {
+          if (segment.every((cell) => cell === first)) {
             return {
               winner: first,
-              line: indices.slice(i, i + winCondition)
+              line: indices.slice(i, i + winCondition),
             };
           }
         }
@@ -291,7 +292,7 @@ const TTT_AI = {
    * @param {boolean} withIndices - Có trả về index của các ô không.
    * @returns {Array} Mảng các đường.
    */
-  _getAllLines (board, withIndices = false) {
+  _getAllLines(board, withIndices = false) {
     const size = Math.sqrt(board.length);
     const lines = [];
 
@@ -340,7 +341,7 @@ const TTT_AI = {
   /**
    * Lấy danh sách các ô còn trống.
    */
-  _getEmptyCells (board) {
+  _getEmptyCells(board) {
     const cells = [];
     for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
@@ -353,7 +354,7 @@ const TTT_AI = {
   /**
    * Ưu tiên các nước đi ở trung tâm để tăng hiệu quả tìm kiếm.
    */
-  _prioritizeMoves (moves, boardSize) {
+  _prioritizeMoves(moves, boardSize) {
     const center = Math.floor(boardSize / 2);
     moves.sort((a, b) => {
       const distA = Math.abs(a - center);
@@ -366,21 +367,21 @@ const TTT_AI = {
   /**
    * Tạo key cho cache.
    */
-  _generateCacheKey (board, depth, isMaximizing) {
-    return `${board.join('')}|${depth}|${isMaximizing}`;
+  _generateCacheKey(board, depth, isMaximizing) {
+    return `${board.join("")}|${depth}|${isMaximizing}`;
   },
 
   /**
    * Xóa cache.
    */
-  clearCache () {
+  clearCache() {
     this._cache.clear();
   },
 
   /**
    * Lấy thống kê cache.
    */
-  getCacheStats () {
+  getCacheStats() {
     return {
       size: this._cache.size,
       maxDepths: this._maxDepths,
