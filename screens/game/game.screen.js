@@ -6,10 +6,10 @@ const AI_THINKING_TIME = {
   MIN_DELAY: 500,
   // Thời gian suy nghĩ tối đa cho từng độ khó (ms)
   MAX_DELAY: {
-    easy: 3000,   // 3s - dưới timeout 15s
-    medium: 2000, // 2s - dưới timeout 10s  
-    hard: 1000    // 1s - dưới timeout 5s
-  }
+    easy: 3000, // 3s - dưới timeout 15s
+    medium: 2000, // 2s - dưới timeout 10s
+    hard: 1000, // 1s - dưới timeout 5s
+  },
 };
 
 /**
@@ -17,10 +17,10 @@ const AI_THINKING_TIME = {
  * @param {string} difficulty - Độ khó game ('easy', 'medium', 'hard')
  * @returns {number} Thời gian delay ngẫu nhiên (ms)
  */
-function calculateAIThinkingTime(difficulty = 'easy') {
+function calculateAIThinkingTime(difficulty = "easy") {
   const maxDelay = AI_THINKING_TIME.MAX_DELAY[difficulty] || AI_THINKING_TIME.MAX_DELAY.easy;
   const minDelay = AI_THINKING_TIME.MIN_DELAY;
-  
+
   // Random time từ minDelay đến maxDelay
   return Math.random() * (maxDelay - minDelay) + minDelay;
 }
@@ -452,17 +452,14 @@ function initGameScreen() {
       ) {
         // Lấy độ khó từ settings để tính thời gian AI suy nghĩ
         const settings = window["AppStorage"]?.loadSettings() || window["AppStorage"]?.DEFAULTS;
-        const difficulty = settings?.gameDifficulty || 'easy';
+        const difficulty = settings?.gameDifficulty || "easy";
         const thinkingTime = calculateAIThinkingTime(difficulty);
-        
+
         console.log(`🤖 AI suy nghĩ ${thinkingTime.toFixed(0)}ms (độ khó: ${difficulty})`);
-        
-        setTimeout(
-          () => {
-            autoAIMove();
-          },
-          thinkingTime
-        );
+
+        setTimeout(() => {
+          autoAIMove();
+        }, thinkingTime);
       } else {
         // Nếu không phải lượt AI, enable lại các ô chưa đánh cho người chơi
         if (gameBoardEl) {
