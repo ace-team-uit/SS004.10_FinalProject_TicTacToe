@@ -1,17 +1,17 @@
 /**
- * Board Management Module
- * Quản lý trạng thái bàn cờ và logic game Tic Tac Toe
- * Hỗ trợ các kích thước bàn 3x3, 4x4, 5x5
+ * Board Management Module (board.js)
+ * Quản lý trạng thái bàn cờ và logic game Tic Tac Toe.
+ * Hoạt động độc lập, không phụ thuộc vào DOM.
  */
 
 const BoardManager = {
   /**
    * Khởi tạo trạng thái game mới
    * @param {number} size - Kích thước bàn (3, 4, hoặc 5)
-   * @param {number} winLength - Số ô liên tiếp để thắng (mặc định = size)
+   * @param {number} [winLength] - Số ô liên tiếp để thắng (mặc định = size)
    * @returns {Object} State mẫu với đầy đủ thông tin game
    */
-  initState(size = 3, winLength) {
+  initState (size = 3, winLength) {
     if (![3, 4, 5].includes(size)) {
       throw new Error("Size must be 3, 4, or 5");
     }
@@ -24,10 +24,8 @@ const BoardManager = {
       size: size,
       winLength: finalWinLength,
       currentPlayer: 1, // 1 = X (người chơi), 2 = O (AI)
-      round: 1,
-      hearts: 3, // Số trái tim khi hòa
       scores: { player: 0, ai: 0 },
-      gameStatus: "playing", // 'playing', 'won', 'draw', 'round_end'
+      gameStatus: "playing", // 'playing', 'won', 'draw'
       lastMove: null,
       winningLine: null,
     };
@@ -39,22 +37,15 @@ const BoardManager = {
    * @param {number} index - Index của ô được chọn (0-based)
    * @returns {Object} State mới sau khi thực hiện nước đi
    */
-  makeMove(state, index) {
-    // Validate input
-    if (!state || !Array.isArray(state.board)) {
-      throw new Error("Invalid state provided");
-    }
-
-    if (typeof index !== "number" || index < 0 || index >= state.board.length) {
-      throw new Error("Invalid index: out of bounds");
-    }
-
-    if (state.board[index] !== null) {
-      throw new Error("Invalid move: cell already occupied");
-    }
-
-    if (state.gameStatus !== "playing") {
-      throw new Error("Game is not in playing state");
+  makeMove (state, index) {
+    // Validate
+    if (
+      !state ||
+      state.board[index] !== null ||
+      state.gameStatus !== "playing"
+    ) {
+      console.warn("Invalid move attempted.");
+      return state; // Trả về state cũ nếu nước đi không hợp lệ
     }
 
     // Tạo state mới (immutable)
@@ -93,73 +84,96 @@ const BoardManager = {
    * @param {Object} state - Trạng thái game
    * @returns {Object|null} Thông tin người thắng hoặc null
    */
-  checkWinner(state) {
-    const { board, size, winLength } = state;
+  checkWinner (state) {
+    const { board, size } = state;
+    // Helper kiểm tra 1 dòng với các luật đặc biệt
+    function checkLineSpecial (getCell, length, size) {
+      let count = 0;
+      let last = null;
+      let block = 0;
+      for (let i = 0; i < length; i++) {
+        const cell = getCell(i);
+        if (cell === last && cell !== null) {
+          count++;
+        } else {
+          count = 1;
+          last = cell;
+        }
+        if (cell === null) block++;
+        // 3x3: 3 liên tiếp là thắng
+        if (size === 3 && count === 3 && last !== null) return { winner: last, length: 3 };
+        // 4x4, 5x5: 4 liên tiếp chỉ thắng nếu không có block (không có ô trống)
+        if ((size === 4 || size === 5) && count === 4 && block === 0 && last !== null) return { winner: last, length: 4 };
+        // 4x4, 5x5: 5 liên tiếp thắng nếu có tối đa 1 block
+        if ((size === 4 || size === 5) && count === 5 && block <= 1 && last !== null) return { winner: last, length: 5 };
+      }
+      return null;
+    }
 
-    // Kiểm tra hàng ngang
+    // Hàng ngang
     for (let row = 0; row < size; row++) {
-      for (let col = 0; col <= size - winLength; col++) {
-        const line = [];
-        for (let i = 0; i < winLength; i++) {
-          line.push(board[row * size + col + i]);
-        }
-        if (this._isWinningLine(line)) {
-          return {
-            winner: line[0],
-            winningLine: this._getWinningLineIndices(row, col, winLength, size, "horizontal"),
-          };
+      for (let col = 0; col <= size - 3; col++) {
+        const maxLen = size - col;
+        for (let len = 3; len <= Math.min(5, maxLen); len++) {
+          const getCell = (i) => board[row * size + col + i];
+          const result = checkLineSpecial(getCell, len, size);
+          if (result) {
+            return {
+              winner: result.winner,
+              winningLine: this._getWinningLineIndices(row, col, result.length, size, "horizontal"),
+            };
+          }
         }
       }
     }
-
-    // Kiểm tra hàng dọc
+    // Hàng dọc
     for (let col = 0; col < size; col++) {
-      for (let row = 0; row <= size - winLength; row++) {
-        const line = [];
-        for (let i = 0; i < winLength; i++) {
-          line.push(board[(row + i) * size + col]);
-        }
-        if (this._isWinningLine(line)) {
-          return {
-            winner: line[0],
-            winningLine: this._getWinningLineIndices(row, col, winLength, size, "vertical"),
-          };
-        }
-      }
-    }
-
-    // Kiểm tra đường chéo chính (từ trái trên xuống phải dưới)
-    for (let row = 0; row <= size - winLength; row++) {
-      for (let col = 0; col <= size - winLength; col++) {
-        const line = [];
-        for (let i = 0; i < winLength; i++) {
-          line.push(board[(row + i) * size + (col + i)]);
-        }
-        if (this._isWinningLine(line)) {
-          return {
-            winner: line[0],
-            winningLine: this._getWinningLineIndices(row, col, winLength, size, "diagonal-main"),
-          };
+      for (let row = 0; row <= size - 3; row++) {
+        const maxLen = size - row;
+        for (let len = 3; len <= Math.min(5, maxLen); len++) {
+          const getCell = (i) => board[(row + i) * size + col];
+          const result = checkLineSpecial(getCell, len, size);
+          if (result) {
+            return {
+              winner: result.winner,
+              winningLine: this._getWinningLineIndices(row, col, result.length, size, "vertical"),
+            };
+          }
         }
       }
     }
-
-    // Kiểm tra đường chéo phụ (từ phải trên xuống trái dưới)
-    for (let row = 0; row <= size - winLength; row++) {
-      for (let col = winLength - 1; col < size; col++) {
-        const line = [];
-        for (let i = 0; i < winLength; i++) {
-          line.push(board[(row + i) * size + (col - i)]);
-        }
-        if (this._isWinningLine(line)) {
-          return {
-            winner: line[0],
-            winningLine: this._getWinningLineIndices(row, col, winLength, size, "diagonal-anti"),
-          };
+    // Đường chéo chính
+    for (let row = 0; row <= size - 3; row++) {
+      for (let col = 0; col <= size - 3; col++) {
+        const maxLen = Math.min(size - row, size - col);
+        for (let len = 3; len <= Math.min(5, maxLen); len++) {
+          const getCell = (i) => board[(row + i) * size + (col + i)];
+          const result = checkLineSpecial(getCell, len, size);
+          if (result) {
+            return {
+              winner: result.winner,
+              winningLine: this._getWinningLineIndices(row, col, result.length, size, "diagonal-main"),
+            };
+          }
         }
       }
     }
-
+    // Đường chéo phụ
+    for (let row = 0; row <= size - 3; row++) {
+      for (let col = 2; col < size; col++) {
+        const maxLen = Math.min(size - row, col + 1);
+        for (let len = 3; len <= Math.min(5, maxLen); len++) {
+          const getCell = (i) => board[(row + i) * size + (col - i)];
+          const result = checkLineSpecial(getCell, len, size);
+          if (result) {
+            return {
+              winner: result.winner,
+              winningLine: this._getWinningLineIndices(row, col, result.length, size, "diagonal-anti"),
+            };
+          }
+        }
+      }
+    }
     return null;
   },
 
@@ -168,7 +182,7 @@ const BoardManager = {
    * @param {Object} state - Trạng thái game
    * @returns {boolean} True nếu bàn đầy
    */
-  isBoardFull(state) {
+  isBoardFull (state) {
     return state.board.every((cell) => cell !== null);
   },
 
@@ -177,133 +191,55 @@ const BoardManager = {
    * @param {number} currentPlayer - Người chơi hiện tại
    * @returns {number} Người chơi tiếp theo
    */
-  switchPlayer(currentPlayer) {
+  switchPlayer (currentPlayer) {
     return currentPlayer === 1 ? 2 : 1;
   },
 
   /**
-   * Xử lý khi kết thúc vòng
-   * @param {Object} state - Trạng thái game hiện tại
-   * @param {number} winner - Người thắng (1, 2, hoặc 0 cho hòa)
-   * @returns {Object} State mới sau khi xử lý vòng
-   */
-  handleRoundEnd(state, winner) {
-    const newState = { ...state };
-
-    if (winner === 0) {
-      // Hòa - giảm trái tim
-      newState.hearts = Math.max(0, state.hearts - 1);
-      newState.gameStatus = "round_end";
-    } else {
-      // Có người thắng
-      newState.gameStatus = "round_end";
-    }
-
-    return newState;
-  },
-
-  /**
-   * Đặt lại trạng thái game cho vòng mới
+   * Đặt lại trạng thái game cho vòng mới, giữ nguyên điểm số và cài đặt
    * @param {Object} state - Trạng thái game hiện tại
    * @returns {Object} State mới với bàn cờ trống
    */
-  resetState(state) {
+  resetForNewRound (state) {
     return {
       ...state,
       board: new Array(state.size * state.size).fill(null),
-      currentPlayer: 1,
+      currentPlayer: 1, // Người chơi luôn đi trước ở vòng mới
       gameStatus: "playing",
       lastMove: null,
       winningLine: null,
     };
   },
 
-  /**
-   * Lấy thông tin ô tại vị trí (row, col)
-   * @param {Object} state - Trạng thái game
-   * @param {number} row - Hàng (0-based)
-   * @param {number} col - Cột (0-based)
-   * @returns {number|null} Giá trị ô (1, 2, hoặc null)
-   */
-  getCell(state, row, col) {
-    if (row < 0 || row >= state.size || col < 0 || col >= state.size) {
-      return null;
-    }
-    return state.board[row * state.size + col];
-  },
-
-  /**
-   * Chuyển đổi index thành tọa độ (row, col)
-   * @param {number} index - Index trong mảng board
-   * @param {number} size - Kích thước bàn
-   * @returns {Object} Tọa độ {row, col}
-   */
-  indexToCoords(index, size) {
-    return {
-      row: Math.floor(index / size),
-      col: index % size,
-    };
-  },
-
-  /**
-   * Chuyển đổi tọa độ (row, col) thành index
-   * @param {number} row - Hàng
-   * @param {number} col - Cột
-   * @param {number} size - Kích thước bàn
-   * @returns {number} Index trong mảng board
-   */
-  coordsToIndex(row, col, size) {
-    return row * size + col;
-  },
-
   // ===== PRIVATE METHODS =====
 
-  /**
-   * Kiểm tra một dòng có thắng không
-   * @private
-   */
-  _isWinningLine(line) {
-    return line.every((cell) => cell !== null && cell === line[0]);
+  _isWinningLine (line) {
+    if (line[0] === null) return false;
+    return line.every((cell) => cell === line[0]);
   },
 
-  /**
-   * Lấy các index của dòng thắng
-   * @private
-   */
-  _getWinningLineIndices(startRow, startCol, length, size, direction) {
+  _getWinningLineIndices (startRow, startCol, length, size, direction) {
     const indices = [];
-
-    switch (direction) {
-      case "horizontal":
-        for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
+      switch (direction) {
+        case "horizontal":
           indices.push(startRow * size + startCol + i);
-        }
-        break;
-      case "vertical":
-        for (let i = 0; i < length; i++) {
+          break;
+        case "vertical":
           indices.push((startRow + i) * size + startCol);
-        }
-        break;
-      case "diagonal-main":
-        for (let i = 0; i < length; i++) {
+          break;
+        case "diagonal-main":
           indices.push((startRow + i) * size + (startCol + i));
-        }
-        break;
-      case "diagonal-anti":
-        for (let i = 0; i < length; i++) {
+          break;
+        case "diagonal-anti":
           indices.push((startRow + i) * size + (startCol - i));
-        }
-        break;
+          break;
+      }
     }
-
     return indices;
   },
 
-  /**
-   * Cập nhật điểm số
-   * @private
-   */
-  _updateScores(scores, winner) {
+  _updateScores (scores, winner) {
     const newScores = { ...scores };
     if (winner === 1) {
       newScores.player += 1;
@@ -315,8 +251,6 @@ const BoardManager = {
 };
 
 // Export module
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = BoardManager;
-} else if (typeof window !== "undefined") {
+if (typeof window !== "undefined") {
   window.BoardManager = BoardManager;
 }
