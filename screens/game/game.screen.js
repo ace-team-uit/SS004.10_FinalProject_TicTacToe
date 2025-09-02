@@ -427,7 +427,7 @@ function initGameScreen() {
       ) {
         setTimeout(() => {
           autoAIMove();
-        }, 350);
+        }, Math.random() * (7000 - 500) + 500);
       } else {
         // Nếu không phải lượt AI, enable lại các ô chưa đánh cho người chơi
         if (gameBoardEl) {
