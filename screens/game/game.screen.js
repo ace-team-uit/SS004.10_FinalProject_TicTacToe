@@ -1,109 +1,86 @@
 console.log("🎮 Game screen loaded");
 
-// ===== CẤU TRÚC DỮ LIỆU GAME =====
-// Cấu trúc dữ liệu đơn giản để các bạn khác dễ dàng nhúng logic vào
-// Kiểm tra xem GameData đã tồn tại chưa, nếu chưa thì tạo mới
+// ===== SỬ DỤNG BoardManager =====
 if (typeof window["GameData"] === "undefined") {
+  // Khởi tạo GameData sử dụng BoardManager
   window["GameData"] = {
-    // Kích thước bàn cờ (3x3, 4x4, 5x5)
-    gridSize: 3,
-
-    // Mảng 2D lưu trạng thái bàn cờ
-    // null = ô trống, 1 = X (player1), 2 = O (player2)
-    /** @type {Array<Array<number|null>>} */
-    board: [],
-
-    // Người chơi hiện tại
-    currentPlayer: 1, // 1 = X, 2 = O
-
-    // Trạng thái game
-    gameStatus: "playing", // "playing", "won", "draw"
-
-    // Người thắng
-    winner: null,
-
+    // State của BoardManager
+    state: null,
     // Khởi tạo bàn cờ mới
     initBoard(size = 3) {
-      this.gridSize = size;
-      /** @type {Array<Array<number|null>>} */
-      this.board = [];
-
-      // Tạo mảng 2D rỗng
-      for (let i = 0; i < size; i++) {
-        this.board[i] = [];
-        for (let j = 0; j < size; j++) {
-          this.board[i][j] = null;
-        }
+      this.state = window.BoardManager.initState(size);
+      if (size === 3) {
+        console.log("✅ Luật thắng: 3 liên tiếp là thắng (không cần block)");
+      } else {
+        console.log(
+          "✅ Luật thắng: 4 liên tiếp không bị chặn hoặc 5 liên tiếp có thể bị chặn là thắng"
+        );
       }
-
-      this.currentPlayer = 1;
-      this.gameStatus = "playing";
-      this.winner = null;
-
-      console.log(`✅ Khởi tạo bàn cờ ${size}x${size}`);
+      console.log(`✅ Khởi tạo bàn cờ ${size}x${size} (BoardManager)`);
     },
-
-    // Lấy giá trị ô tại vị trí (hàng, cột)
-    getCell(row, col) {
-      if (this.isValidPosition(row, col)) {
-        return this.board[row][col];
+    // Đặt giá trị ô tại index
+    setCellByIndex(index, value) {
+      if (!this.state || this.state.board[index] !== null) return false;
+      this.state.board[index] = value;
+      return true;
+    },
+    // Lấy giá trị ô tại index
+    getCellByIndex(index) {
+      if (!this.state) return null;
+      return this.state.board[index];
+    },
+    // Chuyển đổi index thành tọa độ (hàng, cột)
+    indexToCoordinates(index) {
+      const size = this.state?.size || 3;
+      const row = Math.floor(index / size);
+      const col = index % size;
+      return { row, col };
+    },
+    // Chuyển đổi tọa độ (hàng, cột) thành index
+    coordinatesToIndex(row, col) {
+      const size = this.state?.size || 3;
+      return row * size + col;
+    },
+    // Lấy bàn cờ dạng mảng phẳng
+    getFlatBoard() {
+      if (!this.state) return [];
+      return this.state.board.map((value, index) => {
+        const { row, col } = this.indexToCoordinates(index);
+        return { index, row, col, value };
+      });
+    },
+    // Reset bàn cờ
+    reset() {
+      if (this.state) {
+        this.state = window.BoardManager.resetForNewRound(this.state);
+      }
+    },
+    // Truy cập các thuộc tính chính
+    get gridSize() {
+      return this.state?.size || 3;
+    },
+    get currentPlayer() {
+      return this.state?.currentPlayer || 1;
+    },
+    set currentPlayer(val) {
+      if (this.state) this.state.currentPlayer = val;
+    },
+    get gameStatus() {
+      return this.state?.gameStatus || "playing";
+    },
+    set gameStatus(val) {
+      if (this.state) this.state.gameStatus = val;
+    },
+    get winner() {
+      // Lấy winner từ state nếu có
+      if (this.state?.gameStatus === "won") {
+        const winnerResult = window.BoardManager.checkWinner(this.state);
+        return winnerResult?.winner || null;
       }
       return null;
     },
-
-    // Đặt giá trị ô tại vị trí (hàng, cột)
-    setCell(row, col, value) {
-      if (this.isValidPosition(row, col) && this.board[row][col] === null) {
-        this.board[row][col] = value;
-        return true;
-      }
-      return false;
-    },
-
-    // Kiểm tra vị trí hợp lệ
-    isValidPosition(row, col) {
-      return row >= 0 && row < this.gridSize && col >= 0 && col < this.gridSize;
-    },
-
-    // Kiểm tra ô trống
-    isCellEmpty(row, col) {
-      return this.getCell(row, col) === null;
-    },
-
-    // Chuyển đổi index thành tọa độ (hàng, cột)
-    indexToCoordinates(index) {
-      const row = Math.floor(index / this.gridSize);
-      const col = index % this.gridSize;
-      return { row, col };
-    },
-
-    // Chuyển đổi tọa độ (hàng, cột) thành index
-    coordinatesToIndex(row, col) {
-      return row * this.gridSize + col;
-    },
-
-    // Lấy bàn cờ dạng mảng phẳng (để dễ xử lý)
-    getFlatBoard() {
-      const flatBoard = [];
-      for (let i = 0; i < this.gridSize; i++) {
-        for (let j = 0; j < this.gridSize; j++) {
-          flatBoard.push({
-            index: this.coordinatesToIndex(i, j),
-            row: i,
-            col: j,
-            value: this.board[i][j],
-          });
-        }
-      }
-      return flatBoard;
-    },
-
-    // Reset bàn cờ
-    reset() {
-      this.initBoard(this.gridSize);
-    },
   };
-  console.log("✅ Tạo GameData mới");
+  console.log("✅ Tạo GameData mới (BoardManager)");
 } else {
   console.log("🔄 Sử dụng GameData đã tồn tại");
 }
@@ -259,16 +236,7 @@ function initGameScreen() {
     }
 
     // Cập nhật trạng thái nút âm nhạc
-    const musicBtn = document.getElementById("music-btn");
-    if (musicBtn) {
-      if (settings.gameMusicEnabled) {
-        musicBtn.style.opacity = "1";
-        musicBtn.style.filter = "none";
-      } else {
-        musicBtn.style.opacity = "0.5";
-        musicBtn.style.filter = "grayscale(100%)";
-      }
-    }
+    updateMusicButton(settings.gameMusicEnabled);
 
     console.log("✅ Dữ liệu game đã được khởi tạo thành công");
   }
@@ -363,9 +331,9 @@ function initGameScreen() {
         if (!indexAttr) return;
 
         const index = parseInt(indexAttr);
-        const value = cell.getAttribute("data-value");
+        const value = window["GameData"].getCellByIndex(index);
 
-        if (value) {
+        if (value !== null) {
           console.log(`🚫 Ô ${index} đã có giá trị: ${value}`);
           return;
         }
@@ -378,20 +346,35 @@ function initGameScreen() {
 
   // Xử lý khi click vào ô
   function handleCellClick(cell, index) {
+    // Sau khi người chơi đi, disable toàn bộ bàn cờ
+    const gameBoardEl = document.getElementById("game-board");
+    if (gameBoardEl) {
+      const allCells = gameBoardEl.querySelectorAll(".board-cell");
+      allCells.forEach(disableCell);
+    }
+
     // Phát âm thanh click nếu có
     if (window["playSound"]) {
       window["playSound"]("click");
     }
 
-    // Chuyển đổi index thành tọa độ (hàng, cột)
-    const { row, col } = window["GameData"].indexToCoordinates(index);
+    // Sử dụng BoardManager để xử lý nước đi
+    const gameData = window["GameData"];
+    if (!gameData.state) return;
 
-    // Đặt giá trị vào dữ liệu game
-    const success = window["GameData"].setCell(row, col, window["GameData"].currentPlayer);
+    // Chỉ cho phép đánh khi game đang chơi
+    if (gameData.state.gameStatus !== "playing") {
+      console.log("🚫 Game đã kết thúc");
+      return;
+    }
 
-    if (success) {
+    // Sử dụng BoardManager.makeMove
+    const newState = window.BoardManager.makeMove(gameData.state, index);
+    if (newState !== gameData.state) {
+      gameData.state = newState;
+
       // Cập nhật hiển thị ô
-      const playerMark = window["GameData"].currentPlayer === 1 ? "X" : "O";
+      const playerMark = newState.board[index] === 1 ? "X" : "O";
       cell.setAttribute("data-value", playerMark);
 
       let cellText = cell.querySelector(".cell-text");
@@ -414,158 +397,208 @@ function initGameScreen() {
 
       cellText.textContent = playerMark;
 
-      // Vô hiệu hóa ô sau khi đánh dấu
-      disableCell(cell);
-
       console.log(`✅ Ô ${index} được đánh dấu với ${playerMark}`);
-
-      // TODO: Các bạn khác sẽ thêm logic kiểm tra thắng/thua ở đây
-      // TODO: Các bạn khác sẽ thêm logic AI ở đây
 
       // Đặt lại timer cho lượt mới
       if (window["GameHUD"]) {
         window["GameHUD"].resetTimer();
       }
 
-      // Chuyển lượt chơi
-      window["GameData"].currentPlayer = window["GameData"].currentPlayer === 1 ? 2 : 1;
-      console.log(`🔄 Chuyển lượt cho người chơi: ${window["GameData"].currentPlayer}`);
-
       // Cập nhật hiển thị bàn cờ
       updateBoardDisplay();
+
+      // Hiển thị alert khi có người thắng
+      if (gameData.state.gameStatus === "won") {
+        const winner = gameData.state.currentPlayer === 1 ? 1 : 2;
+        const winnerText = winner === 1 ? "Người chơi X" : "Người chơi O (AI)";
+        setTimeout(() => {
+          alert(winnerText + " thắng!");
+        }, 100);
+      } else if (gameData.state.gameStatus === "draw") {
+        setTimeout(() => {
+          alert("Hòa!");
+        }, 100);
+      }
+
+      // Nếu đến lượt AI (O), gọi AI tự động đánh
+      if (
+        window["GameData"].state.currentPlayer === 2 &&
+        window["GameData"].state.gameStatus === "playing"
+      ) {
+        setTimeout(() => {
+          autoAIMove();
+        }, 350);
+      } else {
+        // Nếu không phải lượt AI, enable lại các ô chưa đánh cho người chơi
+        if (gameBoardEl) {
+          const allCells = gameBoardEl.querySelectorAll(".board-cell");
+          const flatBoard = window["GameData"].getFlatBoard();
+          allCells.forEach((cell, idx) => {
+            if (flatBoard[idx] && flatBoard[idx].value === null) {
+              enableCell(cell);
+            }
+          });
+        }
+      }
     } else {
       console.log(`❌ Không thể đánh dấu ô ${index}`);
     }
   }
 
-  // Cập nhật hiển thị bàn cờ
-  function updateBoardDisplay() {
+  // Hàm cho AI tự động đánh nếu đến lượt O
+  function autoAIMove() {
+    const gameData = window["GameData"];
+    if (!gameData.state) return;
+    if (gameData.state.gameStatus !== "playing") return;
+    if (gameData.state.currentPlayer !== 2) return; // O là AI
+
+    // Lấy độ khó
+    let difficulty = "easy";
+    if (window["gameState"] && window["gameState"].difficulty) {
+      difficulty = window["gameState"].difficulty;
+    } else {
+      difficulty = localStorage.getItem("gameDifficulty") || "easy";
+    }
+
+    // Tìm nước đi cho AI dựa trên độ khó
+    const aiMove = window.TTT_AI.getAIMove(gameData.state, difficulty);
+    if (aiMove === -1) return;
+
+    // Tìm ô tương ứng và gọi handleCellClick cho ô đó
+    const gameBoard = document.getElementById("game-board");
     if (!gameBoard) return;
-
-    const cells = gameBoard.querySelectorAll(".board-cell");
-    const flatBoard = window["GameData"].getFlatBoard();
-
-    cells.forEach((cell, index) => {
-      const cellData = flatBoard[index];
-      if (cellData) {
-        const currentValue = cell.getAttribute("data-value");
-        const newValue = cellData.value;
-
-        if (currentValue !== String(newValue || "")) {
-          cell.setAttribute("data-value", String(newValue || ""));
-
-          let cellText = cell.querySelector(".cell-text");
-          if (!cellText) {
-            cellText = document.createElement("div");
-            cellText.className = "cell-text";
-            cell.appendChild(cellText);
-          }
-
-          const playerMark = newValue === 1 ? "X" : newValue === 2 ? "O" : "";
-          cellText.textContent = playerMark;
-
-          // Áp dụng màu gradient từ bàn cờ được chọn
-          const selectedBoard = window["AppStorage"]?.get("selectedBoard");
-          if (selectedBoard?.colors && playerMark) {
-            const gradient = playerMark === "X" ? selectedBoard.colors.x : selectedBoard.colors.o;
-            const cellTextElement = /** @type {HTMLElement} */ (cellText);
-            cellTextElement.style.background = gradient;
-            cellTextElement.style.webkitBackgroundClip = "text";
-            cellTextElement.style.webkitTextFillColor = "transparent";
-            cellTextElement.style.backgroundClip = "text";
-          }
-
-          // Cập nhật trạng thái ô
-          if (newValue !== null) {
-            disableCell(cell);
-          } else {
-            enableCell(cell);
-          }
-        }
-      }
-    });
-  }
-
-  // ===== CÁC HÀM TIỆN ÍCH =====
-
-  // Vô hiệu hóa ô (không cho click nữa)
-  function disableCell(cell) {
-    if (!cell) return;
-    cell.style.cursor = "not-allowed";
-    cell.style.pointerEvents = "none";
-    cell.style.opacity = "0.8";
-    cell.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
-    console.log("🔒 Ô đã bị vô hiệu hóa");
-  }
-
-  // Kích hoạt ô (cho phép click)
-  function enableCell(cell) {
-    if (!cell) return;
-    cell.style.cursor = "pointer";
-    cell.style.pointerEvents = "auto";
-    cell.style.opacity = "1";
-    cell.style.backgroundColor = "";
-    console.log("🔓 Ô đã được kích hoạt");
-  }
-
-  // Toggle music
-  function toggleMusic() {
-    console.log("🎵 Toggling music");
-    const settings = window["AppStorage"]?.loadSettings();
-    if (!settings) return;
-
-    const newState = !settings.gameMusicEnabled;
-    window["AppStorage"]?.saveSettings({ gameMusicEnabled: newState });
-    updateMusicButton(newState);
-
-    if (window["playSound"]) {
-      window["playSound"]("click");
-    }
-    console.log(`🎵 Music ${newState ? "enabled" : "disabled"}`);
-  }
-
-  // Cập nhật trạng thái nút âm nhạc
-  function updateMusicButton(enabled) {
-    if (!musicBtn) return;
-    if (enabled) {
-      musicBtn.style.opacity = "1";
-      musicBtn.style.filter = "none";
-    } else {
-      musicBtn.style.opacity = "0.5";
-      musicBtn.style.filter = "grayscale(100%)";
-    }
-  }
-
-  // Các hàm điều hướng
-  function navigateToGameMode2() {
-    if (window["Navigation"]) {
-      window["Navigation"].navigateTo("mode2");
-    } else {
-      console.warn("Điều hướng không khả dụng, chuyển hướng thủ công");
-      window.location.href = "#mode2";
-    }
-  }
-
-  function navigateToSettings() {
-    if (window["Navigation"]) {
-      window["Navigation"].navigateTo("settings");
-    } else {
-      console.warn("Điều hướng không khả dụng, chuyển hướng thủ công");
-      window.location.href = "#settings";
-    }
-  }
-
-  // Khởi tạo trạng thái âm nhạc
-  function initializeMusicState() {
-    const settings = window["AppStorage"]?.loadSettings();
-    if (settings) {
-      updateMusicButton(settings.gameMusicEnabled);
+    const cell = gameBoard.querySelector(`.board-cell[data-index='${aiMove}']`);
+    if (cell) {
+      handleCellClick(cell, aiMove);
     }
   }
 
   // Khởi tạo
   initializeMusicState();
   console.log("🎮 Màn hình game đã được khởi tạo");
+}
+
+// Cập nhật trạng thái nút âm nhạc
+function updateMusicButton(enabled) {
+  const musicBtn = document.getElementById("music-btn");
+  if (!musicBtn) return;
+  if (enabled) {
+    musicBtn.style.opacity = "1";
+    musicBtn.style.filter = "none";
+  } else {
+    musicBtn.style.opacity = "0.5";
+    musicBtn.style.filter = "grayscale(100%)";
+  }
+}
+
+// Cập nhật hiển thị bàn cờ
+function updateBoardDisplay() {
+  // Lấy lại phần tử gameBoard trong hàm để tránh lỗi scope
+  const gameBoard = document.getElementById("game-board");
+  if (!gameBoard) return;
+
+  const cells = gameBoard.querySelectorAll(".board-cell");
+  const flatBoard = window["GameData"].getFlatBoard();
+
+  cells.forEach((cell, index) => {
+    const cellData = flatBoard[index];
+    if (cellData) {
+      const currentValue = cell.getAttribute("data-value");
+      const newValue = cellData.value;
+
+      const playerMark = newValue === 1 ? "X" : newValue === 2 ? "O" : "";
+
+      if (currentValue !== playerMark) {
+        cell.setAttribute("data-value", playerMark);
+
+        let cellText = cell.querySelector(".cell-text");
+        if (!cellText) {
+          cellText = document.createElement("div");
+          cellText.className = "cell-text";
+          cell.appendChild(cellText);
+        }
+
+        cellText.textContent = playerMark;
+
+        // Áp dụng màu gradient từ bàn cờ được chọn
+        const selectedBoard = window["AppStorage"]?.get("selectedBoard");
+        if (selectedBoard?.colors && playerMark) {
+          const gradient = playerMark === "X" ? selectedBoard.colors.x : selectedBoard.colors.o;
+          const cellTextElement = /** @type {HTMLElement} */ (cellText);
+          cellTextElement.style.background = gradient;
+          cellTextElement.style.webkitBackgroundClip = "text";
+          cellTextElement.style.webkitTextFillColor = "transparent";
+          cellTextElement.style.backgroundClip = "text";
+        }
+      }
+    }
+  });
+}
+
+// ===== CÁC HÀM TIỆN ÍCH =====
+
+// Vô hiệu hóa ô (không cho click nữa)
+function disableCell(cell) {
+  if (!cell) return;
+  cell.style.cursor = "not-allowed";
+  cell.style.pointerEvents = "none";
+  cell.style.opacity = "0.8";
+  cell.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+}
+
+// Kích hoạt ô (cho phép click)
+function enableCell(cell) {
+  if (!cell) return;
+  cell.style.cursor = "pointer";
+  cell.style.pointerEvents = "auto";
+  cell.style.opacity = "1";
+  cell.style.backgroundColor = "";
+}
+
+// Toggle music
+function toggleMusic() {
+  console.log("🎵 Toggling music");
+  const settings = window["AppStorage"]?.loadSettings();
+  if (!settings) return;
+
+  const newState = !settings.gameMusicEnabled;
+  window["AppStorage"]?.saveSettings({ gameMusicEnabled: newState });
+  updateMusicButton(newState);
+
+  if (window["playSound"]) {
+    window["playSound"]("click");
+  }
+
+  window["audioManager"].toggleMute(!newState);
+  console.log(`🎵 Music ${newState ? "enabled" : "disabled"}`);
+}
+
+// Khởi tạo trạng thái âm nhạc
+function initializeMusicState() {
+  const settings = window["AppStorage"]?.loadSettings();
+  if (settings) {
+    updateMusicButton(settings.gameMusicEnabled);
+    window["audioManager"].toggleMute(!settings.gameMusicEnabled);
+  }
+}
+
+// Các hàm điều hướng
+function navigateToGameMode2() {
+  if (window["Navigation"]) {
+    window["Navigation"].navigateTo("mode2");
+  } else {
+    console.warn("Điều hướng không khả dụng, chuyển hướng thủ công");
+    window.location.href = "#mode2";
+  }
+}
+
+function navigateToSettings() {
+  if (window["Navigation"]) {
+    window["Navigation"].navigateTo("settings");
+  } else {
+    console.warn("Điều hướng không khả dụng, chuyển hướng thủ công");
+    window.location.href = "#settings";
+  }
 }
 
 // ===== TÍCH HỢP HUD =====
