@@ -46,22 +46,22 @@ class PopupManager {
       'win': {
         image: 'assets/images/popup/win-popup.png',
         buttons: [
-          { id: 'exit-game', text: 'Exit', action: 'exit', image: 'assets/images/common/exit-button.png' },
-          { id: 'reset-game', text: 'Replay', action: 'reset', image: 'assets/images/common/reset-button.png' },
+          { id: 'exit-game', text: '', action: 'exit', image: 'assets/images/common/exit-button.png' },
+          { id: 'reset-game', text: '', action: 'reset', image: 'assets/images/common/reset-button.png' },
         ]
       },
       'lose': {
         image: 'assets/images/popup/lose-popup.png',
         buttons: [
-          { id: 'exit-game', text: 'Exit', action: 'exit', image: 'assets/images/common/exit-button.png' },
-          { id: 'reset-game', text: 'Replay', action: 'reset', image: 'assets/images/common/reset-button.png' },
+          { id: 'exit-game', text: '', action: 'exit', image: 'assets/images/common/exit-button.png' },
+          { id: 'reset-game', text: '', action: 'reset', image: 'assets/images/common/reset-button.png' },
         ]
       },
       'draw': {
         image: 'assets/images/popup/draw-popup.png',
         buttons: [
-          { id: 'exit-game', text: 'Exit', action: 'exit', image: 'assets/images/common/exit-button.png' },
-          { id: 'reset-game', text: 'Replay', action: 'reset', image: 'assets/images/common/reset-button.png' },
+          { id: 'exit-game', text: '', action: 'exit', image: 'assets/images/common/exit-button.png' },
+          { id: 'reset-game', text: '', action: 'reset', image: 'assets/images/common/reset-button.png' },
         ]
       },
       'exit': {
