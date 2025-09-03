@@ -83,6 +83,18 @@ function loadAudioModule() {
   });
 }
 
+// Tải module popup
+function loadPopupModule() {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "shared/ui/popup.js";
+    // @ts-ignore
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load popup module"));
+    document.head.appendChild(script);
+  });
+}
+
 // Quản lý BGM
 function autoChangeBGM(screenPath) {
   if (!window["audioManager"]) return;
@@ -128,7 +140,7 @@ function toggleTheme() {
   applySettings();
 }
 
-// Khởi tạo âm thanh
+// Khởi tạo âm thanh và popup
 async function initializeAudio() {
   try {
     await loadAudioModule();
@@ -143,6 +155,16 @@ async function initializeAudio() {
     console.log("🎵 Audio system ready");
   } catch (error) {
     console.warn("⚠️ Audio initialization failed, continuing without audio:", error);
+  }
+}
+
+// Khởi tạo popup system
+async function initializePopup() {
+  try {
+    await loadPopupModule();
+    console.log("🎭 Popup system ready");
+  } catch (error) {
+    console.warn("⚠️ Popup initialization failed, continuing without popups:", error);
   }
 }
 
@@ -170,6 +192,12 @@ window.toggleTheme = toggleTheme;
 (async function init() {
   ensureAppShell();
   applySettings();
+
+  try {
+    await initializePopup();
+  } catch (error) {
+    console.warn("⚠️ Popup initialization failed:", error);
+  }
 
   try {
     await initializeAudio();
