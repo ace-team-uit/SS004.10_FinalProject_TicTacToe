@@ -9,5 +9,6 @@ document.getElementById("settings-next")?.addEventListener("click", () => {
 });
 
 document.getElementById("settings-prev")?.addEventListener("click", () => {
-  (window.Navigation || window["Navigation"]).navigateTo("select");
+  // Use the new navigateBack function to return to the previous screen
+  (window.Navigation || window["Navigation"]).navigateBack();
 });
