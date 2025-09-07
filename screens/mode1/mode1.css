@@ -26,13 +26,30 @@
     flex-direction: column;
     width: 100%;
     align-items: center;
-    margin-left: -60px;
+    margin-left: -50px;
     gap: 2vh;
+
+    div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding-right: 10px;
+    }
+
+    .easy-btn,
+    .hard-btn {
+      transform: scale(1.4) !important;
+    }
+
+    .medium-btn {
+      transform: scale(1.05) !important;
+    }
   }
 
-  .medium-btn {
-    transform: scale(1.05);
-  }
+
 
   .difficulty-btn {
     width: 70vw;
@@ -42,15 +59,25 @@
     cursor: pointer;
     transition: transform 0.2s ease;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-    object-fit: cover;
+    object-fit: contain;
+  }
 
-    &:hover {
-      transform: scale(1.05);
-    }
+  .easy-btn:hover,
+  .hard-btn:hover {
+    transform: scale(1.45) !important;
+  }
 
-    &:active {
-      transform: scale(0.95);
-    }
+  .medium-btn:hover {
+    transform: scale(1.1) !important;
+  }
+
+  .easy-btn:active,
+  .hard-btn:active {
+    transform: scale(1.35) !important;
+  }
+
+  .medium-btn:active {
+    transform: scale(0.95) !important;
   }
 
   .screen__footer {
