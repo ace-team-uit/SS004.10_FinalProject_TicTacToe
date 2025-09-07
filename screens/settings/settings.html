@@ -1,8 +1,51 @@
-<div class="settings-screen flex flex-col items-center justify-center gap-4 p-4 text-center">
-  <h2 class="text-2xl">Settings</h2>
-  <div class="flex gap-4">
-    <button id="toggle-theme" class="btn btn-secondary">Toggle Theme</button>
+<div class="screen settings-screen">
+  <div class="screen__background settings-background"></div>
+
+  <div class="screen__content">
+    <div class="screen__logo">
+      <img src="assets/images/logo.png" alt="ACE Logo" class="logo-img" />
+    </div>
+
+    <div class="screen__action">
+      <div class="settings-options-panel">
+        <div class="options-title">
+          <span>OPTIONS</span>
+        </div>
+
+        <div class="music-setting">
+          <span class="setting-label">MUSIC</span>
+          <div class="toggle-container">
+            <button id="music-toggle" class="music-toggle">
+              <img
+                id="music-toggle-icon"
+                src="assets/images/icons/on-icon.png"
+                alt="Music Toggle"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div class="info-buttons">
+          <button id="terms-privacy-btn" class="info-btn">
+            <img src="assets/images/settings/option-background.png" alt="Terms & Privacy" />
+            <span>TERMS & PRIVACY</span>
+          </button>
+          <button id="support-btn" class="info-btn">
+            <img src="assets/images/settings/option-background.png" alt="Support" />
+            <span>SUPPORT</span>
+          </button>
+          <button id="about-us-btn" class="info-btn">
+            <img src="assets/images/settings/option-background.png" alt="About Us" />
+            <span>ABOUT US</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 72px" />
   </div>
-  <button id="settings-next" class="btn btn-primary">Go To Game</button>
-  <button id="settings-prev" class="btn btn-secondary">Back</button>
+
+  <div class="screen__footer">
+    <img id="back-btn" src="assets/images/common/back-button.png" alt="Back" class="back-btn" />
+  </div>
 </div>
