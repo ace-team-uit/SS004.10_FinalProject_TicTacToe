@@ -98,11 +98,17 @@
 
 .popup {
   width: min(92%, 360px);
+  height: min(92%, 500px);
   padding: var(--space-6);
-  background: var(--panel-bg);
+  /* background: var(--panel-bg); */
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
+
+  background-image: url("../assets/images/common/background-01.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Badges/labels */
