@@ -26,13 +26,13 @@
     flex-direction: column;
     width: 100%;
     align-items: center;
-    gap: 1vh;
+    gap: 2vh;
   }
 
   .grid-btn {
     width: 70vw;
-    max-width: 340px;
-    height: auto;
+    height: 110px;
+    width: auto;
     aspect-ratio: 23/9;
     cursor: pointer;
     transition: transform 0.2s ease;
