@@ -112,6 +112,7 @@ Trò chơi Cờ Caro – Tic Tac Toe (phiên bản Web)
 ## Kiến trúc tổng thể
 
 Hệ thống dự án được xây dựng theo mô hình tách biệt:
+
 - **Logic (shared/logic)**: Xử lý toàn bộ nghiệp vụ game
 - **UI (shared/ui)**: Các component giao diện tái sử dụng
 - **Screens (screens/)**: Tổ chức thành từng màn hình riêng biệt
@@ -134,7 +135,7 @@ Hệ thống dự án được xây dựng theo mô hình tách biệt:
 │           └── win-popup.png
 │       └── console/ (với các console logs phát triển)
 │       └── perf-logs/ (với báo cáo hiệu năng)
-│  
+│
 │       ├── architecture.md
 │       ├── changelog.md
 │       └── setup-guide.md
