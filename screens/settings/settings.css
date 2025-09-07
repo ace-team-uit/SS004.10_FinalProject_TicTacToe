@@ -72,6 +72,11 @@
         cursor: pointer;
         transition: transform 0.2s ease;
         padding: 0;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
           transform: scale(1.1);
@@ -82,9 +87,9 @@
         }
 
         img {
-          width: 100%;
-          height: auto;
-          max-width: 60px;
+          width: 60px;
+          height: 60px;
+          object-fit: contain;
         }
       }
 
