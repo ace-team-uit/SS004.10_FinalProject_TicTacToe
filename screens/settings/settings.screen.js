@@ -145,7 +145,7 @@
     });
   }
 
-  // Điều hướng quay lại màn hình chọn
+  // Điều hướng quay lại màn hình trước đó (smart navigation)
   function navigateBack() {
     console.log("🔙 Người dùng bấm nút Quay lại");
 
@@ -154,8 +154,8 @@
     }
 
     if (window["Navigation"]) {
-      console.log("🔙 Đang điều hướng về màn hình chọn chế độ");
-      window["Navigation"].navigateTo("select");
+      console.log("🔙 Đang điều hướng về màn hình trước đó");
+      window["Navigation"].navigateBack();
     } else {
       console.warn("⚠️ Navigation không khả dụng");
     }

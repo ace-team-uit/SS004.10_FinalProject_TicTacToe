@@ -52,6 +52,7 @@
   ];
 
   let current = null;
+  let previousRoute = null; // Track previous route for back navigation
 
   function navigateFromIntro() {
     console.log("🏠 Đang điều hướng từ intro đến home");
@@ -104,6 +105,11 @@
 
     if (current === target) return;
 
+    // Lưu route hiện tại làm previous route (trừ khi là lần đầu tiên)
+    if (current !== null) {
+      previousRoute = current;
+    }
+
     // Cập nhật route hiện tại
     current = target;
 
@@ -146,6 +152,20 @@
     return current;
   }
 
+  function getPreviousRoute() {
+    return previousRoute;
+  }
+
+  function navigateBack() {
+    if (previousRoute) {
+      console.log("🔄 Đang điều hướng quay lại từ", current, "đến", previousRoute);
+      navigateTo(previousRoute);
+    } else {
+      console.log("⚠️ Không có route trước đó, chuyển về home");
+      navigateTo("home");
+    }
+  }
+
   function isValidRoute(route) {
     return !!ROUTES[route];
   }
@@ -157,6 +177,8 @@
     next,
     prev,
     getCurrentRoute,
+    getPreviousRoute,
+    navigateBack,
     isValidRoute,
     getRouteFromHash,
     navigateFromIntro,
