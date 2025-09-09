@@ -10,6 +10,7 @@
   - Giao tiếp nhóm: [Slack channel](https://ss004e31.slack.com/archives/C098L65A0Q5) hoặc Discord (nội bộ)
   - Biên bản họp: [Meeting minutes](https://ss004e31.slack.com/archives/C098L65A0Q5)
   - Viết báo cáo: [Overleaf (LaTeX)](https://www.overleaf.com/read/yvjnrzvvnfxr#a8c167)
+  - Slide báo cáo: [Overleaf (LaTeX)](https://www.overleaf.com/read/jdcrfzfxmjbx#dd4c8b)
   - Lưu trữ mã nguồn: [GitHub repo](https://github.com/ace-team-uit/SS004.10_FinalProject_TicTacToe)
 
 ## Thành viên nhóm
